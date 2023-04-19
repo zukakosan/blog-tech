@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/zukakosan/blog-tech#readme",
   "dependencies": {
-    "zenn-cli": "^0.1.141"
+    "zenn-cli": "^0.1.142"
   }
 }
