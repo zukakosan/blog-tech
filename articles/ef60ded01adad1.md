@@ -1,9 +1,10 @@
 ---
 title: "検証用テナントでMicrosoft Authenticatorを誤削除して焦った"
-emoji: "💨"
+emoji: "🔐"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: []
-published: false
+topics: ["azure","aad","authenticator"]
+published: true
+publication_name: "microsoft"
 ---
 # モチベ
 - 「Microsoft Authenticatorのアカウント整理しよ」
