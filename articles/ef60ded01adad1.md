@@ -1,5 +1,5 @@
 ---
-title: "検証用テナントでMicrosoft Authenticatorを誤削除して焦った"
+title: "Microsoft Authenticatorでグローバル管理者アカウントを誤削除したので比や汗かきながら復旧した"
 emoji: "🔐"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","aad","authenticator"]
