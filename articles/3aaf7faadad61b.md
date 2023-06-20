@@ -11,7 +11,9 @@ publication_name: "microsoft"
 - 実は、VPNGWもパケットフォワーダとして利用できるらしい
 - 知らなかったので、試してみる
 - 恐らく、Sopkeからのデフォルトルートの向き先をUDRでVPNGWにしておけばよいのではという想定
-- SPOKE(Ubuntu)-Hub(VPNGW)-SPOKE(Ubuntu)の構成を作る
+- Spoke(Ubuntu)-Hub(VPNGW)-Spoke(Ubuntu)の構成を作る
+
+※動作検証なので推奨かどうかの議論は一旦度外視です(少なくとも推奨ではないと思われる)
 
 # 検証
 ## VNET x3 の作成
