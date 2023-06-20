@@ -1,9 +1,11 @@
 ---
 title: "Azure VPN Gatewayをパケットフォワーダとして動作させてみる"
-emoji: "🐙"
+emoji: "⛩️"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","vpn","squid"]
-published: false
+published: true
+publication_name: "microsoft"
+
 ---
 # モチベ
 - 実は、VPNGWもパケットフォワーダとして利用できるらしい
@@ -99,7 +101,7 @@ traceroute to 10.2.0.4 (10.2.0.4), 30 hops max, 60 byte packets
 #### 疎通テスト-3
 - この状態で、再度vm-spoke-002向けにpingを投げる
 - きちんと返ってきた
-- ただ、このIPは変わるかもしれないので[仮想ネットワークゲートウェイ]で抽象化しておくのが無難そう
+- ただ、このIPは変わるかもしれない？ので[仮想ネットワークゲートウェイ]で抽象化しておくのが無難そう
 ![](/images/20230620-vpngw-forwarder/10.png)
 
 ```powershell
