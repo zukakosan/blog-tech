@@ -39,7 +39,7 @@ publication_name: "microsoft"
 - リモートゲートウェイを利用する設定を忘れない
 ![](/images/20230620-vpngw-forwarder/03.png)
 
-## 疎通テスト-1
+#### 疎通テスト-1
 - vm-spoke-001にSSH接続し、vm-spoke-002にping
 - もちろん通るわけない
 
