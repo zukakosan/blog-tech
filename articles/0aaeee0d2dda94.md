@@ -1,9 +1,10 @@
 ---
 title: "Log Analyticsの変換を利用してAzureにインジェストするログを絞って課金を抑える"
-emoji: "🐥"
+emoji: "💸"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","log","AzureMonitor","monitoring"]
-published: false
+published: true
+publication_name: "microsoft"
 ---
 # モチベ
 - データ収集ルール(Data Collection Rule/DCR)でAzure VM/オンプレミスマシンからデータを収集する際、DCR上ではあまり細かいルールを作ることはできず、不要なログを過剰に取得しすぎてしまうことがある
