@@ -44,6 +44,7 @@ https://learn.microsoft.com/ja-jp/azure/azure-monitor/vm/monitor-virtual-machine
 
 ## 想定クエリの検証
 - 実際にインジェスト前にかけたいフィルタ・加工をするために必要なKQLをLog Analyitics上で試しておく
+- 今回は特定のEventIDのものに絞るだけのシンプルなフィルタだが、**コスト削減的な観点ではいらないカラムを落としたりするともっと効果的**
 ![](/images/20230808-LogAnalyticsTransform/03.png)
 
 ## DCRへのKQLの組み込み
