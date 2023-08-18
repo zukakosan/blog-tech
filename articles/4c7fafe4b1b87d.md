@@ -3,7 +3,7 @@ title: "Azure Monitor Private Link Scopeをササっと作るBicep"
 emoji: "💪"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["bicep","azure","IaC","terraform","monitoring"]
-published: false
+published: true
 publication_name: "microsoft"
 
 ---
