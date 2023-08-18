@@ -140,3 +140,4 @@ https://blog.aimless.jp/archives/2022/07/use-integration-between-private-endpoin
 
 # おわり
 - 細かいところはソースをご参照くださいませ
+- 何かご意見、改善案等はGitHubにてIssueを上げていただければと！
