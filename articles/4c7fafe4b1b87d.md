@@ -1,5 +1,5 @@
 ---
-title: "AMPLSでプライベートなLog Analyitics環境をササっと作るBicep"
+title: "BicepでAMPLSを使ったプライベートなLog Analyitics環境をササっと作る"
 emoji: "💪"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["bicep","azure","IaC","terraform","monitoring"]
