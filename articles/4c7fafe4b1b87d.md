@@ -1,5 +1,5 @@
 ---
-title: "Azure Monitor Private Link Scopeをササっと作るBicep"
+title: "Azure Monitor Private Link Scopeを使ったプライベートなLog Analyitics環境をササっと作るBicep"
 emoji: "💪"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["bicep","azure","IaC","terraform","monitoring"]
