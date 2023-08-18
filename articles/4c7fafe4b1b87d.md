@@ -128,5 +128,15 @@ resource peDnsGroupForAmpls 'Microsoft.Network/privateEndpoints/privateDnsZoneGr
 
 https://blog.aimless.jp/archives/2022/07/use-integration-between-private-endpoint-and-private-dns-zone-in-bicep/ 
 
+# ちょっとした懸念
+- Internal Server Errorで初回のデプロイが失敗することが結構ある(原因不明)
+    - まったく同じデプロイコマンドを実行して再デプロイすると成功するのだが、気持ち悪い動き
+    - 原因が分かったら修正してこの記事も更新予定
+
+# AMPLS経由となっていることの確認
+- デプロイ完了後、ログが流れるまで暫く待ち、Log Analyticsを開いて`Heartbeat`テーブルにクエリをかけてみると`ComputerIP`がIPv6表記となっていることが確認できる
+- これが、プライベートな通信になっている証拠として使える
+![](/images/20230818-bicep-ampls/law.png)
+
 # おわり
 - 細かいところはソースをご参照くださいませ
