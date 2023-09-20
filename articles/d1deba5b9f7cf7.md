@@ -2,7 +2,7 @@
 title: "BicepでAzure DNS Private Resolver(DNS集約型)をサクッと作る"
 emoji: "💪"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ["azure","bicep","IaC"."DevOps"]
+topics: ["azure","bicep","IaC","DevOps"]
 published: true
 publication_name: "microsoft"
 ---
