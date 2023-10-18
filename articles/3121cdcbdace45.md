@@ -48,7 +48,7 @@ main.bicep
 
 またAzure Bastionについては、ユーザの入力に応じてデプロイ要否を決めるため、Hub用のモジュールからさらに独立させ、条件分岐によってデプロイを制御します。
 
-```bicep::hubVnet.bicep
+```bicep:hubVnet.bicep
 // create azure bastion after hub vnet creattion if deployAzureBastion is true
 module createAzureBastion './bastion.bicep' = if(deployAzureBastion) {
   name: 'createAzureBastion'
