@@ -36,8 +36,8 @@ Spokeの個数はパラメータで渡すことで、横方向にスケーリン
 # Bicep上のポイント
 ファイルの構成としては以下のような形になっています。
 ```
-main.bicep
-   └ modules/
+- main.bicep
+- modules/
         └ azfw.bicep
         └ bastion.bicep
         └ hubVnet.bicep
