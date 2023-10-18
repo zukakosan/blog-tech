@@ -3,7 +3,8 @@ title: "Bicepで簡易的なHub-Spoke環境をサクッと作る"
 emoji: "💪"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["bicep","network","azure"]
-published: false
+published: true
+publication_name: "microsoft"
 ---
 
 # これはなに...?
