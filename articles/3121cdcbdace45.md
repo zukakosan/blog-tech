@@ -46,6 +46,9 @@ main.bicep
 ## モジュールの分け方
 この環境ではSpokeが横方向にスケーリングする可能性があり、Hubと性質が全く異なるため、VNET用のモジュールではなくHub用、Spoke用で分割しています。
 
+VMの作成はHub/Spokeそれぞれで流用できるため共通化しました。NICとVMを作成するだけなので、分離させなくてもさほど影響はないと思っていますが、少しでも可視性を上げようというモチベーションです。
+
+## Azure Bastionのデプロイ
 またAzure Bastionについては、ユーザの入力に応じてデプロイ要否を決めるため、Hub用のモジュールからさらに独立させ、条件分岐によってデプロイを制御します。
 
 ```bicep:hubVnet.bicep
@@ -59,5 +62,122 @@ module createAzureBastion './bastion.bicep' = if(deployAzureBastion) {
     hubVnet
   ]
 }
-
 ```
+
+## Azure Firewallのルールの更新
+Azure FirewallのDNATルールとネットワークルールを作成していますが、同時に更新するとエラーになるので依存関係を明示的に持たせています。
+
+```bicep:azfw.bicep
+// create dnat rule collection group on firewall policy
+// this rule collection group will be used to translate the destination address of the incoming packet
+// rule description: ssh traffic from internet to the firewall public ip address is translated to the private ip address of the vm
+resource dnatRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2023-04-01' = {
+  parent: firewallPolicy
+  name: 'DefaultDnatRuleCollectionGroup'
+  properties: {
+    priority: 100
+    ruleCollections: [
+      {
+        ruleCollectionType: 'FirewallPolicyNatRuleCollection'
+        action: {
+          type: 'DNAT'
+        }
+        name: 'dnat-rule'
+        priority: 1000
+        rules:[
+          {
+            ruleType: 'NatRule'
+            name: 'ssh-dnat-rule'
+            destinationAddresses: [
+              azfwPip.properties.ipAddress
+            ]
+            destinationPorts: [
+              '50000'
+            ]
+            ipProtocols: [
+              'Any'
+            ]
+            sourceAddresses: [
+              '*'
+            ]
+            translatedAddress: dnatAddress
+            translatedPort: '22'
+          }
+        ]
+      }
+    ]
+  }
+}
+
+// after creating the dnat rule collection group, create the network rule collection group
+// these creating two rule collection groups cannot be parallelized
+// rule description: east west traffic between the vnets is allowed
+resource networkRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2023-04-01' = {
+  parent: firewallPolicy
+  name: 'DefaultNetworkRuleCollectionGroup'
+  properties: {
+    priority: 200
+    ruleCollections: [
+      {
+        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+        action: {
+          type: 'Allow'
+        }
+        name: 'east-west-rule'
+        priority: 1250
+        rules: [
+          {
+            ruleType: 'NetworkRule'
+            name: 'vnet-to-vnet'
+            ipProtocols: [
+              'Any'
+            ]
+            destinationAddresses: [
+              '10.0.0.0/8'
+            ]
+            destinationPorts: [
+              '*'
+            ]
+            sourceAddresses: [
+              '10.0.0.0/8'
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  dependsOn: [
+    dnatRuleCollectionGroup
+  ]
+}
+```
+
+## Hubのルートテーブルの設定
+今回の環境では以下の条件があります。
+- Azure FirewallのDNATルールの作成時に、DNAT先のVMのPrivate IPアドレスが必要なため、VMはAzure Firewallより先にデプロイする必要がある
+- VMのデプロイに必要なNICのデプロイには、もちろんサブネットが必要
+- HubのルートテーブルはAzure FirewallのPrivate IPに向けたいため、それを動的に取得するにはAzure Firewallより後にデプロイする必要がある
+- サブネットのPropertyでルートテーブルを指定することで、サブネットにルートテーブルがアタッチされる
+
+ということで、本来ルートテーブルを先に作成してVNET/Subnet作成時にアタッチするというのが楽なのですが、そうもいかないのでサブネットを先に作ってから後でルートテーブルを作ってアタッチするということをしています。以下がルートテーブルのアタッチのパートです。サブネット作成時に同様の宣言をしているので冗長に見えますが、やむを得ず。
+
+```bicep:hubVnet.bicep
+// update subnet to use route table
+resource subnetRouteTableAssociation 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
+  name: hubVnet::hubSubnet.name
+  parent: hubVnet
+  properties: {
+    addressPrefix: '10.0.0.0/24'
+    networkSecurityGroup: {
+      id: nsgDefault.id
+    }
+    routeTable: {
+      id: routeTable.id
+    }
+  }
+}
+```
+
+# おわりに
+- GitHubの方は適宜リファクタリングしていく予定です。
+- この環境があれば、サクッと検証したいときはかなり楽できるかなーと思いますのでぜひご活用ください。
