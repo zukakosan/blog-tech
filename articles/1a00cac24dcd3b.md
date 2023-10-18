@@ -1,6 +1,6 @@
 ---
 title: "Azure Lighthouseによるマルチテナント管理のためのオンボーディング"
-emoji: "💡"
+emoji: "🪬"
 type: "tech"
 topics:
   - "azure"
@@ -8,6 +8,7 @@ topics:
   - "azuread"
   - "azurelighthouse"
 published: true
+publication_name: "microsoft"
 published_at: "2022-08-12 14:06"
 ---
 
