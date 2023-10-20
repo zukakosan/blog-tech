@@ -46,6 +46,8 @@ WebサーバーとしてはIaaS VMを採用しています。可用性ゾーン�
 - `main.bicep`側で、ループを利用してVMを作成
 - `vm.bicep`ではVMのプライベートIPを`output`に載せる
 - `appgw.bicep`のパラメータとして各VM作成ループの出力から得られるVMのプライベートIPを`array`として渡す
+- `appgw.bicep`内では、その配列をループで回してバックエンドプールの複数要素として利用する
+
 そんな感じで試行錯誤したのが以下です。
 
 ```bicep:main.bicep
@@ -61,3 +63,22 @@ module createAppGw './modules/appgw.bicep' = {
   ]
 }
 ```
+
+```bicep:appgw.bicep
+backendAddressPools: [
+      {
+        name: 'http-backend'
+        properties: {
+          backendAddresses: [
+            for ip in backendVmPrivateIps: {
+                ipAddress: ip
+            }
+          ]
+        }
+      }
+    ]
+```
+
+# おわりに
+- GitHubの方は適宜リファクタリングしていく予定です。
+- Webサーバ上のアプリは何も載せていないので、Databaseとの接続は検証できていませんが、一応Private IPに名前解決できることだけは確認しております。
