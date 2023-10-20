@@ -3,7 +3,7 @@ title: "Bicepで可用性ゾーンを利用したWeb(IaaS)-DB(PaaS)環境をサ�
 emoji: "💪"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["bicep","network","azure"]
-published: false
+published: true
 publication_name: "microsoft"
 ---
 # これはなに...?
