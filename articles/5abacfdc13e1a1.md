@@ -6,7 +6,7 @@ topics: ["azure","terraform","IaC","AdventCalender"]
 published: true
 published_at: 2023-12-21 09:00
 ---
-本記事は、Microsoft Azure Tech Advent Calendar 2023[^1] の21日目の記事です。
+本記事は、Microsoft Azure Tech Advent Calendar 2023[^1] の 21 日目の記事です。
 
 [^1]:https://qiita.com/advent-calendar/2023/microsoft-azure-tech
 
