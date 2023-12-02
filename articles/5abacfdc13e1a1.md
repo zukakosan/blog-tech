@@ -158,6 +158,7 @@ $ terraform apply -var-file="dev.tfvars"
 ```
 
 :::message
+## Tips
 
 plan を実行するときに以下のようなオプションを付けると plan の結果がファイルに出力可能です。
 
