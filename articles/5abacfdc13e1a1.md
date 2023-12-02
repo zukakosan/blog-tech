@@ -152,11 +152,9 @@ resource "azurerm_subnet" "jumpbox" {
 `/envs/dev/` に移動して以下の流れで実行します。暫らくするとリソースが出来上がります。
 
 ```bash
-terraform init
-
-terraform plan
-
-terraform apply -var-file="dev.tfvars"
+$ terraform init
+$ terraform plan
+$ terraform apply -var-file="dev.tfvars"
 ```
 
 :::message
@@ -164,13 +162,13 @@ terraform apply -var-file="dev.tfvars"
 plan を実行するときに以下のようなオプションを付けると plan の結果がファイルに出力可能です。
 
 ```bash
-terraform plan -out="tfplan"
+$ terraform plan -out="tfplan"
 ```
 
 出力した plan に従って apply を実行したい場合には以下のように、plan のファイルを指定します。
 
 ```bash
-terraform apply "tfplan"
+$ terraform apply "tfplan"
 ```
 
 ::: 
