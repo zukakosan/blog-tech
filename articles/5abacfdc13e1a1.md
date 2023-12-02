@@ -1,6 +1,6 @@
 ---
-title: "Terraform で ディレクトリ構成を意識しながら AOAI の閉域環境を作る"
-emoji: "📑"
+title: "Terraform で ディレクトリ構成を意識しながら Azure Open AI Service の閉域環境を作る"
+emoji: "🎄"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","terraform","IaC","AdventCalender"]
 published: true
