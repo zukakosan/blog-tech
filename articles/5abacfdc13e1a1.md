@@ -176,11 +176,11 @@ terraform apply "tfplan"
 
 手元の PC から Azure OpenAI Studio にアクセスしてチャットをしてみると、想定通りエラーにより応答が得られません。
 
-![](/images/20231221-terraform-aoai/01.png)
+<!-- ![](/images/20231221-terraform-aoai/01.png) -->
 
 一方で Terraform でデプロイした jumpbox からの場合は、同じネットワーク内であるためチャットができています。
 
-![](/images/20231221-terraform-aoai/02.png)
+<!-- ![](/images/20231221-terraform-aoai/02.png) -->
 
 
 # おわりに
