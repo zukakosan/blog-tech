@@ -3,7 +3,7 @@ title: "Terraform で ディレクトリ構成を意識しながら AOAI の閉�
 emoji: "📑"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","terraform","IaC","AdventCalender"]
-published: published: true
+published: true
 published_at: 2023-12-21 09:00
 ---
 本記事は、Microsoft Azure Tech Advent Calendar 2023[^1] の21日目の記事です。
@@ -175,12 +175,10 @@ terraform apply "tfplan"
 ## ネットワーク閉域構成の確認
 
 手元の PC から Azure OpenAI Studio にアクセスしてチャットをしてみると、想定通りエラーにより応答が得られません。
-
-<!-- ![](/images/20231221-terraform-aoai/01.png) -->
+![](/images/20231221-terraform-aoai/01.png)
 
 一方で Terraform でデプロイした jumpbox からの場合は、同じネットワーク内であるためチャットができています。
-
-<!-- ![](/images/20231221-terraform-aoai/02.png) -->
+![](/images/20231221-terraform-aoai/02.png)
 
 
 # おわりに
