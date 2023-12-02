@@ -14,7 +14,7 @@ https://qiita.com/advent-calendar/2023/microsoft-azure-tech
 
 # はじめに
 
-最近 IaC にハマっており、Bicep では飽き足らず Terraform に手を出し始めた zukako です。今回は、**Microsoft Azure** Tech Advent Calender 2023 にも関わらず Terraform を触る系の話です。構築する対象としては、Azure OpenAI Service の閉域化環境としました。ネットをいろいろと検索してみたのですが、まだ Terraform x Azure OpenAI Service の記事が少なそうに見えたので、ちょうどいい規模感かな～と思った次第です。閉域化といっても、独自のデータで Chat モデルを利用する、所謂「Add Your Data」の部分は含みませんのでご了承ください。イメージとしては過去の記事[^2] で触れているようなシンプルなものです。
+最近 IaC にハマっており、Bicep では飽き足らず Terraform に手を出し始めた zukako です。今回は、**Microsoft Azure** Tech Advent Calender 2023 にも関わらず Terraform を触る系の話です。構築する対象としては、Azure OpenAI Service(AOAI) の閉域化環境としました。ネットをいろいろと検索してみたのですが、まだ Terraform x Azure OpenAI Service の記事が少なそうに見えたので、ちょうどいい規模感かな～と思った次第です。閉域化といっても、独自のデータで Chat モデルを利用する、所謂「Add Your Data」の部分は含みませんのでご了承ください。イメージとしては過去の記事[^2] で触れているようなシンプルなものです。
 
 [^2]:https://zenn.dev/microsoft/articles/198989f60eba61
 
@@ -94,7 +94,7 @@ module "aoai" {
 }
 ```
 
-## Azure Open AI Service のデプロイ
+## Azure OpenAI Service のデプロイ
 
 `azurerm` プロバイダーでは、`azurerm_coginitive_account` というリソースを参照し、`kind = OpenAI` とすることで Azure Open AI Service をデプロイします。Azure Open AI Service を Azure Portal で利用しているユーザからすると、ここは若干わかりにくいかもしれません。そして、パブリックアクセスを拒否したいので、`public_network_access_enabled = false` も忘れずに入れておきます。
 
