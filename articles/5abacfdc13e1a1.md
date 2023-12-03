@@ -149,6 +149,19 @@ resource "azurerm_subnet" "jumpbox" {
 # 動作検証
 
 ## 環境のデプロイ
+`dev.tfvars` は GitHub に載せていないので、以下をサンプルとします。
+
+```hcl
+env                          = "dev"
+rg_name                      = "rg-aoai-dev"
+vnet_name                    = "vnet-aoai-dev"
+address_space                = "172.16.0.0/16"
+jumpbox_subnet_address_space = "172.16.0.0/24"
+pe_subnet_address_space      = "172.16.1.0/24"
+admin_username               = "azureuser"
+admin_password               = "P@ssw0rd1234!"
+client_ip                    = "x.x.x.x"
+```
 
 `/envs/dev/` に移動して以下の流れで実行します。暫らくするとリソースが出来上がります。
 
