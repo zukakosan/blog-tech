@@ -5,6 +5,7 @@ type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","terraform","IaC","microsoft","AOAI"]
 published: true
 published_at: 2023-12-21 09:00
+publication_name: "microsoft"
 ---
 本記事は、Microsoft Azure Tech Advent Calendar 2023[^1] の 21 日目の記事です。
 
