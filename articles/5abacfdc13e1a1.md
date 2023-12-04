@@ -55,7 +55,8 @@ https://github.com/zukakosan/terraform-learn/tree/main/20231201-aoai-private
 │   ├── main.tf
 │   └── outputs.tf
 └── vm
-│   └── main.tf
+|   ├── main.tf
+│   └── outputs.tf
 └── aoai
     └── main.tf
 ```
@@ -163,12 +164,16 @@ admin_password               = "P@ssw0rd1234!"
 client_ip                    = "x.x.x.x"
 ```
 
-`/envs/dev/` に移動して以下の流れで実行します。暫らくするとリソースが出来上がります。
+`/envs/dev/` に移動して以下の流れで実行します。暫らくするとリソースが出来上がります。`output` として、jumpbox となる VM の Public IP が出力されます。
 
 ```bash
 $ terraform init
 $ terraform plan
 $ terraform apply -var-file="dev.tfvars"
+...
+...
+...
+vm_pip = "x.x.x.x"
 ```
 
 :::message
