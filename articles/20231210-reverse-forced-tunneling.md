@@ -1,6 +1,6 @@
 ---
 title: "Azure Route Server を利用してオンプレミス拠点のデフォルトルートを Azure Firewall に向ける"
-emoji: "🙌"
+emoji: "🎄"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","IaaS","network","microsoft"]
 published: true
