@@ -3,12 +3,18 @@ title: "Azure Route Server を利用してオンプレミス拠点のデフォ�
 emoji: "🙌"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","IaaS","network","microsoft"]
-published: false
+published: ture
+published_at: 2023-12-13 09:00
 publication_name: "microsoft"
 ---
+本記事は、Microsoft Azure Tech Advent Calendar 2023[^1] の 13 日目の記事です。
+
+[^1]:https://qiita.com/advent-calendar/2023/microsoft-azure-tech
+
+https://qiita.com/advent-calendar/2023/microsoft-azure-tech
 
 # はじめに
-ExpressRoute で Azure VNet と接続されたオンプレミスからのインターネット向けの通信を、Azure 上の NVA に集約したいこともあると思います(きっと)。Azure Route Server(ARS) を利用して Azure からオンプレミスにデフォルトルートを広報し、Next Hop として NVA の IP を指定することによって逆強制トンネリングのような構成をとることが可能です。本記事では、この構成の検証結果をまとめます。
+ExpressRoute で Azure VNet と接続されたオンプレミスからのインターネット向けの通信を、Azure 上の NVA に集約したいこともあると思います(きっと)。Azure Route Server(ARS) を利用して Azure からオンプレミスにデフォルトルートを広報し、NEXT_HOP として Azure Firewall の IP を指定することによって逆強制トンネリングのような構成をとることが可能です。本記事では、この構成の検証結果をまとめます。
 
 # 環境準備
 
@@ -17,8 +23,8 @@ ExpressRoute で Azure VNet と接続されたオンプレミスからのイン�
 ![](/images/20231211-reverse-forced-tunneling/arch.png)
 
 ## 経路広報用の NVA の準備
-オンプレミスに対して 0.0.0.0/0 を広報するための NVA を準備します。手順はこちらの記事[^1]に記載があるような流れに従い、FRRouting を構成します。
-[^1]: https://zenn.dev/microsoft/articles/azure-route-server-frrouting#nva-%E3%81%AE%E4%BD%9C%E6%88%90
+オンプレミスに対して 0.0.0.0/0 を広報するための NVA を準備します。手順はこちらの記事[^2]に記載があるような流れに従い、FRRouting を構成します。
+[^2]: https://zenn.dev/microsoft/articles/azure-route-server-frrouting#nva-%E3%81%AE%E4%BD%9C%E6%88%90
 
 アドレス空間が上記アーキテクチャのようになっている場合は、以下のようになります。
 
@@ -149,11 +155,11 @@ exit
 ```
 
 :::message alert
-- この時点で、Azure Firewall のネクストホップの AzureFirewall になってしまうので、AzureFirewallSubnet の ルートテーブルで `0.0.0.0/0->Internet` の UDR が必要となります。
+- この時点で、Azure Firewall のネクストホップの Azure Firewall になってしまうので、AzureFirewallSubnet の ルートテーブルで `0.0.0.0/0->Internet` の UDR が必要となります。
 - また、Azure Firewall のアプリケーション規則にインターネットへの http/https アクセス許可の規則を追加しておきます。この許可の規則がない場合、インターネットアクセス不可となります。
 :::
 
-# 各種経路伝搬確認
+# 経路確認
 どの様な経路が伝搬されているか、オンプレミス・ハブ・ブランチのそれぞれで確認してみましょう。
 
 ## オンプレミス
@@ -187,7 +193,7 @@ L        172.16.0.1/32 is directly connected, GigabitEthernet8.708
 
 ## ハブ VNet 側
 ハブ VNet の VPN Gateway に来ている経路を確認すると、デフォルトルートの次ホップが Azure Firewall になっていることがわかります。
-```bash
+```
 $ az network vnet-gateway list-learned-routes -g 20231208-cloudlab -n vpngw-clab-hub --output table
 Network        NextHop    Origin    SourcePeer    AsPath       Weight
 -------------  ---------  --------  ------------  -----------  --------
@@ -221,8 +227,8 @@ Network        NextHop    Origin    SourcePeer    AsPath       Weight
 ```
 
 ## ブランチ VNet 側
-ブランチ VNet の VPN Gateway で見えている経路を確認すると、デフォルトルートは受け取っていません。VPN Gateway はデフォルトルートを BGP ピアに広報しません[^2]。
-[^2]: https://blog.aimless.jp/archives/2022/07/create-default-route-to-firewall-with-route-server-nexthop/
+ブランチ VNet の VPN Gateway で見えている経路を確認すると、デフォルトルートは受け取っていません。VPN Gateway はデフォルトルートを BGP ピアに広報しません[^3]。
+[^3]: https://blog.aimless.jp/archives/2022/07/create-default-route-to-firewall-with-route-server-nexthop/
 
 ```
 $ az network vnet-gateway list-learned-routes -g 20231208-cloudlab -n vpngw-clab-brach-eus --output table
@@ -254,8 +260,12 @@ Network        NextHop    Origin    SourcePeer    AsPath             Weight
 ```
 
 # 疎通確認
-今までの構成を行ったうえでオンプレミスから例によって確認くん[^3]にアクセスしてみます。すると、SNAT されて Azure Firewall の PIP でアクセスしていることが分かります。
+今までの構成を行ったうえでオンプレミスから例によって確認くん[^4]にアクセスしてみます。すると、SNAT されて Azure Firewall の PIP でアクセスしていることが分かります。
 ![](/images/20231211-reverse-forced-tunneling/02.png)
 ![](/images/20231211-reverse-forced-tunneling/03.png)
 
-[^3]:https://www.ugtop.com/spill.shtml
+[^4]:https://www.ugtop.com/spill.shtml
+
+# まとめ
+- BGP を話せる NVA を用意して ARS とピアを張り、デフォルトルートの広報 + NEXT_HOP属性の追加しました。
+- この構成により外部アクセスに Azure Firewall を経由させる構成が取れることを確認しました。
