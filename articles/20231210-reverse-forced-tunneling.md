@@ -21,6 +21,8 @@ ExpressRoute で Azure VNet と接続されたオンプレミスからのイン�
 [^1]: https://zenn.dev/microsoft/articles/azure-route-server-frrouting#nva-%E3%81%AE%E4%BD%9C%E6%88%90
 
 アドレス空間が上記アーキテクチャのようになっている場合は、以下のようになります。
+
+:::details FRRouting Config
 ```
 ip route 10.0.2.0/24 10.0.1.1
 !
@@ -62,6 +64,7 @@ route-map rmap-azure-asns permit 10
 exit
 !
 ```
+:::
 
 ## ARS に BGP ピアの追加
 ARS のリソースから BGP ピアを登録します。
