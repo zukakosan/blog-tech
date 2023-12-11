@@ -62,21 +62,6 @@ route-map rmap-azure-asns permit 10
 exit
 !
 ```
-<!-- 
-この時点で、FRRouting と ARS の間で BGP が上がっていることを確認します。
-```
-vm-frr# show ip bgp nei 10.0.2.4
-BGP neighbor is 10.0.2.4, remote AS 65515, local AS 65001, external link
-  Local Role: undefined
-  Remote Role: undefined
-  BGP version 4, remote router ID 0.0.0.0, local router ID 10.0.1.6
-  BGP state = Active
-  Last read 00:09:17, Last write 00:00:59
-  Hold time is 180 seconds, keepalive interval is 60 seconds
-  Configured hold time is 180 seconds, keepalive interval is 60 seconds
-  Configured tcp-mss is 0, synced tcp-mss is 0
-  Configured conditional advertisements interval is 60 seconds
-``` -->
 
 ## ARS に BGP ピアの追加
 ARS のリソースから BGP ピアを登録します。
