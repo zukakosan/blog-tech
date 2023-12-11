@@ -3,7 +3,7 @@ title: "Azure Route Server を利用してオンプレミス拠点のデフォ�
 emoji: "🙌"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","IaaS","network","microsoft"]
-published: ture
+published: true
 published_at: 2023-12-13 09:00
 publication_name: "microsoft"
 ---
