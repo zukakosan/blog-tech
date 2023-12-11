@@ -103,7 +103,7 @@ K>* 169.254.169.254/32 [0/100] via 10.0.1.1, eth0, src 10.0.1.6, 00:37:22
 
 ## NVA から デフォルトルートを広報
 
-BGP で FRRouting からデフォルトルートを広報してみます。以下のように BGP の構成を追加しました。
+BGP で FRRouting からデフォルトルートを広報してみます。以下のように `network 0.0.0.0/0` として BGP の構成を追加しました。
 
 ```
 router bgp 65001
@@ -113,7 +113,7 @@ router bgp 65001
  neighbor 10.0.2.5 ebgp-multihop
  !
  address-family ipv4 unicast
-  **network 0.0.0.0/0**
+  network 0.0.0.0/0
   neighbor 10.0.2.4 soft-reconfiguration inbound
   neighbor 10.0.2.4 route-map rmap-bogon-asns in
   neighbor 10.0.2.4 route-map rmap-azure-asns out
@@ -124,7 +124,7 @@ router bgp 65001
 exit
 ```
 
-一方でこのままだと Next Hop が 0.0.0.0 になってしまっているため、Next-hop 属性を追加します。
+一方でこのままだと 次ホップ が `0.0.0.0` になってしまっています。
 ```
 vm-frr# show bgp ipv4 unicast neighbors 10.0.2.4 advertised-routes
 BGP table version is 7, local router ID is 10.0.1.6, vrf id 0
@@ -140,3 +140,122 @@ RPKI validation codes: V valid, I invalid, N Not found
 
 Total number of prefixes 1
 ```
+
+次ホップ を Azure Firewall に向けるため、ルートマップに NEXT_HOP 属性を設定します。
+```
+route-map rmap-azure-asns permit 10
+ set ip next-hop 10.0.3.4
+exit
+```
+
+:::message alert
+- この時点で、Azure Firewall のネクストホップの AzureFirewall になってしまうので、AzureFirewallSubnet の ルートテーブルで `0.0.0.0/0->Internet` の UDR が必要となります。
+- また、Azure Firewall のアプリケーション規則にインターネットへの http/https アクセス許可の規則を追加しておきます。この許可の規則がない場合、インターネットアクセス不可となります。
+:::
+
+# 各種経路伝搬確認
+どの様な経路が伝搬されているか、オンプレミス・ハブ・ブランチのそれぞれで確認してみましょう。
+
+## オンプレミス
+
+オンプレミス側に来ている経路を確認してみると、`0.0.0.0/0`が(`172.16.0.2` = MSEE)を向いていることがわかります。
+```
+er#show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override, p - overrides from PfR
+
+Gateway of last resort is 172.16.0.2 to network 0.0.0.0
+
+B*    0.0.0.0/0 [20/0] via 172.16.0.2, 01:09:00
+      10.0.0.0/8 is variably subnetted, 4 subnets, 3 masks
+B        10.0.0.0/16 [20/0] via 172.16.0.2, 1d01h
+C        10.20.10.0/24 is directly connected, Vlan10
+L        10.20.10.1/32 is directly connected, Vlan10
+B        10.50.0.0/16 [20/0] via 172.16.0.2, 22:09:35
+      172.16.0.0/16 is variably subnetted, 2 subnets, 2 masks
+C        172.16.0.0/30 is directly connected, GigabitEthernet8.708
+L        172.16.0.1/32 is directly connected, GigabitEthernet8.708
+
+```
+
+## ハブ VNet 側
+ハブ VNet の VPN Gateway に来ている経路を確認すると、デフォルトルートの次ホップが Azure Firewall になっていることがわかります。
+```bash
+$ az network vnet-gateway list-learned-routes -g 20231208-cloudlab -n vpngw-clab-hub --output table
+Network        NextHop    Origin    SourcePeer    AsPath       Weight
+-------------  ---------  --------  ------------  -----------  --------
+10.0.0.0/16               Network   10.0.0.14                  32768
+10.50.0.5/32              Network   10.0.0.14                  32768
+10.50.0.5/32   10.0.0.15  IBgp      10.0.0.15                  32768
+10.20.10.0/24  10.0.0.4   IBgp      10.0.2.4      12076-65150  32768
+10.20.10.0/24  10.0.0.4   IBgp      10.0.2.5      12076-65150  32768
+10.50.0.4/32              Network   10.0.0.14                  32768
+10.50.0.4/32   10.0.0.15  IBgp      10.0.0.15                  32768
+10.50.0.0/16   10.50.0.4  EBgp      10.50.0.4     65020        32768
+10.50.0.0/16   10.0.0.15  IBgp      10.0.2.4      65020        32768
+10.50.0.0/16   10.0.0.15  IBgp      10.0.2.5      65020        32768
+10.50.0.0/16   10.50.0.5  EBgp      10.50.0.5     65020        32768
+10.50.0.0/16   10.0.0.15  IBgp      10.0.0.15     65020        32768
+0.0.0.0/0      10.0.3.4   IBgp      10.0.2.4      65001        32768
+0.0.0.0/0      10.0.3.4   IBgp      10.0.2.5      65001        32768
+10.0.0.0/16               Network   10.0.0.15                  32768
+10.50.0.5/32              Network   10.0.0.15                  32768
+10.50.0.5/32   10.0.0.14  IBgp      10.0.0.14                  32768
+10.20.10.0/24  10.0.0.4   IBgp      10.0.2.4      12076-65150  32768
+10.20.10.0/24  10.0.0.4   IBgp      10.0.2.5      12076-65150  32768
+10.50.0.4/32              Network   10.0.0.15                  32768
+10.50.0.4/32   10.0.0.14  IBgp      10.0.0.14                  32768
+10.50.0.0/16   10.50.0.4  EBgp      10.50.0.4     65020        32768
+10.50.0.0/16   10.50.0.5  EBgp      10.50.0.5     65020        32768
+10.50.0.0/16   10.0.0.14  IBgp      10.0.0.14     65020        32768
+0.0.0.0/0      10.0.3.4   IBgp      10.0.2.4      65001        32768
+0.0.0.0/0      10.0.3.4   IBgp      10.0.2.5      65001        32768
+
+```
+
+## ブランチ VNet 側
+ブランチ VNet の VPN Gateway で見えている経路を確認すると、デフォルトルートは受け取っていません。VPN Gateway はデフォルトルートを BGP ピアに広報しません[^2]。
+[^2]: https://blog.aimless.jp/archives/2022/07/create-default-route-to-firewall-with-route-server-nexthop/
+
+```
+$ az network vnet-gateway list-learned-routes -g 20231208-cloudlab -n vpngw-clab-brach-eus --output table
+Network        NextHop    Origin    SourcePeer    AsPath             Weight
+-------------  ---------  --------  ------------  -----------------  --------
+10.50.0.0/16              Network   10.50.0.5                        32768
+10.0.0.14/32              Network   10.50.0.5                        32768
+10.0.0.14/32   10.50.0.4  IBgp      10.50.0.4                        32768
+10.0.0.15/32              Network   10.50.0.5                        32768
+10.0.0.15/32   10.50.0.4  IBgp      10.50.0.4                        32768
+10.0.0.0/16    10.0.0.15  EBgp      10.0.0.15     65515              32768
+10.0.0.0/16    10.50.0.4  IBgp      10.50.0.4     65515              32768
+10.0.0.0/16    10.0.0.14  EBgp      10.0.0.14     65515              32768
+10.20.10.0/24  10.0.0.14  EBgp      10.0.0.14     65515-12076-65150  32768
+10.20.10.0/24  10.0.0.15  EBgp      10.0.0.15     65515-12076-65150  32768
+10.20.10.0/24  10.50.0.4  IBgp      10.50.0.4     65515-12076-65150  32768
+10.50.0.0/16              Network   10.50.0.4                        32768
+10.0.0.14/32              Network   10.50.0.4                        32768
+10.0.0.14/32   10.50.0.5  IBgp      10.50.0.5                        32768
+10.0.0.15/32              Network   10.50.0.4                        32768
+10.0.0.15/32   10.50.0.5  IBgp      10.50.0.5                        32768
+10.0.0.0/16    10.0.0.15  EBgp      10.0.0.15     65515              32768
+10.0.0.0/16    10.50.0.5  IBgp      10.50.0.5     65515              32768
+10.0.0.0/16    10.0.0.14  EBgp      10.0.0.14     65515              32768
+10.20.10.0/24  10.0.0.14  EBgp      10.0.0.14     65515-12076-65150  32768
+10.20.10.0/24  10.0.0.15  EBgp      10.0.0.15     65515-12076-65150  32768
+10.20.10.0/24  10.50.0.5  IBgp      10.50.0.5     65515-12076-65150  32768
+
+```
+
+# 疎通確認
+今までの構成を行ったうえでオンプレミスから例によって確認くん[^3]にアクセスしてみます。すると、SNAT されて Azure Firewall の PIP でアクセスしていることが分かります。
+![](/images/20231211-reverse-forced-tunneling/02.png)
+![](/images/20231211-reverse-forced-tunneling/03.png)
+
+[^3]:https://www.ugtop.com/spill.shtml
