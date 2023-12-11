@@ -84,6 +84,7 @@ ARS のリソースから BGP ピアを登録します。
 
 ## FRRouting が受け取っている経路の確認
 この時点で、NVA 側で受けている経路を確認します。BGPでオンプレミス側 (10.20.10.0/24)、Hub(10.0.0.0/16)、VPN ブランチ (10.50.0.0/16) の経路を受け取っていることが分かります。
+
 ```
 vm-frr# show ip route
 Codes: K - kernel route, C - connected, S - static, R - RIP,
@@ -115,6 +116,7 @@ K>* 169.254.169.254/32 [0/100] via 10.0.1.1, eth0, src 10.0.1.6, 00:37:22
 ## NVA から デフォルトルートを広報
 
 BGP で FRRouting からデフォルトルートを広報してみます。以下のように BGP の構成を追加しました。
+
 ```
 router bgp 65001
  neighbor 10.0.2.4 remote-as 65515
@@ -132,4 +134,21 @@ router bgp 65001
   neighbor 10.0.2.5 route-map rmap-azure-asns out
  exit-address-family
 exit
+```
+
+一方でこのままだと Next Hop が 0.0.0.0 になってしまっているため、Next-hop 属性を追加します。
+```
+vm-frr# show bgp ipv4 unicast neighbors 10.0.2.4 advertised-routes
+BGP table version is 7, local router ID is 10.0.1.6, vrf id 0
+Default local pref 100, local AS 65001
+Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
+               i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+    Network          Next Hop            Metric LocPrf Weight Path
+ *> 0.0.0.0/0        0.0.0.0                  0         32768 i
+
+Total number of prefixes 1
 ```
