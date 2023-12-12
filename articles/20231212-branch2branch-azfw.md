@@ -1,15 +1,22 @@
 ---
 title: "Azure Route Server を利用した Branch-to-branch 接続で Azure Firewall を経由させてみる"
-emoji: "👏"
+emoji: "🎅"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: []
-published: false
+topics: ["azure","IaaS","network","microsoft"]
+published: true
+published_at: 2023-12-15 09:00
+publication_name: "microsoft"
 ---
+本記事は、Microsoft Azure Tech Advent Calendar 2023[^1] の 15 日目の記事です。
+
+[^1]:https://qiita.com/advent-calendar/2023/microsoft-azure-tech
+
+https://qiita.com/advent-calendar/2023/microsoft-azure-tech
 
 # はじめに
-Azure Route Server (ARS) を利用するシナリオとして、ExpressRoute 拠点と VPN 拠点のブランチ間接続を実現するというものがあります。ドキュメント[^1]で示されているイメージとしてが以下画像です。これ自体は、ARS を同一 VNet にデプロイして Branch-to-branch を Enabled にするだけで実現することができます。そのブランチ間接続のデータパスは ExpressRoute Gateway と VPN Gatewayの間が直接つながるようなイメージになります。この場合では、例えばブランチ間の接続の間に Azure Firewall 等の NVA を経由させたいという状況に対応することができません。このシナリオでどのように構成すれば実現できるかを検証しました。
+Azure Route Server (ARS) を利用するシナリオとして、ExpressRoute 拠点と VPN 拠点のブランチ間接続を実現するというものがあります。ドキュメント[^2]で示されているイメージとしてが以下画像です。これ自体は、ARS を同一 VNet にデプロイして Branch-to-branch を Enabled にするだけで実現することができます。そのブランチ間接続のデータパスは ExpressRoute Gateway と VPN Gatewayの間が直接つながるようなイメージになります。この場合では、例えばブランチ間の接続の間に Azure Firewall 等の NVA を経由させたいという状況に対応することができません。このシナリオでどのように構成すれば実現できるかを検証しました。
 ![](/images/20231212-branch2branch-azfw/expressroute-and-vpn-with-route-server.png)
-[^1]:https://learn.microsoft.com/ja-jp/azure/route-server/expressroute-vpn-support
+[^2]:https://learn.microsoft.com/ja-jp/azure/route-server/expressroute-vpn-support
 
 
 # アーキテクチャ
@@ -43,8 +50,8 @@ traceroute to 10.50.1.4 (10.50.1.4), 30 hops max, 60 byte packets
 結局のところここが重要で、GatewaySubnet に対してオンプレミス・ブランチそれぞれの宛先に対しては Azure Firewall を経由させるという UDR を含んだルートテーブルをアタッチすることにより実現できました。ここで、慣れている方なら疑問に思うかもしれません。例えば、`オンプレミス -> ER Gateway -> Azure Firewall -> VPN Gateway` と渡ってきたパケットがルートテーブルによって再度 Azure Firewall にループしてしまうんじゃないかという点ですね。ただこれは検証結果からもわかる通り、ループしません。これは、VPN Gateway から出ていくパケットは VPN を利用するためにカプセル化されており、宛先が UDR で記述したアドレス範囲に該当しないためです。直感に反するのでかなり混乱しました。
 
 ## ルートテーブルで制御するなら ARS は不要なのか？
-ARS においてブランチ間接続を Disabled にして確認をしたところ、疎通ができなくなりました。結果だけ見ればもちろん ARS が必要という結論になるだけなのですが、こちらの記事[^2]で細かい解説をしてくれています。結局のところ、ExpressRoute Gateway と VPN Gateway の間で直接の経路交換がなされないため、ARS が必要です。オンプレミス側にそもそもブランチの経路が流れてこなくなります。
-[^2]:https://zenn.dev/skmkzyk/articles/udr-is-not-effective-for-os
+ARS においてブランチ間接続を Disabled にして確認をしたところ、疎通ができなくなりました。結果だけ見ればもちろん ARS が必要という結論になるだけなのですが、こちらの記事[^3]で細かい解説をしてくれています。結局のところ、ExpressRoute Gateway と VPN Gateway の間で直接の経路交換がなされないため、ARS が必要です。オンプレミス側にそもそもブランチの経路が流れてこなくなります。
+[^3]:https://zenn.dev/skmkzyk/articles/udr-is-not-effective-for-os
 
 ## ブランチが Azure VNet の場合は VNet-to-VNet の VPN を利用する
 ARS を利用する際の制約として、BGP ピアとなる VPN Gateway の ASN は 65515 にする必要があります。一方で、Local Network Gateway は ASN に 65515 を設定することができないため、所謂一般的な S2S(IPsec) で VPN を張ることができません。本記事の構成としては VNet-to-VNet の VPN を利用したうえで BGP を有効化しています。
