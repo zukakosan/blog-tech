@@ -37,16 +37,16 @@ traceroute to 10.50.1.4 (10.50.1.4), 30 hops max, 60 byte packets
 
 ```
 
-## アーキテクチャ上のポイント
+# アーキテクチャ上のポイント
 
-### GatewaySubnet に対するルートテーブルのアタッチ
+## GatewaySubnet に対するルートテーブルのアタッチ
 結局のところここが重要で、GatewaySubnet に対してオンプレミス・ブランチそれぞれの宛先に対しては Azure Firewall を経由させるという UDR を含んだルートテーブルをアタッチすることにより実現できました。ここで、慣れている方なら疑問に思うかもしれません。例えば、`オンプレミス -> ER Gateway -> Azure Firewall -> VPN Gateway` と渡ってきたパケットがルートテーブルによって再度 Azure Firewall にループしてしまうんじゃないかという点ですね。ただこれは検証結果からもわかる通り、ループしません。これは、VPN Gateway から出ていくパケットは VPN を利用するためにカプセル化されており、宛先が UDR で記述したアドレス範囲に該当しないためです。直感に反するのでかなり混乱しました。
 
-### ルートテーブルで制御するなら ARS は不要なのか？
-ARS においてブランチ間接続を Disabled にして確認をしたところ、疎通ができなくなりました。結果だけ見ればもちろん ARS が必要という結論になるだけなのですが、細かい解説はこちらの記事[^2]でしてくれています。結局のところ、ExpressRoute Gateway と VPN Gateway の間で直接の経路交換がなされないため、ARS が必要です。オンプレミス側にそもそもブランチの経路が流れてこなくなります。
+## ルートテーブルで制御するなら ARS は不要なのか？
+ARS においてブランチ間接続を Disabled にして確認をしたところ、疎通ができなくなりました。結果だけ見ればもちろん ARS が必要という結論になるだけなのですが、こちらの記事[^2]で細かい解説をしてくれています。結局のところ、ExpressRoute Gateway と VPN Gateway の間で直接の経路交換がなされないため、ARS が必要です。オンプレミス側にそもそもブランチの経路が流れてこなくなります。
 [^2]:https://zenn.dev/skmkzyk/articles/udr-is-not-effective-for-os
 
-### ブランチが Azure VNet の場合は VNet-to-VNet の VPN を利用する
+## ブランチが Azure VNet の場合は VNet-to-VNet の VPN を利用する
 ARS を利用する際の制約として、BGP ピアとなる VPN Gateway の ASN は 65515 にする必要があります。一方で、Local Network Gateway は ASN に 65515 を設定することができないため、所謂一般的な S2S(IPsec) で VPN を張ることができません。本記事の構成としては VNet-to-VNet の VPN を利用したうえで BGP を有効化しています。
 ![](/images/20231212-branch2branch-azfw/arch-b2b-disabled.png)
 
