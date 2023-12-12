@@ -51,5 +51,11 @@ ARS を利用する際の制約として、BGP ピアとなる VPN Gateway の A
 ![](/images/20231212-branch2branch-azfw/arch-b2b-disabled.png)
 
 # まとめ
+- ARS を利用した ExpressRoute と VPN の折り返しにおいて、間に Azure Firewall を挟む構成を実現しました。
+- 各種 Gateway から出るパケットのカプセル化が影響して、UDR の宛先 IP に該当しない点に起因しています。
+- この構成がサポートされるかどうかは明言できないのでご容赦ください。
 
-# Appendix ボツ
+# Appendix
+この構成は疎通できませんでした。NVA から広報するアドレスをオンプレミスやブランチから広報されてくるものより more specific にしても失敗しました。
+![](/images/20231212-branch2branch-azfw/arch-failed.png)
+
