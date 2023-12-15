@@ -51,6 +51,8 @@ traceroute to 10.50.1.4 (10.50.1.4), 30 hops max, 60 byte packets
 
 ## ルートテーブルで制御するなら ARS は不要なのか？
 ARS においてブランチ間接続を Disabled にして確認をしたところ、疎通ができなくなりました。結果だけ見ればもちろん ARS が必要という結論になるだけなのですが、こちらの記事[^3]で細かい解説をしてくれています。結局のところ、ExpressRoute Gateway と VPN Gateway の間で直接の経路交換がなされないため、ARS が必要です。オンプレミス側にそもそもブランチの経路が流れてこなくなります。
+![](/images/20231212-branch2branch-azfw/arch-b2b-disabled.png)
+
 [^3]:https://zenn.dev/skmkzyk/articles/udr-is-not-effective-for-os
 
 ## ブランチが Azure VNet の場合は VNet-to-VNet の VPN を利用する
