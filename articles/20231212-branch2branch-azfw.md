@@ -55,7 +55,6 @@ ARS においてブランチ間接続を Disabled にして確認をしたとこ
 
 ## ブランチが Azure VNet の場合は VNet-to-VNet の VPN を利用する
 ARS を利用する際の制約として、BGP ピアとなる VPN Gateway の ASN は 65515 にする必要があります。一方で、Local Network Gateway は ASN に 65515 を設定することができないため、所謂一般的な S2S(IPsec) で VPN を張ることができません。本記事の構成としては VNet-to-VNet の VPN を利用したうえで BGP を有効化しています。
-![](/images/20231212-branch2branch-azfw/arch-b2b-disabled.png)
 
 # まとめ
 - ARS を利用した ExpressRoute と VPN の折り返しにおいて、間に Azure Firewall を挟む構成を実現しました。
