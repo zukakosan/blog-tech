@@ -3,7 +3,7 @@ title: "Azure Monitor Agent を Azure CLI で Windows VM に手動インスト�
 emoji: "🔍"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","microsoft","monitoring","windows"]
-published: false
+published: true
 publication_name: "microsoft"
 ---
 
