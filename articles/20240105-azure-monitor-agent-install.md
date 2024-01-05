@@ -10,9 +10,9 @@ publication_name: "microsoft"
 # はじめに
 社内のアラートを確認していると、Azure VM に Azure Monitor Agent (AMA) をインストールせよ。という通達が来ていました。Azure Policy を適切に設定していれば自動でインストールしてくれたりもするのですが、今回は対象が Windows VM 数台だったため、動作確認も含めて AMA を手動インストールしてみました。
 
-AMA は Azure VM 拡張機能[:1] として実装されます。インストール前の VM 拡張機能の状況を確認します。AMA はインストールされていません。
+AMA は Azure VM 拡張機能[^1] として実装されます。インストール前の VM 拡張機能の状況を確認します。AMA はインストールされていません。
 
-[:1]:https://learn.microsoft.com/ja-jp/azure/virtual-machines/extensions/overview
+[^1]:https://learn.microsoft.com/ja-jp/azure/virtual-machines/extensions/overview
 
 ![](/images/20240105-azure-monitor-agent-install/01.png)
 
@@ -27,9 +27,9 @@ AMA は Azure VM 拡張機能[:1] として実装されます。インストー�
 
 
 ## マネージド ID に対する権限付与
-ID が作成されたら、必要な権限を割り当てていきます。ドキュメント[:2] に記載の通り、組み込みロールとして、「Virtual Machine Contributor」と「Log Analytics 共同作成者」を付与します。
+ID が作成されたら、必要な権限を割り当てていきます。ドキュメント[^2] に記載の通り、組み込みロールとして、「Virtual Machine Contributor」と「Log Analytics 共同作成者」を付与します。
 
-[:2]:https://learn.microsoft.com/ja-jp/azure/azure-monitor/agents/azure-monitor-agent-manage?tabs=azure-portal#prerequisites
+[^2]:https://learn.microsoft.com/ja-jp/azure/azure-monitor/agents/azure-monitor-agent-manage?tabs=azure-portal#prerequisites
 
 ![](/images/20240105-azure-monitor-agent-install/04.png)
 ![](/images/20240105-azure-monitor-agent-install/05.png)
@@ -75,6 +75,6 @@ AMA がインストールされたことを Azure portal 上で確認します�
 
 # おわりに
 簡単ではありますが、AMA を Azure CLI にてインストールしました。大規模環境である場合は、**システム割り当て**マネージド ID ではなく、**ユーザー割り当て**マネージド ID を用いるのが推奨です。
-また、Azure Policy では、AMA のインストールを実行する**組み込みポリシー**[:3] と、データ収集ルールの割り当てまで行ってくれる**組み込みのイニシアチブ**[:4] が用意されています。ガバナンスの観点からは事前にこのような機能でガードレールを用意しておくと良いでしょう。
-[:3]:https://portal.azure.com/#view/Microsoft_Azure_Policy/PolicyDetailBlade/definitionId/%2Fproviders%2FMicrosoft.Authorization%2FpolicyDefinitions%2F637125fd-7c39-4b94-bb0a-d331faf333a9
-[:4]:https://portal.azure.com/#view/Microsoft_Azure_Policy/InitiativeDetailBlade/id/%2Fproviders%2FMicrosoft.Authorization%2FpolicySetDefinitions%2F0d1b56c6-6d1f-4a5d-8695-b15efbea6b49/scopes~/%5B%22%2Fsubscriptions%2Fae71ef11-a03f-4b4f-a0e6-ef144727c711%22%5D
+また、Azure Policy では、AMA のインストールを実行する**組み込みポリシー**[^3] と、データ収集ルールの割り当てまで行ってくれる**組み込みのイニシアチブ**[^4] が用意されています。ガバナンスの観点からは事前にこのような機能でガードレールを用意しておくと良いでしょう。
+[^3]:https://portal.azure.com/#view/Microsoft_Azure_Policy/PolicyDetailBlade/definitionId/%2Fproviders%2FMicrosoft.Authorization%2FpolicyDefinitions%2F637125fd-7c39-4b94-bb0a-d331faf333a9
+[^4]:https://portal.azure.com/#view/Microsoft_Azure_Policy/InitiativeDetailBlade/id/%2Fproviders%2FMicrosoft.Authorization%2FpolicySetDefinitions%2F0d1b56c6-6d1f-4a5d-8695-b15efbea6b49/scopes~/%5B%22%2Fsubscriptions%2Fae71ef11-a03f-4b4f-a0e6-ef144727c711%22%5D
