@@ -3,7 +3,7 @@ title: "Bicep の @export() と import で Terraform ライクにファイルを
 emoji: "💪"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","microsoft","bicep","iac"]
-published: false
+published: true
 ---
 
 # はじめに
@@ -39,7 +39,7 @@ published: false
 
 外部からインポート(=元ファイルからエクスポートしたい) 変数には `@export()` デコレーターで修飾します。
 
-```
+```bicep
 @export()
 var suffix = 'zukako'
 
@@ -55,7 +55,7 @@ type tag = 'PRD' | 'DEV' | 'QA'
 
 変数をインポートする側のファイルでは、`import` 構文を使用します。ワイルドカードで`@export()` デコレーターの付いた変数をすべて持ってくることも、個別に変数を指定することも可能です。また、インポートする際に `as` を付けてエイリアス名を設定することも可能です。
 
-```
+```bicep
 // import all variables from variables.bicep with wildcard
 import * as vars from './variables.bicep'
 
@@ -65,7 +65,7 @@ import { location, suffix, hubVnetPrefix } from './variables.bicep'
 
 インポートさえしてしまえば、あとは利用するだけです。ワイルドカードでインポートした場合は、以下のように `.` で変数を参照します。個別にインポートした場合はそのままの変数名またはエイリアス名で参照します。
 
-```
+```bicep
 import * as vars from './variables.bicep'
 location: vars.location
 ```
@@ -80,14 +80,14 @@ Bicep には ユーザー定義型[^5] という型があります。これは�
 
 `variables.bicep` にて以下のように宣言します。
 
-```bash
+```bicep
 @export()
 type tag = 'PRD' | 'DEV' | 'QA'
 ```
 
 `main.bicep` でparamとして呼び出します。`tagchoice` はエイリアス名です。
 
-```bash
+```bicep
 import { tag as tagchoice } from './variables.bicep'
 param tag tagchoice
 ```
