@@ -4,6 +4,8 @@ emoji: "💪"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","microsoft","bicep","iac"]
 published: true
+publication_name: "microsoft"
+
 ---
 
 # はじめに
@@ -102,7 +104,7 @@ Please provide string value for 'tag' (? for help): aa
 {"code": "InvalidTemplate", "message": "Deployment template validation failed: 'The provided value for the template parameter 'tag' is not valid. The value 'aa' is not part of the allowed value(s): 'DEV,PRD,QA'.'.", "additionalInfo": [{"type": "TemplateViolation", "info": {"lineNumber": 19, "linePosition": 24, "path": "properties.template.definitions.tagchoice.allowedValues"}}]}
 ```
 
-適切な値(今回は ’PRD’, ’DEV’, ’QA’ のいずれか)を指定した場合には問題なくデプロイできます。
+適切な値(今回は `PRD`, `DEV`, `QA` のいずれか)を指定した場合には問題なくデプロイできます。
 
 ```bash
 $ az deployment group create -g 20240109-exp --template-file main.bicep 
