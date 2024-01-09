@@ -8,7 +8,7 @@ published: false
 
 # はじめに
 
-ネットサーフィンをしていたら Bicepの @export() と import という機能がプレビュー利用できるという記事[^1] を発見しました。これを利用することで Terraform っぽい変数分離ができそうなので試してみます。
+ネットサーフィンをしていたら Bicepの `@export()` と `import` という機能がプレビュー利用できるという記事[^1] を発見しました。これを利用することで Terraform っぽい変数分離ができそうなので試してみます。
 
 [^1]: https://johnlokerse.dev/2024/01/08/reusability-with-export-and-import-in-azure-bicep/
 
