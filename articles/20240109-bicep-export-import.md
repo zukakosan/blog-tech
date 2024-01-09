@@ -76,7 +76,7 @@ Bicep には ユーザー定義型[^5] という型があります。これは�
 
 [^5]: https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/bicep/user-defined-data-types
 
-このユーザー定義のデータ型と組み合わせることによって、デプロイ時にエンドユーザーが指定するパラメータの値をカスタムのデータ型に合わせるようにすることが可能。分かり易い例として、タグの付与を試している。
+このユーザー定義のデータ型と組み合わせることによって、デプロイ時にエンドユーザーが指定するパラメータの値をカスタムのデータ型に合わせるようにすることが可能です。分かり易い例として、タグの付与を試してみます。
 
 `variables.bicep` にて以下のように宣言します。
 
@@ -85,7 +85,7 @@ Bicep には ユーザー定義型[^5] という型があります。これは�
 type tag = 'PRD' | 'DEV' | 'QA'
 ```
 
-`main.bicep` でparamとして呼び出します。
+`main.bicep` でparamとして呼び出します。`tagchoice` はエイリアス名です。
 
 ```bash
 import { tag as tagchoice } from './variables.bicep'
