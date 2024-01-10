@@ -10,7 +10,7 @@ Azure で ExpressRoute の Microsoft Peering を利用する場合、Microsoft 3
 
 # アドレスプレフィックスとサービスの対応を取得する
 ぱっと思いつくのがこちらのドキュメントではないでしょうか[^1]。このサイトでの公開情報は、利用する可能性のあるアドレス帯をすべて記載をしているのですが、実際に利用しているアドレス帯は ExpressRoute で広報されてくるため、CIDR 形式的に完全に一致するとは限りません。また、そもそもこちらのドキュメントでは Azure サービスについては触れられていません。
-[^2]: https://learn.microsoft.com/ja-jp/microsoft-365/enterprise/urls-and-ip-address-ranges?view=o365-worldwide
+[^1]: https://learn.microsoft.com/ja-jp/microsoft-365/enterprise/urls-and-ip-address-ranges?view=o365-worldwide
 
 :::message
 
