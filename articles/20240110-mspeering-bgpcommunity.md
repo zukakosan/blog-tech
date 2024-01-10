@@ -3,7 +3,9 @@ title: "ExpressRoute Microsoft Peering で流れてくるアドレスプレフ�
 emoji: "🚄"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","microsoft","expressroute","bgp"]
-published: false
+published: true
+publication_name: "microsoft"
+
 ---
 # はじめに
 Azure で ExpressRoute の Microsoft Peering を利用する場合、Microsoft 365 や Azure PaaS などのパブリック IP アドレスプレフィックスがオンプレミス側のルーターに広報されてきます。あくまで IP アドレスプレフィックスとしてしか見えないので、そのアドレスが何のサービスに利用されているアドレスなのかまでは分かりません。不要なアドレスプレフィックスを取得していると、望まない通信が Microsoft Peering を通ることになるため帯域のひっ迫やコンプライアンス要件の問題等に該当してしまうかもしれません。
