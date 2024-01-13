@@ -3,7 +3,7 @@ title: "Application Gateway 経由の Web Apps 接続時にソース IP にる�
 emoji: "🌐"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","microsoft","xff","paas"]
-published: false
+published: true
 publication_name: "microsoft"
 ---
 # はじめに
@@ -26,6 +26,14 @@ Application Gateway では、要求をバックエンドに転送する前に、
 Web Apps をバックエンドにもつ Application Gateway を構成します。こちらは前回の記事[^4] をご参照ください。ただし、Web Apps の Private Endpoint は構成しないでおきます。
 [^3]: https://zenn.dev/microsoft/articles/20240113-appgw-webapp-pe
 
+Web Apps 側でアクセス制御をしていない状態で、Application Gateway 経由でアクセスできることを確認します。
+![](/images/20240113-appgw-webapp-xff/05.png)
+
+::: message
+この時点でアクセスできない場合は、Application Gateway の正常性プローブに問題がないか確認してください。カスタムプローブを指定することで解消される場合があります。
+:::
+
+
 ## アクセス制御規則の作成
 Web Apps の[ネットワーク]設定から、[公衆ネットワークアクセス]を編集します。
 ![](/images/20240113-appgw-webapp-xff/01.png)
@@ -41,7 +49,7 @@ Web Apps の[ネットワーク]設定から、[公衆ネットワークアク�
 ![](/images/20240113-appgw-webapp-xff/03.png)
 
 ## 動作確認
-ルールの構成をしてからキャッシュが消える程度待ってから、再度 Application Gateway のパブリック IP に http アクセスすると、想定通り `403 Error` となりました。
+ルールの構成後、キャッシュが消える程度待ってから、再度 Application Gateway のパブリック IP に http アクセスすると、想定通り `403 Error` となりました。
 
 ![](/images/20240113-appgw-webapp-xff/04.png)
 
