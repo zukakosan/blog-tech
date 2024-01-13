@@ -3,7 +3,7 @@ title: "Application Gateway の バックエンドの Web Apps を Private Endpo
 emoji: "🌐"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","microsoft","network","paas","loadbalancer" ]
-published: false
+published: true
 publication_name: "microsoft"
 ---
 
@@ -45,10 +45,13 @@ Web Apps に対して Private Endpoint の設定を入れていきます。こ�
 パブリックアクセスも拒否します。
 ![](/images/20240113-appgw-webapp-pe/09.png)
 
-ネットワークの設定としてはパ広州ネットワークアクセスが無効、Private Endpoint が 1 つ構成された状態になります。
+ネットワークの設定としては公衆ネットワークアクセスが無効、Private Endpoint が 1 つ構成された状態になります。
 ![](/images/20240113-appgw-webapp-pe/10.png)
 
-この状態で、Application Gateway のパブリック IP を叩くと、まだ Private Endpoint のための DNS 設定が反映されていないためパブリック回しで Web Apps にアクセスしようとして `403 Error` となります。Application Gateway が DNS参照 の結果をキャッシュしているため、再起動によるリフレッシュが必要です。以下のコマンドで起動・停止が実行可能です。
+この状態で、Application Gateway のパブリック IP を叩くと、まだ Private Endpoint のための DNS 設定が反映されていないためパブリック回しで Web Apps にアクセスしようとして `403 Error` となります。Application Gateway が DNS参照 の結果をキャッシュしているため、再起動によるリフレッシュが必要です。
+![](/images/20240113-appgw-webapp-pe/11.png)
+
+以下のコマンドで起動・停止が実行可能です。
 
 ```bash
 az network application-gateway stop --resource-group myRG --name myAppGw
@@ -56,7 +59,7 @@ az network application-gateway start --resource-group myRG --name myAppGw
 ```
 
 その後再度 Application Gateway 経由でアクセスすると、問題なく初期画面が表示されました。
-![](/images/20240113-appgw-webapp-pe/11.png)
+![](/images/20240113-appgw-webapp-pe/12.png)
 
 # まとめ
 - Application Gateway のバックエンドに Web Apps を置く構成について、Private Endpoint 経由にする構成を試しました。
