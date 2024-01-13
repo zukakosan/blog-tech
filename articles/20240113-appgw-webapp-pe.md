@@ -1,5 +1,5 @@
 ---
-title: "Application Gateway の バックエンドの Web Apps を Private Endpoint で保護する"
+title: "Application Gateway のバックエンドの Web Apps を Private Endpoint で保護する"
 emoji: "🌐"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","microsoft","network","paas","loadbalancer" ]
