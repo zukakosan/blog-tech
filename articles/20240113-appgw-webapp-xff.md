@@ -24,7 +24,7 @@ Application Gateway では、要求をバックエンドに転送する前に、
 
 # 試してみる
 Web Apps をバックエンドにもつ Application Gateway を構成します。こちらは前回の記事[^4] をご参照ください。ただし、Web Apps の Private Endpoint は構成しないでおきます。
-[^3]: https://zenn.dev/microsoft/articles/20240113-appgw-webapp-pe
+[^4]: https://zenn.dev/microsoft/articles/20240113-appgw-webapp-pe
 
 Web Apps 側でアクセス制御をしていない状態で、Application Gateway 経由でアクセスできることを確認します。
 ![](/images/20240113-appgw-webapp-xff/05.png)
