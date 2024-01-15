@@ -3,7 +3,7 @@ title: "Azure 上の Linux VM におけるプロキシ構成を疎通確認し�
 emoji: "📑"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","microsoft","ubuntu","squid"]
-published: false
+published: true
 publication_name: "microsoft"
 ---
 # はじめに
@@ -30,7 +30,8 @@ $ curl inet-ip.info
 13.90.24.211
 ```
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/16b9472a-7a29-4019-8d51-6ef938e159e9/34afba25-54ae-4e1f-b3b5-7173dc1c65fa/Untitled.png)
+![](/images/20240115-linux-proxy-usage/01.png)
+
 
 `~/.bashrc` に以下のような設定を記述します。その後、`source ~/.bashrc` で更新を反映します。
 
@@ -48,7 +49,8 @@ $ curl inet-ip.info
 52.146.43.227
 ```
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/16b9472a-7a29-4019-8d51-6ef938e159e9/28c278ee-52ab-48f7-8386-9598ad586106/Untitled.png)
+![](/images/20240115-linux-proxy-usage/02.png)
+
 
 # まとめ
 
