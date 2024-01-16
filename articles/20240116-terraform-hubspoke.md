@@ -12,9 +12,14 @@ Azure にリソースを立てる上で Hub-Spoke 構成のアーキテクチャ
 
 
 # アーキテクチャ
-今回の構成では、Hub ネットワークに Azure Bastion をデプロイせず、
+今回の構成では、Hub ネットワークに Azure Bastion をデプロイせず、Azure Firewall の DNAT によって Jumpbox にログインして VM を管理するようなイメージとしました。
+
+![](/images/20240116-terraform-hubspoke/terraform-hub-spoke-archtecture.png)
 
 ## Terraform 上のポイント
+ソースコードは GitHub[^2] で公開しています。
+[^2]: https://github.com/zukakosan/terraform-learn/tree/main/20231030-HubSpoke
+
 
 :::message
 ## VM の構成を変更したいときに NIC が邪魔をする？
