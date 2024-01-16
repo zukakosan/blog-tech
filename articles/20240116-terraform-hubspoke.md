@@ -79,7 +79,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "azfw_natrule_collectio
 ```
 
 ### サブネットのループによるデプロイ
-ループの使い方になれるためにサブネットについてはループでデプロイしてみました。
+ループの使い方に慣れるためにサブネットについては~~無理やり~~ループでデプロイしてみました。
 ```hcl:hub-vnet.tf
 resource "azurerm_subnet" "hub_subnets" {
   for_each             = { for i in var.hub_subnets : i.name => i }
@@ -90,8 +90,7 @@ resource "azurerm_subnet" "hub_subnets" {
 }
 ```
 
-:::message
-## VM の構成を変更したいときに NIC が邪魔をする？
+### VM の構成変更時に NIC が邪魔をする？
 トライアンドエラーを繰り返しながら VM のプロパティを更新したので再デプロイしようとしたところ、以下のようなエラーに遭遇しました。NIC が使用中なので削除できない、といった趣旨のエラーでした。NIC 自体を削除したいわけではないのですが、対処が必要です。
 
 ```
@@ -99,15 +98,11 @@ resource "azurerm_subnet" "hub_subnets" {
 │ Resource Group Name: "tf-deploy-spoke-rg"
 │ Network Interface Name: "vm-spoke001-nic"): performing Delete: unexpected status 400 with error: NicInUse: Network Interface /subscriptions/xxxx/resourceGroups/tf-deploy-spoke-rg/providers/Microsoft.Network/networkInterfaces/vm-spoke001-nic is used by existing resource /subscriptions/xxxx/resourceGroups/tf-deploy-spoke-rg/providers/Microsoft.Compute/virtualMachines/vm-spoke001. In order to delete the network interface, it must be dissociated from the resource. To learn more, see aka.ms/deletenic.
 ```
-
-## 解決策: 先に NIC を参照している VM を削除
 NIC が使用中だから消せないということであれば、その NIC に依存しているリソース(つまりは VM)を削除することで解決できました。削除方法としては、Terraform のソースコード上で VM の宣言部分を丸ごとコメントアウトしました。
 ![](/images/20240116-terraform-hubspoke/message-01.png)
 ![](/images/20240116-terraform-hubspoke/message-02.png)
 
 Azure portal で VM の側だけ削除したときに NIC が宙に浮いて残るようなイメージですね。その後、コメントアウトを外し、VM 宣言部分も含めてデプロイすると、望ましい形で VM が作成されました。
 ![](/images/20240116-terraform-hubspoke/message-03.png)
-
-:::
 
 # まとめ
