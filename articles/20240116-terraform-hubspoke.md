@@ -1,9 +1,10 @@
 ---
-title: "Terraform で Azure 上に Hub-Spoke 構成のアーキテクチャをデプロイする"
-emoji: "🍣"
+title: "Terraform で Azure 上に Hub-Spoke 構成のアーキテクチャをデプロイするサンプル"
+emoji: "🛕"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: []
-published: false
+topics: ["azure","terraform","microsoft","bicep"]
+published: true
+publication_name: "microsoft"
 ---
 # はじめに
 Azure にリソースを立てる上で Hub-Spoke 構成のアーキテクチャを意識することが多いと思います。Azure ネイティブの IaC ツールである Bicep で Hub-Spoke 構成を作るという検証は以前の記事[^1] にまとめています。今回は、似たような構成を Terraform で作ってみようというお話です。書き方はいろいろあると思うので、あくまで一例としてご参考にいただければと思います。検証したタイミングとまとめているタイミングにラグがあり、おぼろげな記憶でポイントを記載しております。
@@ -106,3 +107,4 @@ Azure portal で VM の側だけ削除したときに NIC が宙に浮いて残�
 ![](/images/20240116-terraform-hubspoke/message-03.png)
 
 # まとめ
+Terraform を使って Hub-Spoke 構成のネットワークをデプロイしてみました。ステート管理の関係上基本的にはすべて Visual Studio(または CLI ツール) 上でリソースの管理を行っていきます。リソース間の依存関係がある程度抽象化されているからこそ、リソースの性質や関係性の理解は一層重要になってきますね。
