@@ -20,6 +20,75 @@ Azure にリソースを立てる上で Hub-Spoke 構成のアーキテクチャ
 ソースコードは GitHub[^2] で公開しています。
 [^2]: https://github.com/zukakosan/terraform-learn/tree/main/20231030-HubSpoke
 
+### ファイル構成
+今回は以下のような構成にしました。`spoke-vnet.tf` を使いまわして任意の数の Spoke ネットワークをデプロイできるように作りこむことも考えたのですが、今回そこまでは行っていません。
+```
+/
+├── hub-vnet.tf
+├── spoke-vnet.tf
+├── variables.tf
+├── providers.tf
+└── output.tf
+```
+
+### Azure Firewall のルール作成順序
+Bicep で記述したときは、ネットワークルールの作成と DNAT ルールの作成が同時に走るとエラーになるような状況に遭遇したため、明示的な依存関係を記述しました。Terraform の場合はそこは特に気にせずともエラーは生じませんでした。
+
+```hcl:hub-vnet.tf
+# Create Azure Firewall Policy Rule Collection Group (Network Rule)
+resource "azurerm_firewall_policy_rule_collection_group" "azfw_netrule_collection" {
+  name               = "DefaultNetworkRuleCollectionGroup"
+  firewall_policy_id = azurerm_firewall_policy.azfw_hub_policy.id
+  priority           = 200
+  network_rule_collection {
+    name     = "DefaultNetworkRuleCollection"
+    action   = "Allow"
+    priority = 200
+    rule {
+      name                  = "allow-east-west-traffic"
+      protocols             = ["Any"]
+      source_addresses      = [element(local.spoke001_address_space, 0), element(local.spoke002_address_space, 0)]
+      destination_ports     = ["*"]
+      destination_addresses = [element(local.spoke001_address_space, 0), element(local.spoke002_address_space, 0)]
+    }
+  }
+}
+
+
+# Create Azure Firewall Policy Rule Collection Group (DNAT Rule)
+resource "azurerm_firewall_policy_rule_collection_group" "azfw_natrule_collection" {
+  name               = "DefaultDnatRuleCollectionGroup"
+  firewall_policy_id = azurerm_firewall_policy.azfw_hub_policy.id
+  priority           = 200
+  nat_rule_collection {
+    name     = "DefaultDnatRuleCollection"
+    priority = 200
+    action   = "Dnat"
+    rule {
+      name                = "nat-jumpbox"
+      source_addresses    = ["*"]
+      destination_address = azurerm_public_ip.azfw_hub_pip.ip_address
+      destination_ports   = ["22"]
+      translated_address  = azurerm_network_interface.vm_jumpbox_nic.ip_configuration[0].private_ip_address
+      translated_port     = "22"
+      protocols           = ["TCP"]
+    }
+  }
+}
+
+```
+
+### サブネットのループによるデプロイ
+ループの使い方になれるためにサブネットについてはループでデプロイしてみました。
+```hcl:hub-vnet.tf
+resource "azurerm_subnet" "hub_subnets" {
+  for_each             = { for i in var.hub_subnets : i.name => i }
+  name                 = each.value.name
+  resource_group_name  = azurerm_resource_group.rg_hub.name
+  virtual_network_name = azurerm_virtual_network.hub_vnet.name
+  address_prefixes     = [each.value.address_prefixes]
+}
+```
 
 :::message
 ## VM の構成を変更したいときに NIC が邪魔をする？
