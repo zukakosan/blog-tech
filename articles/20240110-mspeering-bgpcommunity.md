@@ -62,7 +62,7 @@ Azure で ExpressRoute の Microsoft Peering を利用する場合、Microsoft 3
 ではどのように対応を取得するかというと、PowerShell コマンドレットもしくは Azure CLI のコマンドを利用します。 実はこちらのルートフィルターに関するドキュメント[^2] にしれっと記載があります。
 [^2]: https://learn.microsoft.com/ja-jp/azure/expressroute/how-to-routefilter-cli#prefixes
 
-Azure PowerShell では `Get=AzBgpServiceCommunity`[^3] コマンドレットを利用し、Azure CLI では `az network route-filter rule list-service-communities`[^4] を利用します。後者についてはまだプレビュー中のようです。
+Azure PowerShell では `Get-AzBgpServiceCommunity`[^3] コマンドレットを利用し、Azure CLI では `az network route-filter rule list-service-communities`[^4] を利用します。後者についてはまだプレビュー中のようです。
 [^3]: https://learn.microsoft.com/ja-jp/powershell/module/az.network/get-azbgpservicecommunity?view=azps-10.4.1
 [^4]: https://learn.microsoft.com/ja-jp/cli/azure/network/route-filter/rule?view=azure-cli-latest#az-network-route-filter-rule-list-service-communities
 
