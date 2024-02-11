@@ -18,8 +18,10 @@ Azure Open AI Service (AOAI) を利用して、社内ドキュメント検索等
 
 
 BLOB ストレージには以下のような画像データを入れています。
+:::details 入力画像サンプル
+OCR を試すために敢えてスクリーンショットにしています。
 ![](/images/20240211-aisearch-add-vector/aoai-gen.png)
 ![](/images/20240211-aisearch-add-vector/aoai-func.png)
 ![](/images/20240211-aisearch-add-vector/aoai-limit.png)
 ![](/images/20240211-aisearch-add-vector/aoai-responsible.png)
-
+:::
