@@ -16,7 +16,7 @@ Azure Open AI Service (AOAI) を利用して、社内ドキュメント検索等
 こちら[^2]で提供されているハンズオンの構成をベースとしています。画像データを複数 BLOB ストレージに保存し、そのデータを Azure AI Search 側でデータソースとし、インデックスを作成しています。この時点ではまだベクターフィールドを持たない状況です。
 [^2]: https://github.com/nohanaga/Azure-AI-Search-Workshop/blob/main/CreateIndex.md
 
-
+## BLOB ストレージへの画像の格納
 BLOB ストレージには以下のような画像データを入れています。
 :::details 入力画像サンプル
 OCR を試すために敢えてスクリーンショットの画像を追加しています。
@@ -26,8 +26,9 @@ OCR を試すために敢えてスクリーンショットの画像を追加し�
 ![](/images/20240211-aisearch-add-vector/aoai-responsible.png)
 :::
 
+## Azure AI Search でのインデックス作成
 Azure AI Search 初期構築は具体的には以下のような設定で行っています。
-:::details Azure AI Search の構築手順
+<!-- :::details Azure AI Search の構築手順 -->
 データのインポート
 ![](/images/20240211-aisearch-add-vector/ais-01.png)
 OCR 含むスキルセットの構成
@@ -40,4 +41,4 @@ OCR スキルの言語を `ja` に変更
 ![](/images/20240211-aisearch-add-vector/ais-05.png)
 インデクサーの実行
 ![](/images/20240211-aisearch-add-vector/ais-06.png)
-:::
+<!-- ::: -->
