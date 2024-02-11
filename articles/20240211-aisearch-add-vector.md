@@ -14,12 +14,14 @@ Azure OpenAI Service (AOAI) を利用して、社内ドキュメント検索等�
 [^1]: https://qiita.com/tmiyata25/items/ef231ea340e681a44970
 
 # 前提
-こちら[^2]で提供されているハンズオンの構成をベースとしています。画像データを複数 BLOB ストレージに保存し、そのデータを Azure AI Search 側でデータソースとし、インデックスを作成しています。この時点ではまだベクターフィールドを持たない状況です。
-[^2]: https://github.com/nohanaga/Azure-AI-Search-Workshop/blob/main/CreateIndex.md
+こちら[^2] で提供されているハンズオンの構成をベースとしています。画像データを複数 BLOB ストレージに保存し、そのデータを Azure AI Search 側でデータソースとし、インデックスを作成しています。この時点ではまだベクターフィールドを持たない状況です。
+
+[^2]:https://github.com/nohanaga/Azure-AI-Search-Workshop/blob/main/CreateIndex.md
 
 ## BLOB ストレージへの画像の格納
 BLOB ストレージには以下のような画像データを入れています。
-:::details 入力画像サンプル
+
+:::details 検索対象画像サンプル
 OCR を試すために敢えてスクリーンショットの画像を追加しています。
 ![](/images/20240211-aisearch-add-vector/aoai-gen.png)
 ![](/images/20240211-aisearch-add-vector/aoai-func.png)
@@ -29,6 +31,7 @@ OCR を試すために敢えてスクリーンショットの画像を追加し�
 
 ## Azure AI Search でのインデックス作成
 Azure AI Search 初期構築は具体的には以下のような設定で行っています。
+
 :::details Azure AI Search の構築手順
 データのインポート
 ![](/images/20240211-aisearch-add-vector/ais-01.png)
@@ -59,6 +62,7 @@ OCR スキルの言語を `ja` に変更
 ## インデックス フィールドの追加
 AOAI の埋め込みモデルによってベクトル化したデータを保存するためのフィールドを追加します。「フィールド」>「フィールドの追加」からインデックス フィールドを追加します。型は `Collection(Edm.Single)`、ディメンションは `1536`、ベクター プロファイルは先ほど作成したものを選択します。
 ![](/images/20240211-aisearch-add-vector/vec-02.png)
+
 :::message alert
 執筆時点では、ディメンションに `1536` 以外を設定すると検索時にエラーとなったので注意してください。
 :::
