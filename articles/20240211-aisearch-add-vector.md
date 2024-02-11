@@ -19,9 +19,25 @@ Azure Open AI Service (AOAI) を利用して、社内ドキュメント検索等
 
 BLOB ストレージには以下のような画像データを入れています。
 :::details 入力画像サンプル
-OCR を試すために敢えてスクリーンショットにしています。
+OCR を試すために敢えてスクリーンショットの画像を追加しています。
 ![](/images/20240211-aisearch-add-vector/aoai-gen.png)
 ![](/images/20240211-aisearch-add-vector/aoai-func.png)
 ![](/images/20240211-aisearch-add-vector/aoai-limit.png)
 ![](/images/20240211-aisearch-add-vector/aoai-responsible.png)
+:::
+
+Azure AI Search 初期構築は具体的には以下のような設定で行っています。
+:::details Azure AI Search の構築手順
+データのインポート
+![](/images/20240211-aisearch-add-vector/ais-01.png)
+OCR 含むスキルセットの構成
+![](/images/20240211-aisearch-add-vector/ais-02.png)
+インデックスのカスタマイズ (ハンズオン資料より簡素化しています。)
+![](/images/20240211-aisearch-add-vector/ais-03.png)
+データのインポート
+![](/images/20240211-aisearch-add-vector/ais-04.png)
+OCR スキルの言語を `ja` に変更
+![](/images/20240211-aisearch-add-vector/ais-05.png)
+インデクサーの実行
+![](/images/20240211-aisearch-add-vector/ais-06.png)
 :::
