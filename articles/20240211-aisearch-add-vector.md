@@ -1,6 +1,6 @@
 ---
-title: "Azure AI Search の既存インデックスにベクトル表現(埋め込み)を追加し、AOAI から利用する"
-emoji: "🤖"
+title: "Azure AI Search の既存インデックスにベクトル表現(埋め込み)を追加し、AOAI からデータとして利用する"
+emoji: "🍩"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","aoai","rag","ai"]
 published: false
