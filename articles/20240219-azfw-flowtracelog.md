@@ -38,7 +38,7 @@ Register-AzProviderFeature -FeatureName AFWEnableTcpConnectionLogging -ProviderN
 Register-AzResourceProvider -ProviderNamespace Microsoft.Network
 ```
 
-Azure Firewall の診断設定にて、フロー トレースログをチェックして保存します。Azure Firewall を経由する SSH 接続等の TCP コネクションを適当に張ったり切ったりしておきます。
+Azure Firewall の診断設定にて、`Azure Firewall Flow Trace Log` をチェックして保存します。Azure Firewall を経由する SSH 接続等の TCP コネクションを適当に張ったり切ったりしておきます。
 
 ![](/images/20240219-azfw-flowtracelog/azfw-diag.png)
 
