@@ -3,7 +3,7 @@ title: "Azure Virtual Network Encryption で VM 間の内部通信を暗号化�
 emoji: "🔏"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","network","microsoft","iaas"]
-published: false
+published: true
 publication_name: "microsoft"
 ---
 
@@ -68,7 +68,7 @@ New-AzNetworkWatcherFlowLog -Enabled $true -Name vnetflowlog-wcus -NetworkWatche
 
 ![](/images/20240220-vnetencryption/vnetenc-01.png)
 
-現時点では、VNet にデプロイした 2 台の VM 感の通信も `Unencrypted` 状態となっています。片方の VM に apache をインストールして http 接続 したり、ssh 接続を試したりしています。
+現時点では、VNet にデプロイした 2 台の VM 間の通信をフィルターして取得してみると `Unencrypted` 状態となっています。片方の VM に apache をインストールして http 接続 したり、ssh 接続を試したりしています。
 
 ![](/images/20240220-vnetencryption/vnetenc-02.png)
 
@@ -79,7 +79,7 @@ New-AzNetworkWatcherFlowLog -Enabled $true -Name vnetflowlog-wcus -NetworkWatche
 
 ## VM の高速ネットワークの有効化
 
-VNet Encryption の要件として、高速ネットワークが必要です。必要に応じて、VM を停止してから次のコマンドにて高速ネットワークを有効化します。 2 台の VM に対してそれぞれ適用します。
+VNet Encryption の要件として、VM の NIC 高速ネットワーク機能が必要です。必要に応じて、VM を停止してから次のコマンドにて高速ネットワークを有効化します。 2 台の VM に対してそれぞれ適用します。
 
 ```powershell
 $nic = Get-AzNetworkInterface -ResourceGroupName "20240220-vnet-enc-wcus" -Name "ubuntu-2004-001288"
@@ -105,7 +105,7 @@ $nic | Set-AzNetworkInterface
 
 # ログの確認
 
-[先ほどの場合](#vnet-フローログの有効化) と同様に、http や ssh 接続を VM 間で何回かトライし、フローログにのるようにします。Traffic Analytics のデータのインジェストが 10 分ごとに設定されているため ( 1 時間ごとにも設定可能)、10 分程度待ったうえで Log Analytics ワークスペースを再度のぞいてみます。
+[先ほどの場合](#vnet-フローログの有効化) と同様に、http や ssh 接続を VM 間で何回かトライし、フローログに記録されるようにします。Traffic Analytics のデータのインジェストが 10 分ごとに設定されているため (1 時間ごとにも設定可能)、10 分程度待ったうえで Log Analytics ワークスペースを再度覗いてみます。
 
 状態が `Encrypted` としてログが記録されていることが確認できます。
 
