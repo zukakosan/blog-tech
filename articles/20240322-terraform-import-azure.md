@@ -418,7 +418,7 @@ are needed.
 			"timeouts": null
 		  },
 		  "sensitive_attributes": [],
-		  "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfX0=",
+		  "private": "xxxx",
 		  "dependencies": [
 			"azurerm_resource_group.test"
 		  ]
@@ -460,7 +460,7 @@ are needed.
 			"timeouts": null
 		  },
 		  "sensitive_attributes": [],
-		  "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIwIn0=",
+		  "private": "",
 		  "dependencies": [
 			"azurerm_resource_group.test"
 		  ]
@@ -600,7 +600,7 @@ Plan: 1 to add, 0 to change, 0 to destroy.
 			"virtual_network_name": "vnet-import"
 		  },
 		  "sensitive_attributes": [],
-		  "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIwIn0=",
+		  "private": "",
 		  "dependencies": [
 			"azurerm_resource_group.test",
 			"azurerm_virtual_network.test"
