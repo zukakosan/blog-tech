@@ -12,35 +12,33 @@ Terraform で Azure 上の既存リソースを参照したい場合があると
 
 # リソースグループの import
 まずは、非常にシンプルにだけを Azure portal 側で作成しておき、それを取り込むところをやってみます。
-
 作業ディレクトリに `main.tf` を作成し、リソースの定義の枠組みだけ書いておきます。まずは、リソースグループの定義だけを書いてみます。
 
 ```hcl
-
 resource "azurerm_resource_group" "test" {
 }
+```
+
+`providers.tf` 等も書いておき、`terraform init` します。
+その状態で、以下を実行します。最後の文字列はリソース ID です。
 
 ```
-Providers.tf 等も書いておき、 terraform init します。
-
-その状態で、以下を実行します。
-
-```
-$ terraform import azurerm_resource_group.test {リソース ID}
+$ terraform import azurerm_resource_group.test /subscriptions/xxxx/resourceGroups/20240322-terraform-import
 ```
 
 :::message
-手元の git bash でこのコマンドを実行すると、エラーになってしまったため PowerShell にて実行しました。
-既知のissue[^1] のようです。
+
+手元の git bash でこのコマンドを実行すると、エラーになってしまったため PowerShell にて実行しました。既知のissue[^1] のようです。
 [^1]:https://github.com/hashicorp/terraform-provider-azurerm/issues/7604
+
 :::
 
-実行すると以下のように successful! と表示されます。
+実行すると以下のように `Import successful!` と表示されます。
 
 ```
 azurerm_resource_group.test: Import prepared!
   Prepared azurerm_resource_group for import
-azurerm_resource_group.test: Refreshing state... [id=/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import]
+azurerm_resource_group.test: Refreshing state... [id=/subscriptions/xxxx/resourceGroups/20240322-terraform-import]
 
 Import successful!
 
@@ -86,9 +84,9 @@ backend で設定した箇所にステートファイルが作成されます。
 }
 ```
 
-この状態ではまだ main.tf 側の azurerm_resource_group.test については中身が空っぽなので、ステートファイルを見て合わせていきます。
+この状態ではまだ `main.tf` 側の `azurerm_resource_group.test` については中身が空っぽなので、ステートファイルを見て合わせていきます。
 
-ステートファイルに準拠するように以下のように設定します。
+ステートファイルに準拠するように `main.tf` を以下のように変更します。
 
 ```hcl
 resource "azurerm_resource_group" "test" {
@@ -97,11 +95,11 @@ resource "azurerm_resource_group" "test" {
 }
 ```
 
-保存して、plan をしてみましょう。問題なければ、変更が生じないはずです。
+保存して、`plan` をしてみましょう。問題なければ、変更が生じないはずです。
 
 ```
 $ terraform plan    
-azurerm_resource_group.test: Refreshing state... [id=/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import]
+azurerm_resource_group.test: Refreshing state... [id=/subscriptions/xxxx/resourceGroups/20240322-terraform-import]
 
 No changes. Your infrastructure matches the configuration.
 
@@ -109,14 +107,15 @@ Terraform has compared your real infrastructure against your configuration and f
 needed.
 
 ```
-`No changes` となっているため、import した環境とマッチしていることが分かります。
+`No changes` となっているため、`import` した環境とマッチしていることが分かります。
 
-# Vnet を portal から追加
-続いて、実際にリソースがあった場合にどうするかという点を確認します。Azure portal で Vnet のリソースを作成します( IaC の規範には反します)。
+# VNet リソースを Azure portal から追加
+続いて、実際にリソースがあった場合にどうするかという点を確認します。Azure portal で VNet のリソースを作成します( IaC の規範には反します)。
 
 
-# インポートして.tf に異なる値をセットする
-先ほどと同様に、`main.tf` に箱を作ってそこに対して import します。
+# VNet の import
+先ほどと同様に、`main.tf` に箱を作ります。
+
 ```hcl
 resource "azurerm_resource_group" "test" {
   name     = "20240322-terraform-import"
@@ -126,6 +125,7 @@ resource "azurerm_virtual_network" "test" {
 }
 ```
 
+そこに対して `import` します。
 ```
 $ terraform import azurerm_virtual_network.test /subscriptions/xxxx/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import
 ```
@@ -176,7 +176,9 @@ $ terraform import azurerm_virtual_network.test /subscriptions/xxxx/resourceGrou
 
 
 ```
-ステートファイル合わせて main.tf を更新します。
+
+ステートファイル合わせて `main.tf` を更新します。
+
 ```hcl
 
 resource "azurerm_resource_group" "test" {
@@ -192,7 +194,8 @@ resource "azurerm_virtual_network" "test" {
 
 ```
 
-一旦この状態で plan してみます。サブネットの定義は書いていないのですが、`No changes` となりました。ステートファイルとは合致している認識のようです。
+一旦この状態で `plan` してみます。サブネットの定義は書いていないのですが、`No changes` となりました。ステートファイルとは合致している認識のようです。
+
 ```
 $ terraform plan    
 azurerm_resource_group.test: Refreshing state... [id=/subscriptions/xxxx/resourceGroups/20240322-terraform-import]
@@ -203,7 +206,7 @@ No changes. Your infrastructure matches the configuration.
 Terraform has compared your real infrastructure against your configuration and found no differences, so no changes are        
 Needed.
 ```
-
+# サブネットを別で定義
 Terraform ではサブネットをリソースとして宣言することもあると思います。ステートファイルの中身に合うようにサブネットの宣言を追加してみます。
 
 ```hcl
@@ -228,7 +231,7 @@ resource "azurerm_subnet" "test" {
 
 ```
 
-Plan して差分を確認します。サブネットが新規作成されるように認識されています。
+`plan` して差分を確認します。サブネットが `add` されるように認識されています。
 ```
 Terraform will perform the following actions:
 
@@ -248,17 +251,18 @@ Terraform will perform the following actions:
 	}
 
 Plan: 1 to add, 0 to change, 0 to destroy.
-
 ```
-リソースとして宣言する際には、リソースとしての import が必要なのかもしれません。
-そこで、対象のサブネットを import してみます。
+
+リソースとして宣言する際には、リソースとしての `import` が必要なのかもしれません。
+そこで、対象のサブネットを `import` してみます。
+
 ```
 $ terraform import azurerm_subnet.test /subscriptions/xxxx/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default
 ```
 
-Successful! と表示されたら、ステートファイルを確認します。`azurerm_subnet` が追加されています。
-```
+`Imort successful!` と表示されたら、ステートファイルを確認します。`azurerm_subnet` が追加されています。
 
+```json
 {
 	  "mode": "managed",
 	  "type": "azurerm_subnet",
@@ -274,7 +278,7 @@ Successful! と表示されたら、ステートファイルを確認します�
 			"delegation": [],
 			"enforce_private_link_endpoint_network_policies": true,
 			"enforce_private_link_service_network_policies": false,
-			"id": "/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default",
+			"id": "/subscriptions/xxxx/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default",
 			"name": "default",
 			"private_endpoint_network_policies_enabled": false,
 			"private_link_service_network_policies_enabled": true,
@@ -285,7 +289,7 @@ Successful! と表示されたら、ステートファイルを確認します�
 			"virtual_network_name": "vnet-import"
 		  },
 		  "sensitive_attributes": [],
-		  "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIwIn0="
+		  "private": "xxxx"
 		}
 	  ]
 	},
@@ -308,14 +312,14 @@ Successful! と表示されたら、ステートファイルを確認します�
 			"encryption": [],
 			"flow_timeout_in_minutes": 0,
 			"guid": "e795c79f-f007-4db3-b7b3-0fa4200a5c42",
-			"id": "/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import",
+			"id": "/subscriptions/xxxx/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import",
 			"location": "japaneast",
 			"name": "vnet-import",
 			"resource_group_name": "20240322-terraform-import",
 			"subnet": [
 			  {
 				"address_prefix": "10.0.0.0/24",
-				"id": "/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default",
+				"id": "/subscriptions/xxxx/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default",
 				"name": "default",
 				"security_group": ""
 			  }
@@ -324,21 +328,20 @@ Successful! と表示されたら、ステートファイルを確認します�
 			"timeouts": null
 		  },
 		  "sensitive_attributes": [],
-		  "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIwIn0="
+		  "private": "xxxx"
 		}
 	  ]
 	}
 
 ```
-★アドレスとしては Vnet 内の定義と重複してしまっているのが気持ち悪いですが、そういうものなのか？
 
-アドレスとしては `azurerm_virtual_network` の定義と重複してしまっているのですが、とりあえず plan でステートファイルと`main.tf`の差分を確認します。出力を見る限りこれで問題なさそうです。
+アドレスとしては `azurerm_virtual_network` の定義と重複してしまっているのですが、とりあえず `plan` でステートファイルと `main.tf` の差分を確認します。出力を見る限りこれで問題なさそうです。
 
 ```
 $ terraform plan
-azurerm_resource_group.test: Refreshing state... [id=/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import]
-azurerm_virtual_network.test: Refreshing state... [id=/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import]
-azurerm_subnet.test: Refreshing state... [id=/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default]
+azurerm_resource_group.test: Refreshing state... [id=/subscriptions/xxxx/resourceGroups/20240322-terraform-import]
+azurerm_virtual_network.test: Refreshing state... [id=/subscriptions/xxxx/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import]
+azurerm_subnet.test: Refreshing state... [id=/subscriptions/xxxx/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default]
 
 No changes. Your infrastructure matches the configuration.
 
@@ -347,10 +350,13 @@ are needed.
 
 ```
 
-## サブネットをスタンドアロンで定義する際に上記のように重複した状態になるのか？
-Main.tf を普通にゼロから apply してみると、ステートファイル内でのネットワーク部分については次のようになります。
-```
+## サブネットをスタンドアロンで定義する際にどうなるか
 
+サブネットのアドレス重複が気になるので、新規で `apply` した際にどうなるか確認します。
+
+`main.tf` を新規( Azure 上にリソースがない状態)で `apply` してみると、ステートファイル内でのネットワーク部分については次のようになります。
+
+```json
 {
 	  "mode": "managed",
 	  "type": "azurerm_subnet",
@@ -366,7 +372,7 @@ Main.tf を普通にゼロから apply してみると、ステートファイ�
 			"delegation": [],
 			"enforce_private_link_endpoint_network_policies": false,
 			"enforce_private_link_service_network_policies": false,
-			"id": "/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import-exp/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default",
+			"id": "/subscriptions/xxxx/resourceGroups/20240322-terraform-import-exp/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default",
 			"name": "default",
 			"private_endpoint_network_policies_enabled": true,
 			"private_link_service_network_policies_enabled": true,
@@ -404,7 +410,7 @@ Main.tf を普通にゼロから apply してみると、ステートファイ�
 			"encryption": [],
 			"flow_timeout_in_minutes": 0,
 			"guid": "e8b6d3c8-e5ff-4cab-b707-37b84550b61c",
-			"id": "/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import-exp/providers/Microsoft.Network/virtualNetworks/vnet-import",
+			"id": "/subscriptions/xxxx/resourceGroups/20240322-terraform-import-exp/providers/Microsoft.Network/virtualNetworks/vnet-import",
 			"location": "japaneast",
 			"name": "vnet-import",
 			"resource_group_name": "20240322-terraform-import-exp",
@@ -422,11 +428,11 @@ Main.tf を普通にゼロから apply してみると、ステートファイ�
 	}
 
 ```
-`azurerm_virtual_network` では `"subnet":[]` となっています。重複は生じていません。 Import した場合のステートファイルにおいても同じようにきれいにしてみた場合にどう影響するか確認してみます。
 
-ステートファイル内のVnet のパートにおいて subnet の中身を削除しました。
-```
+`azurerm_virtual_network` では `"subnet":[]` となっています。重複は生じていません。 `import` した場合のステートファイルにおいても同じようにきれいにしてみた場合にどう影響するか確認してみます。
 
+ステートファイル内のVnet のパートにおいて `subnet:[]` の中身を削除しました。
+```json
    {
 	  "mode": "managed",
 	  "type": "azurerm_virtual_network",
@@ -446,7 +452,7 @@ Main.tf を普通にゼロから apply してみると、ステートファイ�
 			"encryption": [],
 			"flow_timeout_in_minutes": 0,
 			"guid": "e795c79f-f007-4db3-b7b3-0fa4200a5c42",
-			"id": "/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import",
+			"id": "/subscriptions/xxxx/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import",
 			"location": "japaneast",
 			"name": "vnet-import",
 			"resource_group_name": "20240322-terraform-import",
@@ -464,13 +470,14 @@ Main.tf を普通にゼロから apply してみると、ステートファイ�
 	}
 
 ```
-この状態で plan をしてみます。一応`No changes` となりました。とはいえステートファイルを直接触りたくはないので、動くようであれば触らない方がいいかもしれません。
+
+この状態で plan をしてみます。一応 `No changes` となりました。とはいえステートファイルを直接触りたくはないので、動くようであれば触らない方がいいかもしれません。
 
 ```
 $ terraform plan 
-azurerm_resource_group.test: Refreshing state... [id=/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import]
-azurerm_virtual_network.test: Refreshing state... [id=/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import]
-azurerm_subnet.test: Refreshing state... [id=/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default]
+azurerm_resource_group.test: Refreshing state... [id=/subscriptions/xxxx/resourceGroups/20240322-terraform-import]
+azurerm_virtual_network.test: Refreshing state... [id=/subscriptions/xxxx/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import]
+azurerm_subnet.test: Refreshing state... [id=/subscriptions/xxxx/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default]
 
 No changes. Your infrastructure matches the configuration.
 
@@ -479,7 +486,8 @@ are needed.
 ```
 
 別のサブネットを追加してみましょう。
-```
+
+```hcl
 resource "azurerm_resource_group" "test" {
   name     = "20240322-terraform-import"
   location = "japaneast"
@@ -504,7 +512,9 @@ resource "azurerm_subnet" "subnet-001" {
 }
 
 ```
-この状態で plan してみます。
+
+この状態で `plan` してみます。
+
 ```
 Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with  
 the following symbols:
@@ -529,9 +539,10 @@ Terraform will perform the following actions:
 
 Plan: 1 to add, 0 to change, 0 to destroy.
 ```
-Apply までやってみましょう。ステートファイルは次のようになります。サブネットのリソースが 1 つ追加されましたが、Vnet 側の`subnet:[]` に追加されているわけではありません。
-```
 
+`apply` までやってみましょう。ステートファイルは次のようになります。サブネットのリソースが 1 つ追加されましたが、VNet 側の`subnet:[]` に追加されているわけではありません。
+
+```json
 {
 	  "mode": "managed",
 	  "type": "azurerm_subnet",
@@ -547,7 +558,7 @@ Apply までやってみましょう。ステートファイルは次のよう�
 			"delegation": [],
 			"enforce_private_link_endpoint_network_policies": false,
 			"enforce_private_link_service_network_policies": false,
-			"id": "/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/subnet-001",
+			"id": "/subscriptions/xxxx/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/subnet-001",
 			"name": "subnet-001",
 			"private_endpoint_network_policies_enabled": true,
 			"private_link_service_network_policies_enabled": true,
@@ -581,7 +592,7 @@ Apply までやってみましょう。ステートファイルは次のよう�
 			"delegation": [],
 			"enforce_private_link_endpoint_network_policies": true,
 			"enforce_private_link_service_network_policies": false,
-			"id": "/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default",
+			"id": "/subscriptions/xxxx/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default",
 			"name": "default",
 			"private_endpoint_network_policies_enabled": false,
 			"private_link_service_network_policies_enabled": true,
@@ -602,25 +613,8 @@ Apply までやってみましょう。ステートファイルは次のよう�
 	}
 
 ```
- destroy されるわけではないので、挙動上問題はなさそうですが、どうするべきか難しいですね。
+リソースが `destroy` されるわけではないので、挙動上問題はなさそうですが、どうするべきか難しいですね。
 
 # おわりに
 だいぶ本筋からそれてしまった部分もありましたが、既存の Azure リソースを Terraform に取り込む流れを確認しました。全く管理されていないリソースではなく、別のステートファイルで管理されているリソースの場合は terraform_remote_state によって対応できるかと思います。IaC を始める前に存在していたリソースや、運用する中で誤って、もしくは障害等でやむを得ず変更してしまった場合は適宜 import するなどして対処する必要があります。適宜 plan を行って差分を確認しながら慎重に進めないと、思わぬアクシデントにぶつかりそうです。。。
 
-# 差分が出ることをplan で確認する
-# 差分が出ないように plan を見ながら .tf ファイルを編集していく
-# 差分が出ないことが確認出来たら apply
-
-
-
-
-azurerm_virtual_network
-
-
-
-			  {
-				"address_prefix": "10.0.0.0/24",
-				"id": "/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default",
-				"name": "default",
-				"security_group": "/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/networkSecurityGroups/vnet-import-default-nsg-japaneast"
-			  }
