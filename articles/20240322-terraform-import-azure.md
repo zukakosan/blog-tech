@@ -9,7 +9,7 @@ publication_name: "microsoft"
 
 # はじめに
 
-Terraform で Azure 上の既存リソースを参照したい場合があると思います。IaC を導入する前に Azure portal からデプロイしていたリソースについては、Terraform のステートファイルに記述されていないため、認識できません。Bicep であれば、existing で既存リソースを参照できますが、Terraform の場合にはステートファイルの管理下に置く必要があるため import コマンドを利用します。この記事では、Azure における `terraform import` をリソースグループと Virtual Network (VNet) について試します。
+Terraform で Azure 上の既存リソースを参照したい場合があると思います。IaC を導入する前に Azure portal からデプロイしていたリソースについては、Terraform のステートファイルに記述されていないため、認識できません。Bicep であれば、`existing` で既存リソースを参照できますが、Terraform の場合にはステートファイルの管理下に置く必要があるため `import` コマンドを利用します。この記事では、Azure における `terraform import` をリソースグループと Virtual Network (VNet) について試します。
 
 # リソースグループの import
 まずは、非常にシンプルにだけを Azure portal 側で作成しておき、それを取り込むところをやってみます。
