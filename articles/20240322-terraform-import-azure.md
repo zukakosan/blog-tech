@@ -13,6 +13,11 @@ Terraform で Azure 上の既存リソースを参照したい場合があると
 
 # リソースグループの import
 まずは、非常にシンプルにだけを Azure portal 側で作成しておき、それを取り込むところをやってみます。
+
+Azure 側でリソースグループを作成しておきます。
+![](/images/20240322-terraform-import-azure/01.png)
+
+
 作業ディレクトリに `main.tf` を作成し、リソースの定義の枠組みだけ書いておきます。まずは、リソースグループの定義だけを書いてみます。
 
 ```hcl
@@ -112,6 +117,9 @@ needed.
 
 # VNet リソースを Azure portal から追加
 続いて、実際にリソースがあった場合にどうするかという点を確認します。Azure portal で VNet のリソースを作成します( IaC の規範には反します)。
+
+![](/images/20240322-terraform-import-azure/02.png)
+
 
 
 # VNet の import
