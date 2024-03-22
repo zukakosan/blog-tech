@@ -1,9 +1,10 @@
 ---
 title: "Azure 環境への IaC 導入前に作成した既存リソースを Terraform に取り込む"
-emoji: "👌"
+emoji: "🛕"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: []
-published: false
+topics: ["azure","terraform","microsoft","IaC"]
+published: true
+publication_name: "microsoft"
 ---
 
 # はじめに
@@ -126,14 +127,13 @@ resource "azurerm_virtual_network" "test" {
 ```
 
 そこに対して `import` します。
+
 ```
 $ terraform import azurerm_virtual_network.test /subscriptions/xxxx/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import
 ```
 
 成功すると、ステートファイルにVnet の情報が追記されます。
 ```json
-
-
 {
 	  "mode": "managed",
 	  "type": "azurerm_virtual_network",
@@ -173,14 +173,11 @@ $ terraform import azurerm_virtual_network.test /subscriptions/xxxx/resourceGrou
 		}
 	  ]
 	}
-
-
 ```
 
 ステートファイル合わせて `main.tf` を更新します。
 
 ```hcl
-
 resource "azurerm_resource_group" "test" {
   name     = "20240322-terraform-import"
   location = "japaneast"
@@ -191,7 +188,6 @@ resource "azurerm_virtual_network" "test" {
 	resource_group_name = azurerm_resource_group.test.name
 	address_space = ["10.0.0.0/16"]
 }
-
 ```
 
 一旦この状態で `plan` してみます。サブネットの定義は書いていないのですが、`No changes` となりました。ステートファイルとは合致している認識のようです。
@@ -210,7 +206,6 @@ Needed.
 Terraform ではサブネットをリソースとして宣言することもあると思います。ステートファイルの中身に合うようにサブネットの宣言を追加してみます。
 
 ```hcl
-
 resource "azurerm_resource_group" "test" {
   name     = "20240322-terraform-import"
   location = "japaneast"
@@ -227,11 +222,10 @@ resource "azurerm_subnet" "test" {
 	virtual_network_name = azurerm_virtual_network.test.name
 	address_prefixes = ["10.0.0.0/24"]
 }
-
-
 ```
 
 `plan` して差分を確認します。サブネットが `add` されるように認識されています。
+
 ```
 Terraform will perform the following actions:
 
@@ -253,14 +247,13 @@ Terraform will perform the following actions:
 Plan: 1 to add, 0 to change, 0 to destroy.
 ```
 
-リソースとして宣言する際には、リソースとしての `import` が必要なのかもしれません。
-そこで、対象のサブネットを `import` してみます。
+リソースとして宣言する際には、リソースとしての `import` が必要なのかもしれません。そこで、対象のサブネットを `import` してみます。
 
 ```
 $ terraform import azurerm_subnet.test /subscriptions/xxxx/resourceGroups/20240322-terraform-import/providers/Microsoft.Network/virtualNetworks/vnet-import/subnets/default
 ```
 
-`Imort successful!` と表示されたら、ステートファイルを確認します。`azurerm_subnet` が追加されています。
+`Import successful!` と表示されたら、ステートファイルを確認します。`azurerm_subnet` が追加されています。
 
 ```json
 {
@@ -332,7 +325,6 @@ $ terraform import azurerm_subnet.test /subscriptions/xxxx/resourceGroups/202403
 		}
 	  ]
 	}
-
 ```
 
 アドレスとしては `azurerm_virtual_network` の定義と重複してしまっているのですが、とりあえず `plan` でステートファイルと `main.tf` の差分を確認します。出力を見る限りこれで問題なさそうです。
@@ -347,7 +339,6 @@ No changes. Your infrastructure matches the configuration.
 
 Terraform has compared your real infrastructure against your configuration and found no differences, so no changes   
 are needed.
-
 ```
 
 ## サブネットをスタンドアロンで定義する際にどうなるか
@@ -426,12 +417,12 @@ are needed.
 		}
 	  ]
 	}
-
 ```
 
 `azurerm_virtual_network` では `"subnet":[]` となっています。重複は生じていません。 `import` した場合のステートファイルにおいても同じようにきれいにしてみた場合にどう影響するか確認してみます。
 
 ステートファイル内のVnet のパートにおいて `subnet:[]` の中身を削除しました。
+
 ```json
    {
 	  "mode": "managed",
@@ -468,7 +459,6 @@ are needed.
 		}
 	  ]
 	}
-
 ```
 
 この状態で plan をしてみます。一応 `No changes` となりました。とはいえステートファイルを直接触りたくはないので、動くようであれば触らない方がいいかもしれません。
@@ -510,7 +500,6 @@ resource "azurerm_subnet" "subnet-001" {
 	virtual_network_name = azurerm_virtual_network.test.name
 	address_prefixes = ["10.0.1.0/24"]
 }
-
 ```
 
 この状態で `plan` してみます。
@@ -611,8 +600,8 @@ Plan: 1 to add, 0 to change, 0 to destroy.
 		}
 	  ]
 	}
-
 ```
+
 リソースが `destroy` されるわけではないので、挙動上問題はなさそうですが、どうするべきか難しいですね。
 
 # おわりに
