@@ -9,7 +9,7 @@ publication_name: "microsoft"
 
 # はじめに
 
-VNet Encryption が~~一部地域~~ すべての地域にて GA されました[^1]。この機能を利用すると、同じ仮想ネットワーク内の VM 間および、ピアリング越しの仮想ネットワーク間のトラフィックの暗号化を有効化することができます。現在は、UK South   、Swiss North、West Central US リージョンにて利用可能です。
+VNet Encryption が~~一部地域~~ すべての地域にて GA されました[^1]。この機能を利用すると、同じ仮想ネットワーク内の VM 間および、ピアリング越しの仮想ネットワーク間のトラフィックの暗号化を有効化することができます。~~現在はUK South   、Swiss North、West Central US リージョンにて利用可能です。~~
 
 [^1]:https://azure.microsoft.com/ja-jp/updates/general-availability-azure-virtual-network-encryption-availability-in-all-regions/
 
