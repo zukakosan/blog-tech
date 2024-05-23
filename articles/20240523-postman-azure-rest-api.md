@@ -4,6 +4,7 @@ emoji: "📮"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","postman","microsoft","api"]
 published: true
+publication_name: "microsoft"
 ---
 
 # はじめに
@@ -15,7 +16,7 @@ Azure portal 上での GUI 操作、Azure PowerShell や Azure CLI による CLI
 Postman[^1] は Web アプリもしくはクライアント アプリとして利用可能です。必要に応じてサインアップを行い使用可能な状態とします。
 [^1]:https://www.postman.com/
 
-# Azure: サービス プリンシパルの作成
+# サービス プリンシパルの作成
 Postman からの API コールのタイミングで必要となるアクセス トークンを取得するため、対象のテナントに対してアプリを登録し、サービスプリンシパルを作成します。
 
 GUI 操作でも可能ですが、Azure CLI を使って次のようにして作成できます。
