@@ -17,7 +17,7 @@ Postman[^1] は Web アプリもしくはクライアント アプリとして�
 [^1]:https://www.postman.com/
 
 # サービス プリンシパルの作成
-Postman からの API コールのタイミングで必要となるアクセス トークンを取得するため、対象のテナントに対してアプリを登録し、サービスプリンシパルを作成します。
+Postman からの API コールのタイミングで必要となるアクセス トークンを取得するため、対象のテナントに対してアプリを登録し、サービス プリンシパルを作成します。
 
 GUI 操作でも可能ですが、Azure CLI を使って次のようにして作成できます。
 
@@ -73,7 +73,7 @@ Postman から `https://login.microsoftonline.com/<TENANT_ID>/oauth2/token` に�
 
 ## リソース グループの情報取得 (GET)
 `postman-test` リソース グループの情報を GET で取得してみます。
-ヘッダーに次を設定してリクエストを送信します。
+リクエスト Header に次を設定してリクエストを送信します。
 - `Content-Type`:`application/json`
 - `Authorization`:`Bearer eyJ0eXAiOiJKV1QiLCJhb~~~~~`
 
