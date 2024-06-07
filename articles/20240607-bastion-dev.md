@@ -30,6 +30,7 @@ Developer SKU はなんと言っても無料というところが大きな特徴
 
 この際、NSG ルールでプライベート IP アドレス 168.63.129.16[^2] からポート 22 および 3389 へのトラフィックが許可されている必要があります。共有リソースということで、Azure 基盤側の機能にアクセスするエンドポイントを経由しての接続になるようです。
 [^2]:https://learn.microsoft.com/ja-jp/azure/virtual-network/what-is-ip-address-168-63-129-16
+![](/images/20240607-bastion-dev/bastion-5.png)
 
 ユーザー名とパスワードを入力すると、**数秒**で Bastion Dev SKU が作成され、VM に接続できます。
 ![](/images/20240607-bastion-dev/bastion-3.png)
