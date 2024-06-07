@@ -11,6 +11,7 @@ publication_name: "microsoft"
 Azure Bastion はご存じの通り、VM にアクセスするための踏み台サーバーのようなサービスです。Azure Bastion を経由することで、VNet 内にある VM に対してパブリック IP を付与することなくアクセスできます。
 
 従来、Azure Bastion では、VNet 内に AzureBastionSubnet というサブネットを立てて、そこにデプロイする必要がありました。デプロイにもある程度の時間がかかり、VM に接続していない時間でも Bastion ホストがデプロイされている間は課金されていました。
+
 新しい Azure Bastion Developer SKU が登場し、無料かつ、一瞬で立ち上がるようになったため気軽に使いやすくなりました。
 
 # Azure Bastion Developer SKU とは
@@ -29,8 +30,9 @@ Developer SKU はなんと言っても無料というところが大きな特徴
 ![](/images/20240607-bastion-dev/bastion-2.png)
 
 この際、NSG ルールでプライベート IP アドレス 168.63.129.16[^2] からポート 22 および 3389 へのトラフィックが許可されている必要があります。共有リソースということで、Azure 基盤側の機能にアクセスするエンドポイントを経由しての接続になるようです。
-[^2]:https://learn.microsoft.com/ja-jp/azure/virtual-network/what-is-ip-address-168-63-129-16
 ![](/images/20240607-bastion-dev/bastion-5.png)
+
+[^2]:https://learn.microsoft.com/ja-jp/azure/virtual-network/what-is-ip-address-168-63-129-16
 
 ユーザー名とパスワードを入力すると、**数秒**で Bastion Dev SKU が作成され、VM に接続できます。
 ![](/images/20240607-bastion-dev/bastion-3.png)
