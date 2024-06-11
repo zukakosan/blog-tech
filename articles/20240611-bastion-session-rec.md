@@ -1,13 +1,13 @@
 ---
 title: "Azure Bastion でセッションを録画して閉域内のストレージに作業内容を保存する"
-emoji: "🍣"
+emoji: "🏯"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ["azure","microsoft","vm"]
-published: false
+topics: ["azure","microsoft","vm","RDP"]
+published: true
 publication_name: "microsoft"
 ---
 # はじめに
-VM にアクセスして管理作業をする際にコンプライアンスの観点から作業内容を録画しなければならないという要件が存在します。そのため、一部の VDI ソリューションでは画面録画機能[^1]が付随していたり、専用のソフトウェア[^2]によって強制的に画面収録を行うケースがあります。
+VM にアクセスして管理作業をする際にコンプライアンスの観点から作業内容を監視(録画)しなければならないという要件が存在します。そのため、一部の VDI ソリューションでは画面録画機能[^1]が付随していたり、別のソリューション[^2]によって強制的に画面収録を行うケースがあります。
 [^1]:https://docs.vmware.com/jp/VMware-Horizon/2312/virtual-desktops/GUID-DE409B35-A487-48A1-BEBF-02CA400FA119.html
 [^2]:https://www.manageengine.jp/products/Password_Manager_Pro/session-recording.html
 Azure Bastion においてもセッション録画機能が公開され、Azure VM に対する管理作業をシームレスに録画できるようになりました。
@@ -32,7 +32,7 @@ Azure Bastion Premium SKU の利用には専用のサブネットが必要なた
 ![](/images/20240611-bastion-session-rec/bastionrec-01.png)
 
 ## セッション録画機能の有効化
-Azure Bastion を Premium SKU で作成(またはアップグレード)し、Session recording を有効化します。
+Azure Bastion を Premium SKU で作成(またはアップグレード)し、[Session recording] を有効化します。
 ![](/images/20240611-bastion-session-rec/bastionrec-02.png)
 
 ## ストレージ アカウントの作成
@@ -86,12 +86,12 @@ Azure Bastion の [Session recordings] を開くと、作成されたファイ�
 また、ストレージ アカウント側を見ると、同じファイルが存在することが確認できます。
 ![](/images/20240611-bastion-session-rec/bastionrec-07.png)
 
-# 閉域化
+# 録画データの閉域化
 録画によって作業内容の監視はできることが分かりました。ただ、この録画データは機微な情報を含むため、パブリックなネットワークに置きたくないはずです。
 
-よって、続いては Private Endpoint でストレージアカウントを保護したい場合を考えます。
+よって、続いてはストレージ アカウントに Private Endpoint を構成する場合を考えます。
 
-## ストレージ アカウントのプライベート エンドポイント
+## ストレージ アカウントの Private Endpoint
 一般的な手順[^5] でストレージアカウントを閉域化していきます。
 [^5]:https://learn.microsoft.com/ja-jp/azure/storage/common/storage-private-endpoints
 
