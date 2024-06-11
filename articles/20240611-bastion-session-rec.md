@@ -8,7 +8,8 @@ publication_name: "microsoft"
 ---
 # はじめに
 VM にアクセスして管理作業をする際にコンプライアンスの観点から作業内容を録画しなければならないという要件が存在します。そのため、一部の VDI ソリューションでは画面録画機能が付随していたり、専用のソフトウェアをインストールしてスクリプトを走らせ強制的に画面収録を行うケースがあります。
-Azure Bastion でセッション録画機能が公開され、Azure VM に対する管理作業をシームレスに録画できるようになりました。
+
+Azure Bastion においてもセッション録画機能が公開され、Azure VM に対する管理作業をシームレスに録画できるようになりました。
 
 https://learn.microsoft.com/ja-jp/azure/bastion/session-recording
 
@@ -29,12 +30,16 @@ Azure Bastion の Premium SKU を利用することで、セッションの録�
 Azure Bastion Premium SKU の利用には専用のサブネットが必要なため、`AzureBastionSubnt` として作成します。
 ![](/images/20240611-bastion-session-rec/bastionrec-01.png)
 
-## ストレージ アカウントの作成
-録画データの保存用にストレージアカウントを作成します。
+## セッション録画機能の有効化
+Azure Bastion を Premium SKU で作成(またはアップグレード)し、Session recording を有効化します。
 ![](/images/20240611-bastion-session-rec/bastionrec-02.png)
 
-また、適当な名前のコンテナーも作成しておきます。
+## ストレージ アカウントの作成
+録画データの保存用にストレージアカウントを作成します。
 ![](/images/20240611-bastion-session-rec/bastionrec-03.png)
+
+また、適当な名前のコンテナーも作成しておきます。
+![](/images/20240611-bastion-session-rec/bastionrec-04.png)
 
 ### CORS の設定 
 Azure Bastion からドメインの異なるストレージアカウントにファイルを吐き出すことになるため、そのアクセス許可のために CORS[^2] の設定を行います。
@@ -51,7 +56,7 @@ UUID が含まれるため、もう少し汎用化して次の DNS 名として�
 https://*.bastion.azure.com/
 ```
 
-![](/images/20240611-bastion-session-rec/bastionrec-04.png)
+![](/images/20240611-bastion-session-rec/bastionrec-05.png)
 
 
 [^2]:https://learn.microsoft.com/ja-jp/rest/api/storageservices/cross-origin-resource-sharing--cors--support-for-the-azure-storage-services
@@ -62,17 +67,17 @@ Azure Bastion は現状 SAS URL を使って録画データをストレージ �
 また、権限としては `READ`、`WRITE`、`CREATE`、`LIST` を許可します。
 
 期限はかなり遠い日付に設定します。
-![](/images/20240611-bastion-session-rec/bastionrec-05.png)
+![](/images/20240611-bastion-session-rec/bastionrec-06.png)
 
 ここで取得した SAS URL を Azure Bastion の [Session recordings] の画面で登録します。
-![](/images/20240611-bastion-session-rec/bastionrec-06.png)
+![](/images/20240611-bastion-session-rec/bastionrec-07.png)
 
 
 # セッション録画の動作確認
 ここまでの設定で、録画できるようになったはずなので、Azure Bastion 経由で VM に接続します。VM にログイン出来たら、ブラウザを開くなどの操作をしたのち切断します。
 
 Azure Bastion の [Session recordings] を開くと、作成されたファイルが確認できます。
-![](/images/20240611-bastion-session-rec/bastionrec-08.png)
+![](/images/20240611-bastion-session-rec/bastionrec-09.png)
 
 また、ストレージ アカウント側を見ると、同じファイルが存在することが確認できます。
-![](/images/20240611-bastion-session-rec/bastionrec-07.png)
+![](/images/20240611-bastion-session-rec/bastionrec-08.png)
