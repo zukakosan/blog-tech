@@ -56,7 +56,7 @@ UUID が含まれるため、もう少し汎用化して次の DNS 名として�
 https://*.bastion.azure.com/
 ```
 
-![](/images/20240611-bastion-session-rec/bastionrec-05.png)
+![](/images/20240611-bastion-session-rec/bastionrec-17.png)
 
 
 [^2]:https://learn.microsoft.com/ja-jp/rest/api/storageservices/cross-origin-resource-sharing--cors--support-for-the-azure-storage-services
@@ -67,17 +67,17 @@ Azure Bastion は現状 SAS URL を使って録画データをストレージ �
 また、権限としては `READ`、`WRITE`、`CREATE`、`LIST` を許可します。
 
 期限はかなり遠い日付に設定します。
-![](/images/20240611-bastion-session-rec/bastionrec-06.png)
+![](/images/20240611-bastion-session-rec/bastionrec-05.png)
 
 ここで取得した SAS URL を Azure Bastion の [Session recordings] の画面で登録します。
-![](/images/20240611-bastion-session-rec/bastionrec-07.png)
+![](/images/20240611-bastion-session-rec/bastionrec-06.png)
 
 
 # セッション録画の動作確認
 ここまでの設定で、録画できるようになったはずなので、Azure Bastion 経由で VM に接続します。VM にログイン出来たら、ブラウザを開くなどの操作をしたのち切断します。
 
 Azure Bastion の [Session recordings] を開くと、作成されたファイルが確認できます。
-![](/images/20240611-bastion-session-rec/bastionrec-09.png)
+![](/images/20240611-bastion-session-rec/bastionrec-08.png)
 
 また、ストレージ アカウント側を見ると、同じファイルが存在することが確認できます。
-![](/images/20240611-bastion-session-rec/bastionrec-08.png)
+![](/images/20240611-bastion-session-rec/bastionrec-07.png)
