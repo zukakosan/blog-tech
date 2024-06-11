@@ -10,6 +10,7 @@ publication_name: "microsoft"
 VM にアクセスして管理作業をする際にコンプライアンスの観点から作業内容を監視(録画)しなければならないという要件が存在します。そのため、一部の VDI ソリューションでは画面録画機能[^1]が付随していたり、別のソリューション[^2]によって強制的に画面収録を行うケースがあります。
 [^1]:https://docs.vmware.com/jp/VMware-Horizon/2312/virtual-desktops/GUID-DE409B35-A487-48A1-BEBF-02CA400FA119.html
 [^2]:https://www.manageengine.jp/products/Password_Manager_Pro/session-recording.html
+
 Azure Bastion においてもセッション録画機能が公開され、Azure VM に対する管理作業をシームレスに録画できるようになりました。
 
 https://learn.microsoft.com/ja-jp/azure/bastion/session-recording
