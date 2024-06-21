@@ -37,6 +37,7 @@ main.bicep
 モジュール化できるところは切り出しておきたいので、VM の作成は`vm.bicep`で行います。その都合として、`dcr-dce.bicep`も作成しています。
 
 データ収集ルール (DCR) の割り当てに際して、対象の VM を割り当てる必要があります。モジュールの中で VM を作成すると、`main.bicep`上では作成された VM のリソースを参照できないため、`existing` を使った形で既存リソースを参照しています。
+
 モジュールの実行と `existing` による既存リソースの取得は非同期のため、VM が作成される前に既存リソースを参照しようとしてエラーになります。さらに `existing` は `dependsOn` による依存関係が作成できません。
 
 よって、あえてDCRやデータ収集エンドポイント(DCE)周りの処理は`dcr-dce.bicep`としてモジュール化することで対処しています（モジュールについては`dependsOn`が利用できるため）。
@@ -73,6 +74,7 @@ module DcrDce './modules/dcr-dce.bicep' = {
 
 ## Azure Monitor Agent のインストールとマネージド ID
 Azure portal では VM に対して DCR を割り当てるという動作をすると自動で Azure Monitor Agent がインストールされ、そのエージェントが利用するマネージド ID も VM に対して有効化されます。
+
 検証中の動きを見るに、Bicep では DCR を割り当てるだけではこのあたりの処理が適切な順序で完了しないため、「ユーザー割り当てマネージド ID の作成」と「Azure Monitor Agent (拡張機能)のインストール」を Bicep のコードとして記述するようにしました。
 
 ```bicep:vm.bicep
