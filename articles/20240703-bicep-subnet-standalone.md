@@ -1,5 +1,5 @@
 ---
-title: "Bicep でサブネットを定義するときにスタンドアロンで書いてもエラーが出なくなったのが嬉しい"
+title: "2023-11-01 API バージョンを使って Bicep で Azure VNet のサブネットを自由にデプロイする"
 emoji: "💪"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Azure","microsoft","bicep","IaC"]
@@ -13,7 +13,7 @@ published_at: 2024-07-04 09:30
 
 - 一般的な **VNet の内側**にサブネットを記述している例
 ```bicep
-resource hubVnet 'Microsoft.Network/virtualNetworks@2023-09-01' = {
+resource hubVnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   name: vnetName
   location: location
   properties: {
@@ -62,7 +62,7 @@ resource mainSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
 
 正確には、記述できないというよりは、2 回目のデプロイのタイミングでサブネットが存在しない空の VNet をデプロイした後に、サブネットをデプロイするという順序になるため、まずサブネットを削除する動きになります。
 
-そして、サブネットにリソースが存在しているともちろんそのサブネットはそのリソースが握っていることになるため、削除できずエラーになって終了します。
+そして、サブネットにリソースが存在しているともちろんそのサブネットはそのリソースが握っていることになるため、削除できずエラーになって終了します。要するに、2 回目以降のデプロイに失敗します。
 
 逆に言うと、このエラーは「イミュータブル インフラ」として継続的に運用していない場合、つまり初回の払い出しのみに Bicep を利用している場合は気づかない事象です。
 
@@ -81,7 +81,8 @@ https://techcommunity.microsoft.com/t5/azure-networking-blog/azure-virtual-netwo
 
 注意点としては、**VNet のデプロイ時にサブネットのプロパティを指定しない** 状態である必要があるため、1 つでも VNet 内にサブネットのプロパティがあるとエラーになります。「すべてスタンドアロンで定義する」か「すべて VNet のプロパティとして定義する」という形になります。
 
-- エラーが生じるケース[^1]
+## エラーが生じるケース
+- ソースコード(抜粋)[^1]
 [^1]:https://github.com/zukakosan/bicep-learn/blob/main/20240319-standalonevnet/main-error.bicep
 ```bicep:main-error.bicep
 resource hubVnet 'Microsoft.Network/virtualNetworks@2023-09-01' = {
@@ -112,8 +113,15 @@ resource vmSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' = {
   }
 }
 ```
+```bash
+$ az deployment group create -g '20240703-mainerror-2' --template-file main-error.bicep 
+Please provide string value for 'adminUsername' (? for help): AzureAdmin
+Please provide securestring value for 'adminPassword' (? for help):
+{"status":"Failed","error":{"code":"DeploymentFailed","target":"/subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240703-mainerror-2/providers/Microsoft.Resources/deployments/main-error","message":"At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/arm-deployment-operations for usage details.","details":[{"code":"InUseSubnetCannotBeDeleted","message":"Subnet subnet-vm is in use by /subscriptions/42edd95d-ae8d-41c1-ac55-40bf336687b4/resourceGroups/20240703-mainerror-2/providers/Microsoft.Network/networkInterfaces/vm-ubuntu-test-nic/ipConfigurations/ipconfig1 and cannot be deleted. In order to delete the subnet, delete all the resources within the subnet. See aka.ms/deletesubnet.","details":[]}]}}
+```
 
-- エラーが生じないケース[^2]
+- エラーが生じないケース
+- ソースコード(抜粋)[^2] 
 [^2]:https://github.com/zukakosan/bicep-learn/blob/main/20240319-standalonevnet/main.bicep
 ```bicep:main.bicep
 resource hubVnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
