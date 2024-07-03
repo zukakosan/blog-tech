@@ -3,13 +3,15 @@ title: "Bicep でサブネットを定義するときにスタンドアロンで
 emoji: "💪"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Azure","microsoft","bicep","IaC"]
-published: false
+published: true
+publication_name: "microsoft"
+published_at: 2024-07-04 09:30
 ---
 
 # はじめに
 自分が今まで Bicep を書いている中で直面した課題として非常に煩わしい問題として、サブネットを VNet の定義の外側に記述することができないというものがあります。
 
-一般的な **VNet の内側**にサブネットを記述している例
+- 一般的な **VNet の内側**にサブネットを記述している例
 ```bicep
 resource hubVnet 'Microsoft.Network/virtualNetworks@2023-09-01' = {
   name: vnetName
@@ -32,7 +34,7 @@ resource hubVnet 'Microsoft.Network/virtualNetworks@2023-09-01' = {
 }
 ```
 
-**VNet の外側**にサブネットを記述している例
+- **VNet の外側**にサブネットを記述している例
 ```bicep
 resource hubVnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   name: vnetName
@@ -72,13 +74,14 @@ https://github.com/Azure/bicep-types-az/issues/1687
 https://techcommunity.microsoft.com/t5/azure-networking-blog/azure-virtual-network-now-supports-updates-without-subnet/ba-p/4067952
 
 要するに、VNet のデプロイ時にサブネットのプロパティを指定しない場合、以前は既存のサブネットが削除される挙動だったものが、`2023-09-01` 以降は既存のサブネットに対しては何も行わないという挙動になるという話です。
+
 この記事を発見したタイミングで「これは…望んでいたやつだ！」と思い、一度試した結果うまくいったので歓喜していたのですが、しばらくして再度試すと以前と同様のエラーが生じたため記事化するのは避けていました。
 
 ところが、ドキュメントに記載の`2023-09-01` ではなく `2023-11-01` の API バージョンが利用できるようになったようで、改めてそちらで試したところ既存のサブネットに影響せずデプロイできることを確認しています。当初、この挙動は `eastus2euap` リージョンでのみ展開されていたのですが、現在はほかのリージョンでも同じ挙動となっているようです。
 
 注意点としては、**VNet のデプロイ時にサブネットのプロパティを指定しない** 状態である必要があるため、1 つでも VNet 内にサブネットのプロパティがあるとエラーになります。「すべてスタンドアロンで定義する」か「すべて VNet のプロパティとして定義する」という形になります。
 
-エラーが生じるケース[^1]
+- エラーが生じるケース[^1]
 [^1]:https://github.com/zukakosan/bicep-learn/blob/main/20240319-standalonevnet/main-error.bicep
 ```bicep:main-error.bicep
 resource hubVnet 'Microsoft.Network/virtualNetworks@2023-09-01' = {
@@ -110,7 +113,7 @@ resource vmSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' = {
 }
 ```
 
-エラーが生じないケース[^2]
+- エラーが生じないケース[^2]
 [^2]:https://github.com/zukakosan/bicep-learn/blob/main/20240319-standalonevnet/main.bicep
 ```bicep:main.bicep
 resource hubVnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
@@ -157,4 +160,4 @@ resource vmSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
 他にもケースはあると思いますが、一例として挙げてみました。
 
 # おわりに
-先の GitHub 上の issue を見るに、回答している側としてはスタンドアロン型での定義はそもそも非推奨なようですが、個人的にはこの書き方ができる方が扱いやすくてありがたいです。Terraform ではこのようなエラーに遭遇したことがないため、当初よりユーザビリティを考えてこのあたりをを裏でうまいことやっていたのだろうと推察しています。
+先の GitHub 上の issue を見るに、回答している側としてはスタンドアロン型での定義はそもそも非推奨なようですが、個人的にはこの書き方が扱いやすいです。Terraform ではこのようなエラーに遭遇したことがないため、当初よりユーザビリティを考えてこのあたりをを裏でうまいことやっていたのだろうと推察しています。
