@@ -1,6 +1,6 @@
 ---
 title: "Bicep でサブネットを定義するときにスタンドアロンで書いてもエラーが出なくなったのが嬉しい"
-emoji: "👌"
+emoji: "💪"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Azure","microsoft","bicep","IaC"]
 published: false
@@ -59,9 +59,102 @@ resource mainSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
 ```
 
 正確には、記述できないというよりは、2 回目のデプロイのタイミングでサブネットが存在しない空の VNet をデプロイした後に、サブネットをデプロイするという順序になるため、まずサブネットを削除する動きになります。
+
 そして、サブネットにリソースが存在しているともちろんそのサブネットはそのリソースが握っていることになるため、削除できずエラーになって終了します。
 
 逆に言うと、このエラーは「イミュータブル インフラ」として継続的に運用していない場合、つまり初回の払い出しのみに Bicep を利用している場合は気づかない事象です。
 
-とはいえ、スタンドアロンでサブネットを定義する書き方については、公式ドキュメントにも随所でみられていた書き方(最近では VNet 内で定義するように修正がかかっているようですが)であり、この事象については下記のスレッドにて活発に議論されているのが現状です。
+とはいえ、スタンドアロンでサブネットを定義する書き方については、公式ドキュメントにも随所でみられていた書き方（最近では VNet 内で定義するようにドキュメントの修正がかかっているようですが）であり、この事象については下記のスレッドにて活発に議論されているのが現状です。
 https://github.com/Azure/bicep-types-az/issues/1687
+
+# 何が変わったか
+2024/02/27 時点で以下のような Tech Blog が公開されました。
+https://techcommunity.microsoft.com/t5/azure-networking-blog/azure-virtual-network-now-supports-updates-without-subnet/ba-p/4067952
+
+要するに、VNet のデプロイ時にサブネットのプロパティを指定しない場合、以前は既存のサブネットが削除される挙動だったものが、`2023-09-01` 以降は既存のサブネットに対しては何も行わないという挙動になるという話です。
+この記事を発見したタイミングで「これは…望んでいたやつだ！」と思い、一度試した結果うまくいったので歓喜していたのですが、しばらくして再度試すと以前と同様のエラーが生じたため記事化するのは避けていました。
+
+ところが、ドキュメントに記載の`2023-09-01` ではなく `2023-11-01` の API バージョンが利用できるようになったようで、改めてそちらで試したところ既存のサブネットに影響せずデプロイできることを確認しています。当初、この挙動は `eastus2euap` リージョンでのみ展開されていたのですが、現在はほかのリージョンでも同じ挙動となっているようです。
+
+注意点としては、**VNet のデプロイ時にサブネットのプロパティを指定しない** 状態である必要があるため、1 つでも VNet 内にサブネットのプロパティがあるとエラーになります。「すべてスタンドアロンで定義する」か「すべて VNet のプロパティとして定義する」という形になります。
+
+エラーが生じるケース[^1]
+[^1]:https://github.com/zukakosan/bicep-learn/blob/main/20240319-standalonevnet/main-error.bicep
+```bicep:main-error.bicep
+resource hubVnet 'Microsoft.Network/virtualNetworks@2023-09-01' = {
+  name: vnetName
+  location: location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        '10.0.0.0/16'
+      ]
+    }
+    subnets: [
+      {
+        name: 'subnet-001'
+        properties: {
+          addressPrefix: '10.0.0.0/24'
+        }
+      }
+    ]
+  }
+}
+
+resource vmSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' = {
+  parent: hubVnet
+  name: 'subnet-vm'
+  properties: {
+    addressPrefix: '10.0.1.0/24'
+  }
+}
+```
+
+エラーが生じないケース[^2]
+[^2]:https://github.com/zukakosan/bicep-learn/blob/main/20240319-standalonevnet/main.bicep
+```bicep:main.bicep
+resource hubVnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
+  name: vnetName
+  location: location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        '10.0.0.0/16'
+      ]
+    }
+  }
+}
+
+resource mainSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
+  parent: hubVnet
+  name: 'subnet-001'
+  properties: {
+    addressPrefix: '10.0.0.0/24'
+    networkSecurityGroup: {
+      id: nsg.id
+    }
+  }
+}
+
+resource vmSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
+  parent: hubVnet
+  name: 'subnet-vm'
+  properties: {
+    addressPrefix: '10.0.1.0/24'
+    networkSecurityGroup: {
+      id: nsg.id
+    }
+  }
+  // subnet の同時更新はエラーになるので dependsOn で依存関係を追加
+  dependsOn: [
+    mainSubnet
+  ]
+}
+```
+# 恩恵を受けるケース
+サブネットをスタンドアロンで定義した方がよい(書きやすい)ケースとして、条件分岐 (if) を使って特定のサブネットをデプロイするかどうかの選択肢を用意する場合でしょう。パラメータによって環境自体の構成に大きな差異がでることが望ましいかは別の議論として、このようなケースではスタンドアロン型の定義が刺さるのではないでしょうか。
+
+他にもケースはあると思いますが、一例として挙げてみました。
+
+# おわりに
+先の GitHub 上の issue を見るに、回答している側としてはスタンドアロン型での定義はそもそも非推奨なようですが、個人的にはこの書き方ができる方が扱いやすくてありがたいです。Terraform ではこのようなエラーに遭遇したことがないため、当初よりユーザビリティを考えてこのあたりをを裏でうまいことやっていたのだろうと推察しています。
