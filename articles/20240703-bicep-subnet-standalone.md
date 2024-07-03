@@ -123,7 +123,7 @@ Please provide securestring value for 'adminPassword' (? for help):
 {"status":"Failed","error":{"code":"DeploymentFailed","target":"/subscriptions/xxxx/resourceGroups/20240703-mainerror-2/providers/Microsoft.Resources/deployments/main-error","message":"At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/arm-deployment-operations for usage details.","details":[{"code":"InUseSubnetCannotBeDeleted","message":"Subnet subnet-vm is in use by /subscriptions/xxxx/resourceGroups/20240703-mainerror-2/providers/Microsoft.Network/networkInterfaces/vm-ubuntu-test-nic/ipConfigurations/ipconfig1 and cannot be deleted. In order to delete the subnet, delete all the resources within the subnet. See aka.ms/deletesubnet.","details":[]}]}}
 ```
 
-- エラーが生じないケース
+## エラーが生じないケース
 - ソースコード(抜粋)[^2] 
 [^2]:https://github.com/zukakosan/bicep-learn/blob/main/20240319-standalonevnet/main.bicep
 ```bicep:main.bicep
