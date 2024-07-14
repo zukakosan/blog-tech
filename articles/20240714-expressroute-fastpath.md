@@ -96,7 +96,7 @@ TCP connect statistics for 10.128.1.4:3389:
 
 ## FastPath 有効化状態
 FastPath は Connection リソース上で有効化できます。
-![](../images/20240714-expressroute-fastpath/01.png)
+![](/images/20240714-expressroute-fastpath/01.png)
 
 次のような構成で検証しています。
 ```mermaid
