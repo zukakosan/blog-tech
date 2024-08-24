@@ -26,7 +26,7 @@ flowchart LR
 	subgraph Azure 
 		client-pc --> |Internet:443| Bastion
 		subgraph VNet
-			Bastion --> Jumpbox-VM
+			Bastion --> |Private:22|Jumpbox-VM
 		end
 	end
 	subgraph office-B
