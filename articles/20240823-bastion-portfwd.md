@@ -86,7 +86,7 @@ $ ssh Server2 -L 2222:Server1:22 -N
 $ az network bastion ssh --name <bastion-name> --resource-group <rg-name> --target-resource-id <vm-resource-id> --auth-type ssh-key --ssh-key <path-to-ssh-key> --username AzureAdmin -- -L 2222:<接続先サーバー IP>:22
 ```
 
-その後、別のセッションを立ち上げ、次のコマンドを実行することで Azure 越しにアクセスしたかったサーバーへ接続できます。
+その後、別のセッションを立ち上げ、次のコマンドを実行することで Azure 越しにアクセスしたかったサーバーへ接続できます。`127.0.0.1` は `localhost` でも問題ないです。
 
 ```bash
 $ ssh AzureAdmin@127.0.0.1 -p 2222 -i <path-to-ssh-key>
