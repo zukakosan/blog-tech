@@ -34,7 +34,7 @@ flowchart LR
 
 # 接続方法
 ## 環境構成
-Azure VNet 上には Bastion と踏み台 VM を配置し、公開鍵を配置しておきます。また、検証においては、拠点 B のサーバーはパブリック IP を持つ VM とします。
+Azure VNet 上には Bastion と踏み台 VM を配置し、Public Key を配置しておきます。また、検証においては、拠点 B のサーバーはパブリック IP を持つ VM とし、同じ Public Key を登録します。
 
 ## 接続
 VM への接続には Windows ネイティブ クライアントを使用します。Azure CLI を Windows 環境にインストールし、次のコマンドを実行して拡張機能をインストールしておきます。
