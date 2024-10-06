@@ -1,5 +1,5 @@
 ---
-title: "Azure VNet ピアリングではなく、"サブネット" ピアリングを構成してみる"
+title: "Azure VNet ピアリングではなく、'サブネット' ピアリングを構成してみる"
 emoji: "🍻"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ['azure','network','microsoft','peering']
