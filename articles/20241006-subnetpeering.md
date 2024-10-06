@@ -1,8 +1,8 @@
 ---
-title: "Azure VNet ピアリングではなく、"サブネット" ピアリングを試す"
+title: "Azure VNet ピアリングではなく、"サブネット" ピアリングを構成してみる"
 emoji: "🍻"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ["azure","peering","vnet","network"]
+topics: ['azure','network','microsoft','peering']
 published: ture
 publication_name: "microsoft"
 ---
