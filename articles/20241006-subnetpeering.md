@@ -40,7 +40,7 @@ graph LR
         sn23[spokesn-3]  
     end  
 ```
-下図のような、サブネット単位で個別にピアリングを貼るものではないようです。
+下図のような、サブネット単位で個別にピアリング張るものではありません。
 ```mermaid
 graph LR
     sn11 <---> a[peering] <---> sn22
@@ -72,11 +72,11 @@ Registered
 # 検証
 ## サブネット ピアリングの作成
 ```bash
-// hub --> spoke peering
+# hub --> spoke peering
 $ az network vnet peering create -n "hub-spoke" -g 20241006-subnetpeering --vnet-name hub-1006 --remote-vnet spoke-1006 --allow-forwarded-traffic --allow-vnet-access --peer-complete-vnets false --local-subnet-names hubsn-1 hubsn-2 --remote-subnet-names spokesn-2 spokesn-3
 
-// spoke --> hub peering
-// replace hub <-> spoke and excute command
+# spoke --> hub peering
+# replace hub <-> spoke and excute command
 $ az network vnet peering create -n "hub-spoke" -g 20241006-subnetpeering --vnet-name spoke-1006 --remote-vnet hub-1006 --allow-forwarded-traffic --allow-vnet-access --peer-com
 plete-vnets false --remote-subnet-names hubsn-1 hubsn-2 --local-subnet-names spokesn-2 spokesn
 -3
@@ -145,7 +145,7 @@ $ az network vnet peering show -g 20241006-subnetpeering -n hub-spoke --vnet-nam
 }
 ```
 
-参考までに、従来通りの VNet ピアリングの例はこちら。この場合は、VNet 同士の接続設定となっており、`"peerCompleteVnets": true` となっています。
+参考までに、従来通りの VNet ピアリングの例はこちらです。この場合は、VNet 同士の接続設定となっており、`"peerCompleteVnets": true` となっています。
 ```
 $ az network vnet peering show -g 20241006-testhubspoke -n hub-spoke --vnet-name hub-1006
 {
