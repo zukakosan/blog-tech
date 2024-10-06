@@ -3,7 +3,7 @@ title: "Azure VNet ピアリングではなく、"サブネット" ピアリン�
 emoji: "🍻"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ['azure','network','microsoft','peering']
-published: ture
+published: true
 publication_name: "microsoft"
 ---
 # はじめに
@@ -222,25 +222,7 @@ Default   Active   10.50.2.0/24      VNetPeering
 Default   Active   0.0.0.0/0         Internet
 Default   Active   10.0.0.0/8        None
 Default   Active   127.0.0.0/8       None
-Default   Active   100.64.0.0/10     None
-Default   Active   172.16.0.0/12     None
-Default   Active   25.176.0.0/13     None
-Default   Active   25.152.0.0/14     None
-Default   Active   25.184.0.0/14     None
-Default   Active   25.4.0.0/14       None
-Default   Active   25.148.0.0/15     None
-Default   Active   198.18.0.0/15     None
-Default   Active   25.150.0.0/16     None
-Default   Active   25.156.0.0/16     None
-Default   Active   25.159.0.0/16     None
-Default   Active   40.109.0.0/16     None
-Default   Active   192.168.0.0/16    None
-Default   Active   104.147.0.0/16    None
-Default   Active   157.59.0.0/16     None
-Default   Active   40.108.0.0/17     None
-Default   Active   104.146.0.0/17    None
-Default   Active   23.103.0.0/18     None
-Default   Active   20.35.252.0/22    None
+...etc
 ```
 # おわりに
 ニュー概念としてどうやら動き始めているサブネット ピアリング(正式名称不明)を試してみました。これを使うと NSG で頑張って制御している部分がルートテーブルのレベルで分離できるようになり、厳密な制御が行える余地が増えるかもしれません(どうやら Subnet-to-Subnet のピアリングでは無さそうなので、そこまで柔軟ではないかもしれませんが)。なんとなく、Azure Virtual Network Manager のサブネット用ネットワーク グループとつながりそうだなと個人的には睨んでいます。 
