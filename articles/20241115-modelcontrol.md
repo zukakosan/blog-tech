@@ -1,14 +1,15 @@
 ---
-title: "Azure Policy を使用して Azure AI Studio にデプロイ可能なモデルを制限する"
+title: "Azure Policy を使用して Azure AI Studio にデプロイ可能な LLM モデルの種類を制限する"
 emoji: "🍩"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Azure","AOAI","microsoft","ai"]
-published: false
+published: true
 publication_name: "microsoft"
 ---
 
 # はじめに
 生成 AI の活用がある程度進んできて、最近ではどのように安全に使用するか、安全に開発者に使ってもらうかという点がフォーカスされています。
+
 ロール ベースのアクセス コントロールにより、Azure AI Studio など AI 用の統合開発環境の払い出しは簡単にできるようになっている一方、意図しないモデルの利用は意図しない応答を伴う可能性があり、現場に混乱を生んでしまう可能性もあります。
 
 Azure Policy を利用することで、Azure AI Studio 上で利用する LLM モデルの種類を制限することができます。
