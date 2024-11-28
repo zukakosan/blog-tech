@@ -79,6 +79,12 @@ Azure Policy を利用することで、Azure AI Foundry 上で利用する LLM 
 一方で、`gpt-4` の許可されていないバージョンをデプロイしようとすると、`permission error` が表示され、デプロイがブロックされます(エラー メッセージが分かりづらいですが)。
 ![](/images/20241115-modelcontrol/modelgov08.png)
 
+:::message
+### 2024//11/28 追記
+試してみると次のようにポリシーによって拒否されていることが分かりやすくなりました。Ignite で Azure AI Foundry にリブランドされるにあたって改善されている模様です。
+![](/images/20241115-modelcontrol/update01.png.png)
+:::
+
 逆に、Azure Policy の割り当て時のパラメータにこのバージョンを追加すると、問題なくデプロイできます。
 ![](/images/20241115-modelcontrol/modelgov09.png)
 
