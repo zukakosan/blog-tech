@@ -80,7 +80,7 @@ Azure Policy を利用することで、Azure AI Foundry 上で利用する LLM 
 ![](/images/20241115-modelcontrol/modelgov08.png)
 
 :::message
-### 2024//11/28 追記
+### 2024/11/28 追記
 試してみると次のようにポリシーによって拒否されていることが分かりやすくなりました。Ignite で Azure AI Foundry にリブランドされるにあたって改善されている模様です。
 ![](/images/20241115-modelcontrol/update01.png)
 :::
