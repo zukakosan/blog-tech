@@ -1,9 +1,9 @@
 ---
 title: "Microsoft Copilot in Azure for Network のケイパビリティを確かめる"
-emoji: "👻"
+emoji: "🎅"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","copilot","microsoft"]
-published: false
+published: true
 published_at: 2024-12-25 09:00
 ---
 皆さんこんにちは。そして、メリークリスマス。こちらの記事は Microsoft xxx アドベントカレンダー2024 最終日の記事です。
@@ -41,7 +41,7 @@ https://github.com/zukakosan/bicep-hub-spoke-quickstarter
 ![](/images/20241207-networkcopilot/netcp02.png)
 
 その後、内容の確認と編集が提案されます。一旦、TCP 22 でテストしてみます。
-![](/images/20241207-networkcopilot/netcp03.png)
+![](/images/20241207-networkcopilot/netcp07.png)
 
 すると、`Blocked` が表示されました。テンプレートからデプロイしたため本来動くはずです。
 
@@ -60,4 +60,10 @@ You can use Azure Cloud Shell or Azure PowerShell to run the necessary commands.
 ということで、両側の VM に Network Watcher Agent を導入して再度確認してみます。
 ![](/images/20241207-networkcopilot/netcp06.png)
 
-なかなか思うようにはいきませんね、また `Block` になってしまいました。以前 Network Watcher 側の機能で Hub&Spoke でアプライアンスが挟まるパターンの疎通確認を行った際にも同じ問題が発生していたため、裏で同じ基盤が動いているとすると、同様の事象が発生していると思われます。
+なかなか思うようにはいきませんね、また `block` になってしまいました。
+![](/images/20241207-networkcopilot/netcp08.png)
+
+
+以前 Network Watcher 側の機能で Hub&Spoke でアプライアンスが挟まるパターンの疎通確認を行った際にも同じ問題が発生していたため、裏で同じ基盤が動いているとすると、同様の事象が発生していると思われます。
+
+一旦、ほかの可能性を探ってみることにしましょう。
