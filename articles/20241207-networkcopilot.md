@@ -23,7 +23,7 @@ Microsoft Copilot in Azure は、Azure portal に統合された Copilot です�
 - ネットワーク製品情報のクエリ
     - 公開ドキュメントの内容に基づいて、製品に関する質問に回答する
 - ネットワーク製品の選択とアーキテクチャのガイダンス クエリ
-    - 製品に対する質問にや製品選択、ネットワーク計画、回復性、オンプレミスからの移行に関するガイダンスを提供する
+    - 製品に対する質問や製品選択、ネットワーク計画、回復性、オンプレミスからの移行に関するガイダンスを提供する
     - 2024/12/07 時点では、まだまだ対応範囲が狭く、制限が多いです
 - ネットワーク リソース インベントリ、トポロジ、トラフィック パスのクエリ
     - 顧客のネットワークリソース、トポロジ、送信元から送信先までのトラフィックパスを検出する
@@ -35,14 +35,65 @@ Microsoft Copilot in Azure は、Azure portal に統合された Copilot です�
 # 試してみる
 先ほど挙げた機能のうち、インフラ管理の観点からどのように使いこなせるのか、模索してみます。
 
-
-検証環境として、以下のリポジトリから Hub＆Spoke 型のネットワーク環境クイック スタートをデプロイし、いろいろと試行錯誤してみます。
+実際のリソースベースで見る場合は、以下のリポジトリの Hub＆Spoke 型のネットワーク環境などをデプロイして試行錯誤してみます。
 
 https://github.com/zukakosan/bicep-hub-spoke-quickstarter
 
-<!-- スクリーンショットでは、Azure portal の画面全体を載せています。Microsoft Copilot in Azure はユーザが現在見ている画面からサブスクリプションやリソースグループ、サービスの種類といったコンテキストを把握するためです。 -->
+## ネットワーク リソースの仕様の確認
+ドキュメントを隅々まで探せばどこかに書いてあるかもしれないけど、そんな時間と労力をかけられないようなケースがあると思います。SR を上げてもいいけど上げるほどでもない情報の確認もあるかもしれません。そのようなケースではまず、Copilot に気軽に聞いてみると早いかもしれません。
+
+ネットワーク関連でたまに迷うポイントについて聞いてみました。
+
+### Q: ゲートウェイサブネットに NSG をアタッチできますか？
+> No, you cannot attach a Network Security Group (NSG) to a gateway subnet in Azure. Associating an NSG to this subnet might cause your virtual network gateway (VPN and ExpressRoute gateways) to stop functioning as expected.
+
+確かにドキュメントで見覚えのある内容が返ってきました。
+
+### Q: VNet や NIC の DNS 設定を変更した場合、内部の VM の再起動は必要ですか？
+> Yes, it is necessary to restart internal VMs when changing DNS settings for a Virtual Network (VNet) or Network Interface Card (NIC) in Azure. The VMs continue to use their current DNS settings until they are restarted to apply the new DNS configurations.  
+References:  
+link: Create, change, or delete a virtual network[^3]  
+link: Create, change, or delete a network interface[^4]
+
+今度は参照リンク付きで回答を提示してくれました。これはかなりかゆいところに手が届いているように思います。ネットワークの構成において、ニッチだけどシンプルな内容で迷ったらまずCopilot に聞いてみる、がうまく機能しそうです。
+
+
+[^3]:https://learn.microsoft.com/en-us/azure/virtual-network/manage-virtual-network?wt.mc_id=knwlserapi_inproduct_azportal#change-dns-servers
+[^4]:https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface?wt.mc_id=knwlserapi_inproduct_azportal#change-network-interface-settings
+
+## アーキテクチャや製品選択
+Azure はサービスの選択肢も多く、また個々のリソースにおける SKU や機能も多いため、どれが自組織の環境に適しているかを判断するのが難しい場合があります。そういったタイミングで、Copilot が相談に乗りながら選択肢をしぼり込んでくれたらありがたいですよね。
+
+次のように質問すると、いくつかの確認事項の後、結論が導かれました。
+### Q. この環境における推奨される Azure Firewall の SKU は何ですか？
+
+確認①
+> Do you want to automatically block/deny malicious traffic based on Microsoft’s Threat Intelligence feed or does alerting you to such traffic suffice?
+
+確認②
+> Do you want to be able to configure rules based on web categories?
+
+確認③
+> Do you need fully managed IDPS (intrusion detection and prevention system)? This is usually required for highly sensitive workloads.
+
+確認④
+> Do you need outbound TLS termination i.e., TLS forward proxy? This is usually required for highly sensitive workloads.
+
+確認⑤
+> Do you need inbound TLS termination i.e., TLS reverse proxy (using App GW)? This is usually required for highly sensitive workloads.
+
+確認⑥
+> Do you need the ability to configure rules based on URLs i.e., the full URL path will be considered including SSL termination?
+
+合計6個の確認事項に Yes/No で回答すると、結論として次が得られました。
+> Based on your feature requirements, Azure Firewall Premium SKU is recommended but Premium supported bandwidth is up to 100 Gbps with 10Gbps fat flows. If you require additional bandwidth then consider splitting your traffic between multiple Azure Firewall instances. For more details, see Choose the right Azure Firewall version to meet your needs.
+
+SKU の差異を把握するのは時間もかかるため、対話形式でそこをクリアにできるのは非常にメリットがあります。
 
 ## ネットワーク経路の確認
+
+
+
 VM 間での疎通確認をしたいとき、もしくは通信経路を再確認したい場合が多いです。そのような際に使えるのか確認してみます。
 
 `VM-A から VM-B へのネットワーク経路を教えて` と聞いてみます。すると、送信元 VM を改めて選択するように促され、専用 UI が提供されます。
@@ -77,9 +128,7 @@ You can use Azure Cloud Shell or Azure PowerShell to run the necessary commands.
 
 通常の VNet Peering 越しであれば、ドキュメントに記載の通りうまく動くはずです。
 
-<!-- もう少し簡単にして、アプライアンスを経由しない VM でのインターネット アクセスの経路を聞いてみましょう。
-![](/images/20241207-networkcopilot/netcp12.png) -->
-
+<!-- もう少し簡単にして、アプライアンスを経由しない VM でのインターネット アクセスの経路を聞いてみましょう。-->
 
 <!-- 一旦、ほかの可能性を探ってみることにしましょう。 -->
 
