@@ -100,7 +100,7 @@ VM 間での疎通確認をしたいとき、もしくは通信経路を再確�
 ![](/images/20241207-networkcopilot/netcp02.png)
 
 その後、内容の確認と編集が提案されます。一旦、TCP 22 でテストしてみます。
-![50%](/images/20241207-networkcopilot/netcp07.png =300px)
+![](/images/20241207-networkcopilot/netcp07.png =300px)
 
 すると、`Blocked` が表示されました。テンプレートからデプロイしたため本来その間は疎通できているはずです。
 
