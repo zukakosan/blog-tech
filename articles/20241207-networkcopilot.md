@@ -65,7 +65,7 @@ link: Create, change, or delete a network interface[^4]
 Azure はサービスの選択肢も多く、また個々のリソースにおける SKU や機能も多いため、どれが自組織の環境に適しているかを判断するのが難しい場合があります。そういったタイミングで、Copilot が相談に乗りながら選択肢をしぼり込んでくれたらありがたいですよね。
 
 次のように質問すると、いくつかの確認事項の後、結論が導かれました。
-### Q. この環境における推奨される Azure Firewall の SKU は何ですか？
+### Q: この環境における推奨される Azure Firewall の SKU は何ですか？
 
 確認①
 > Do you want to automatically block/deny malicious traffic based on Microsoft’s Threat Intelligence feed or does alerting you to such traffic suffice?
@@ -88,20 +88,20 @@ Azure はサービスの選択肢も多く、また個々のリソースにお�
 合計6個の確認事項に Yes/No で回答すると、結論として次が得られました。
 > Based on your feature requirements, Azure Firewall Premium SKU is recommended but Premium supported bandwidth is up to 100 Gbps with 10Gbps fat flows. If you require additional bandwidth then consider splitting your traffic between multiple Azure Firewall instances. For more details, see Choose the right Azure Firewall version to meet your needs.
 
-SKU の差異を把握するのは時間もかかるため、対話形式でそこをクリアにできるのは非常にメリットがあります。
+SKU の差異を把握するのは時間もかかるため、対話形式でそこをクリアにできるのは非常にメリットがあると思います。
 
 ## ネットワーク経路の確認
-
-
-
 VM 間での疎通確認をしたいとき、もしくは通信経路を再確認したい場合が多いです。そのような際に使えるのか確認してみます。
 
-`VM-A から VM-B へのネットワーク経路を教えて` と聞いてみます。すると、送信元 VM を改めて選択するように促され、専用 UI が提供されます。
+### Q: VM-A から VM-B へのネットワーク経路を教えて
+
+送信元 VM を改めて選択するように促され、専用 UI が提供されます。
 ![](/images/20241207-networkcopilot/netcp01.png)
 ![](/images/20241207-networkcopilot/netcp02.png)
 
 その後、内容の確認と編集が提案されます。一旦、TCP 22 でテストしてみます。
-![](/images/20241207-networkcopilot/netcp07.png)
+<!-- ![50%](/images/20241207-networkcopilot/netcp07.png) -->
+<img alt="22" src="/images/20241207-networkcopilot/netcp07.png" width="50%">
 
 すると、`Blocked` が表示されました。テンプレートからデプロイしたため本来その間は疎通できているはずです。
 
@@ -128,10 +128,6 @@ You can use Azure Cloud Shell or Azure PowerShell to run the necessary commands.
 
 通常の VNet Peering 越しであれば、ドキュメントに記載の通りうまく動くはずです。
 
-<!-- もう少し簡単にして、アプライアンスを経由しない VM でのインターネット アクセスの経路を聞いてみましょう。-->
-
-<!-- 一旦、ほかの可能性を探ってみることにしましょう。 -->
-
 ## ネットワーク規模の確認
 ネットワークの規模が大きくなってくると、設定変更に対するインパクトの大きさを調査するためにネットワークの規模感を把握したくなることがあると思います。そのようなタイミングで Copilot に聞いてみる、というイメージです。
 
@@ -143,8 +139,10 @@ IP アドレスの枯渇的な観点などで、消費されている IP アド�
 すると、VNet リソースの選択画面が提供され、その中から 1 つを選択します。
 ![](/images/20241207-networkcopilot/netcp10.png)
 
-期待に包まれながら待っていると、そこまではできないという回答が得られました。
+期待に包まれながら待っていると、そこまではできないという回答が得られました。無念。
 ![](/images/20241207-networkcopilot/netcp11.png)
+
+
 
 # おわりに
 まだまだ複雑なネットワークアーキテクチャや、複雑なクエリが必要になるものについてはそのまま適用するのが難しい部分も確かにありそうです。
