@@ -100,7 +100,7 @@ VM 間での疎通確認をしたいとき、もしくは通信経路を再確�
 ![](/images/20241207-networkcopilot/netcp02.png)
 
 その後、内容の確認と編集が提案されます。一旦、TCP 22 でテストしてみます。
-![](/images/20241207-networkcopilot/netcp07.png =300px)
+![](/images/20241207-networkcopilot/netcp07.png)
 
 すると、`Blocked` が表示されました。テンプレートからデプロイしたため本来その間は疎通できているはずです。
 
@@ -108,14 +108,13 @@ VM 間での疎通確認をしたいとき、もしくは通信経路を再確�
 ![](/images/20241207-networkcopilot/netcp05.png)
 
 よく画面を見てみると以下のような注意書きが提示されていました。
-```
-Prerequisites:
 
-Ensure you have an Azure account with an active subscription.
-Network Watcher must be enabled in the region of the virtual machine (VM) you want to troubleshoot.
-You need a virtual machine with the Network Watcher agent VM extension installed, which should have outbound TCP connectivity to specific IP addresses and ports.
-You can use Azure Cloud Shell or Azure PowerShell to run the necessary commands.
-```
+> Prerequisites:  
+Ensure you have an Azure account with an active subscription.  
+Network Watcher must be enabled in the region of the virtual machine (VM) you want to troubleshoot.  
+You need a virtual machine with the Network Watcher agent VM extension installed, which should have outbound TCP connectivity to specific IP addresses and ports.  
+You can use Azure Cloud Shell or Azure PowerShell to run the necessary commands.  
+
 ということで、両側の VM に Network Watcher Agent を導入して再度確認してみます。
 ![](/images/20241207-networkcopilot/netcp06.png)
 
@@ -141,10 +140,24 @@ IP アドレスの枯渇的な観点などで、消費されている IP アド�
 期待に包まれながら待っていると、そこまではできないという回答が得られました。無念。
 ![](/images/20241207-networkcopilot/netcp11.png)
 
+## ネットワークの疎通性のトラブル シューティング
+これはわかりやすい活用例です。Azure の運用中に実際に問題が生じている場合、自然言語で問い合わせながら問題の切り分けができると、解決までが非常にスムーズになります。
+
+### Q: この VM がインターネットに到達できないのはなぜですか？
+既定の送信アクセスが 2025/09/30 に廃止されることに伴い、インターネット アクセスができない問題がおそらく頻発するのではないかと思います。
+
+既定の SNAT をオフにした（プライベート サブネットを有効化した）サブネットに VM を配置し、その VM がインターネット アクセスできない原因を聞いてみます。
+![](/images/20241207-networkcopilot/netcp13.png)
+
+状況設定の確認を行ったのち、次のような回答が得られました。
+![](/images/20241207-networkcopilot/netcp14.png)
+
+ここを原因と合わせてうまく解凍してくれることを期待したのですが、まだできないようです。
+プライベート サブネットを無効化したうえで、NSG で `ServiceTag:Internet` を Deny した場合は次のようになりました。
 
 
 # おわりに
-まだまだ複雑なネットワークアーキテクチャや、複雑なクエリが必要になるものについてはそのまま適用するのが難しい部分も確かにありそうです。
+まだまだ複雑なネットワークアーキテクチャや、複雑なクエリが必要になるものについてはそのまま適用するのが難しい部分も確かにありそうです。とはいえ、サービス仕様の確認やネットワーク リソースのオプション選択などの相談相手になるだけでも、役立つ場面は多そうです。
 
 今後は、予測的なトラブルシューティングや、パフォーマンスや信頼性の観点でのネットワーク最適化提案、コンプライアンス要件を満たすためのセキュリティに関する能力も追加していく予定ということで、何ができるかを意識しなくても運用に使える実用的なものになってくることを期待しながらクリスマスを過ごしたいと思います。
 
