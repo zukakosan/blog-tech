@@ -6,7 +6,8 @@ topics: ["azure","copilot","microsoft"]
 published: true
 published_at: 2024-12-25 09:00
 ---
-皆さんこんにちは。そして、メリークリスマス。こちらの記事は Microsoft xxx アドベントカレンダー2024 最終日の記事です。
+皆さんこんにちは。そして、メリークリスマス。こちらの記事は [Microsoft Azure Tech Advent Calendar 2024
+](https://qiita.com/advent-calendar/2024/microsoft-azure-tech) 最終日の記事です。
 
 # はじめに
 Microsoft Copilot in Azure は、Azure portal に統合された Copilot です。Microsoft Build 2024 あたりでプレビュー提供が開始され、日々そのケイパビリティを拡張しながら進化しています。
