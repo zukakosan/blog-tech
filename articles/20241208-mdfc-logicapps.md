@@ -102,9 +102,23 @@ Gmail の [Send email] コンポーネントを配置し、接続名を入れた
 すると、メールが飛んできます。タイトルと、中身が非常にわかりやすくなりました。
 ![](/images/20241208-mdfc-logicapps/mdfc20.png)
 
+## そのほかの拡張
+必要に応じて Azure Resource Manager のコネクタを使用して Azure リソースの操作をしたり[^1]、HTTP コネクタや Azure OpenAI Service コネクタ経由で LLM モデルを呼び出して分析や要約の処理させたりできます。コネクタ[^2]は多く準備されているので、組み合わせて様々なフローを実現できます。
+
+[^1]:https://www.tama-negi.com/2024/06/29/logic-apps-resource-manager/
+[^2]:https://learn.microsoft.com/ja-jp/connectors/connector-reference/connector-reference-logicapps-connectors
+
+
+本記事では、Gmail コネクタを使用していますが、現在以下のような制約[^3]があり、ほかのコネクタの使用に影響があるかもしれない点には注意してください。自分はあとから気づき、使いたかったコネクタを同時使用できずに悲しくなりました。
+
+[^3]:https://learn.microsoft.com/ja-jp/azure/connectors/connectors-google-data-security-privacy-policy
+> ご利用のワークフローで Gmail コネクタと Gmail コンシューマー アカウント (@gmail.com または @googlemail.com) で終わる電子メール アドレス) が使用されている場合、そのワークアカウントで使用できるのは、特定の Google によって承認されたトリガー、アクション、およびコネクタのみとなります。
+
 # おわりに
 このような形で、MDfC 側の変化を Logic Apps でキャッチすると、情報のカスタマイズやチケットの生成、メッセージの送信、何らかの Azure リソースの操作など、できることの幅がかなり拡がります。リソース操作で何かできないかと考えたのですが、アラートに対して即リソース操作するというシナリオがぱっと思いつかず、いったん通知のみにとどめています。Azure リソースを Logic Apps から操作する場合には、マネージド ID と権限の付与をお忘れなく。
 
-また、Logic Apps は難易度のわりに非常に多くのインパクトのある自動化ができるツールなので、扱えるようになると非常に便利だと思っています。ちなみに、Logic Apps を使えばフローの中で Azure OpenAI Service を簡単に呼び出すことができるため、アラートの翻訳と要約をさせようと思ったのですが、Outlook を使っていればそもそも Copilot がいるので要約してくれることに気づいて作るのはやめました（笑）。
+Logic Apps は難易度のわりに非常に多くのインパクトのある自動化ができるツールなので、扱えるようになると非常に便利です。
+
+ちなみに、フローの中で Azure OpenAI Service を簡単に呼び出してアラートの翻訳と要約をさせようと思ったのですが、Outlook を使っていればそもそも Copilot がいるので要約してくれることに気づいて作るのはやめました（笑）。
 
 cf. ネタを提供くださった N様に感謝します。
