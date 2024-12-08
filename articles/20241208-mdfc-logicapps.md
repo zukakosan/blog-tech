@@ -4,7 +4,7 @@ emoji: "🔫"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","defender","microsoft","automation","logicapps"]
 published: true
-published_at: 2024-12-9 09:00
+published_at: 2024-12-09 09:00
 ---
 # はじめに
 Azure における CSPM/CWPP といえば、Microsoft Defender Cloud が挙げられます。この統合コンソールを通して、IT 管理者はセキュリティやリソース構成の観点から全体を把握できます。
@@ -89,3 +89,17 @@ Gmail の [Send email] コンポーネントを配置し、接続名を入れた
 
 サンプルのペイロードは、実行履歴からとってきたものを貼り付けます。
 ![](/images/20241208-mdfc-logicapps/mdfc17.png)
+
+続いて、[Send email] の設定に反映していきます。Subject パラメータには [Parse JSON] で取り出した、`AlertDisplayName` を挿入します。Body パラメータには同じく取り出した、`Description` を挿入します。
+![](/images/20241208-mdfc-logicapps/mdfc18.png)
+
+では今度は、MDfC からもう一度サンプル アラートを生成して挙動確認をしてみましょう。メールの大量発生を防ぐために、ここでは App Service のみを選択します。
+![](/images/20241208-mdfc-logicapps/mdfc19.png)
+
+すると、メールが飛んできます。タイトルと、中身が非常にわかりやすくなりました。
+![](/images/20241208-mdfc-logicapps/mdfc20.png)
+
+# おわりに
+このような形で、MDfC 側の変化を Logic Apps でキャッチすると、情報のカスタマイズやチケットの生成、メッセージの送信、何らかの Azure リソースの操作など、できることの幅がかなり拡がります。リソース操作で何かできないかと考えたのですが、アラートに対して即リソース操作するというシナリオがぱっと思いつかず、いったん通知のみにとどめています。Azure リソースを Logic Apps から操作する場合には、マネージド ID と権限の付与をお忘れなく。
+
+また、Logic Apps は難易度のわりに非常に多くのインパクトのある自動化ができるツールなので、扱えるようになると非常に便利だと思っています。ちなみに、Logic Apps を使えばフローの中で Azure OpenAI Service を簡単に呼び出すことができるため、アラートの翻訳と要約をさせようと思ったのですが、Outlook を使っていればそもそも Copilot がいるので要約してくれることに気づいて作るのはやめました（笑）。
