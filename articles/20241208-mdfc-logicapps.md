@@ -1,5 +1,5 @@
 ---
-title: "Microsoft Defender for Cloud のセキュリティ アラートで Logic Apps のフローをトリガーして自動アクションを実行する"
+title: "Microsoft Defender for Cloud のセキュリティ アラートで Logic Apps をトリガーして対応を自動化する"
 emoji: "🔫"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","defender","microsoft","automation","logicapps"]
@@ -10,7 +10,7 @@ published_at: 2024-12-09 09:00
 こちらは [Microsoft Azure Tech Advent Calendar](https://qiita.com/advent-calendar/2024/microsoft-azure-tech) 9日目 の記事です。
 
 # はじめに
-Azure における CSPM/CWPP といえば、Microsoft Defender Cloud が挙げられます。この統合コンソールを通して、IT 管理者はセキュリティやリソース構成の観点から全体を把握できます。
+Azure における CSPM/CWPP といえば、Microsoft Defender for Cloud (MDfC) が挙げられます。この統合コンソールを通して、IT 管理者はセキュリティやリソース構成の観点から全体を把握できます。
 
 MDfC は推奨事項やセキュリティ アラートをこのコンソールの随所に提示をしてくれるのですが、その変化にいち早く気付き、場合によっては自動対応までを行うことが求められます。
 
