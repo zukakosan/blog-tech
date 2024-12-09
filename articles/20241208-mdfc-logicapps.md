@@ -4,6 +4,7 @@ emoji: "🔫"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","defender","microsoft","automation","logicapps"]
 published: true
+publication_name: "microsoft"
 published_at: 2024-12-09 09:00
 ---
 

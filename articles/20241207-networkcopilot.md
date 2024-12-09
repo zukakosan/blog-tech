@@ -4,6 +4,7 @@ emoji: "🎅"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","copilot","microsoft"]
 published: true
+publication_name: "microsoft"
 published_at: 2024-12-25 09:00
 ---
 皆さんこんにちは。そして、メリークリスマス。こちらの記事は [Microsoft Azure Tech Advent Calendar 2024
