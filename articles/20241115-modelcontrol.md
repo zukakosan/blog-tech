@@ -1,5 +1,5 @@
 ---
-title: "Azure 生成 AI 活用のガードレール整備:「デプロイ可能な LLM モデルの種類を制限する」編"
+title: "Azure 生成 AI 活用のガードレール整備:「デプロイ可能な LLM の種類を制限する」編"
 emoji: "🍩"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Azure","AOAI","microsoft","genai"]
