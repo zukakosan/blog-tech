@@ -1,8 +1,8 @@
 ---
-title: "Azure Policy を使用して Azure AI Foundry にデプロイ可能な LLM モデルの種類を制限する"
+title: "Azure 生成 AI 活用のガードレール整備:「Azure AI Foundry にデプロイ可能な LLM モデルの種類を制限する」編"
 emoji: "🍩"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ["Azure","AOAI","microsoft","ai"]
+topics: ["Azure","AOAI","microsoft","genai"]
 published: true
 publication_name: "microsoft"
 ---
