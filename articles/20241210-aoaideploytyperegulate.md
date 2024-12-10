@@ -21,7 +21,7 @@ Azure OpenAI Service のモデルにはデプロイの種類[^1]という概念�
 [^1]:https://learn.microsoft.com/ja-jp/azure/ai-services/openai/how-to/deployment-types
 [^2]:https://learn.microsoft.com/ja-jp/azure/ai-services/openai/concepts/provisioned-throughput
 [^3]:https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/
-[^4]:ttps://azure.microsoft.com/pricing/details/cognitive-services/openai-service/
+[^4]:https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/
 
 
 デプロイの種類の選択によって、データが処理されるリージョンが異なるということは、一部の要件に抵触してしまう可能性があります。コンプライアンスを意識して安全に AOAI を利用するには、この違いを意識しておく必要があります。
