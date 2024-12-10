@@ -1,5 +1,5 @@
 ---
-title: "Azure 生成 AI 活用のガードレール整備:「Responsible AI の観点から LLM に対して特定のコンテンツ フィルターを強制する」編"
+title: "Azure 生成 AI 活用のガードレール整備:「責任ある AI の観点から LLM に対して特定のコンテンツ フィルターを強制する」編"
 emoji: "🍩"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Azure","microsoft","AOAI","GenAI"]
@@ -10,7 +10,7 @@ published_at: 2024-12-13 07:00
 この記事は、[Microsoft Azure Tech Advent Calendar 2024](https://qiita.com/advent-calendar/2024/microsoft-azure-tech) 13 日目の記事です。
 
 # はじめに
-Azure OpenAI Service では Responsible AI[^1] の観点から、コンテンツ フィルター[^2] の設定が義務付けられています。コンテンツ フィルターとは、LLM との対話aaaaaaaaaaaaaaaaaa
+Azure OpenAI Service では責任ある AI[^1] の観点から、コンテンツ フィルター[^2] の設定が義務付けられています。コンテンツ フィルターとは、LLM との対話aaaaaaaaaaaaaaaaaa
 
 一部の信頼されたお客様においては、Default のコンテンツ フィルターを緩める方向性での調整が可能ですが、それ以外の場合はより厳しくする方向にのみ調整可能です。
 
