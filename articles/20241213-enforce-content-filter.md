@@ -44,7 +44,7 @@ Azure OpenAI Service では既定の状態でいくつかのコンテンツ フ�
 
 ```json
 {
-  "mode": "All",
+	"mode": "All",
 	"policyRule": {
 		"if": {
 			"allOf": [
@@ -65,13 +65,13 @@ Azure OpenAI Service では既定の状態でいくつかのコンテンツ フ�
 		}
 	},
 	"parameters": {
-      "filterNames": {
-        "type": "Array",
-        "metadata": {
-          "displayName": "Allowed Content filters",
-          "description": "The list of allowed Content filters"
-        }
-      }
+		"filterNames": {
+			"type": "Array",
+			"metadata": {
+				"displayName": "Allowed Content filters",
+				"description": "The list of allowed Content filters"
+			}
+		}
 	}
 }
 ```
