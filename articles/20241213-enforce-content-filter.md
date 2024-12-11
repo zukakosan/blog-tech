@@ -42,7 +42,7 @@ Azure OpenAI Service では既定の状態でいくつかのコンテンツ フ�
 
 [POLICY RULE] に以下の内容を記述します。
 
-```json
+```json:enforce-content-filter
 {
 	"mode": "All",
 	"policyRule": {
