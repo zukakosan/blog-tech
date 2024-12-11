@@ -19,7 +19,7 @@ Azure OpenAI Service では既定の状態でいくつかのコンテンツ フ�
 [^1]:https://learn.microsoft.com/en-us/legal/cognitive-services/openai/overview
 [^2]:https://learn.microsoft.com/ja-jp/azure/ai-services/openai/concepts/content-filter?tabs=warning%2Cuser-prompt%2Cpython-new
 
-# 特定のコンテンツ フィルターの適用をガードレールで強制
+# 特定のコンテンツ フィルターの適用を強制する
 ワークロードの厳密性によっては、特定のカスタマイズされたコンテンツ フィルターを適用しなくてはならないというケースもあるでしょう。実際にどのように実装していくのか見ていきましょう。
 
 
