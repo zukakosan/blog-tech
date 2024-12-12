@@ -46,32 +46,32 @@ Azure OpenAI Service では既定の状態でいくつかのコンテンツ フ�
 {
   "mode": "All",
   "policyRule": {
-	  "if": {
-	    "allOf": [
-			  {
-				  "field": "type",
-				  "equals": "Microsoft.CognitiveServices/accounts/deployments"
-			  },
-			  {
-				  "not": {
-					  "field": "Microsoft.CognitiveServices/accounts/deployments/raiPolicyName",
-					  "in": "[parameters('filterNames')]"
-				  }
-			  }
-		  ]
+    "if": {
+      "allOf": [
+        {
+          "field": "type",
+          "equals": "Microsoft.CognitiveServices/accounts/deployments"
+        },
+        {
+          "not": {
+            "field": "Microsoft.CognitiveServices/accounts/deployments/raiPolicyName",
+            "in": "[parameters('filterNames')]"
+          }
+        }
+      ]
     },
     "then": {
-		  "effect": "deny"
-	  }
+      "effect": "deny"
+    }
   },
   "parameters": {
-	  "filterNames": {
-		  "type": "Array",
-		  "metadata": {
-			  "displayName": "Allowed Content filters",
-			  "description": "The list of allowed Content filters"
-		  }
-	  }
+    "filterNames": {
+      "type": "Array",
+      "metadata": {
+        "displayName": "Allowed Content filters",
+        "description": "The list of allowed Content filters"
+      }
+    }
   }
 }
 ```
