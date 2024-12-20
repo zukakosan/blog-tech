@@ -167,6 +167,10 @@ arg("").networkresourcechanges
 すると、ルールの変更に関するレコードが取得できます。
 ![](/images/20241220-azfwrule-notify/04.png)
 
+::: message
+上記のクエリをそのまま使用すると、ARG のテーブルから削除されるまで通知されてしまうため、実際には時刻ベースでフィルタリングをかけることをお勧めします。一般的な Log Analytics のテーブルと異なり、直接 ARG を参照しているため `TimeGenerated` のようなカラムが存在しない（パースする必要がある）点に注意してください。
+:::
+
 
 そのまま、[+New alert rule] からアラートを作成します。以下では、5 分の評価ウィンドウで見たときに、検出されるレコード数が 0 より大きい場合( 1 件でも変更ログがある場合)にアラートを上げるように設定しています。
 ![](/images/20241220-azfwrule-notify/05.png)
@@ -179,6 +183,9 @@ arg("").networkresourcechanges
 
 作成したアラート ルールの [identity] から Reader ロールを付与します。これにより、アラート ルールというリソースが、ARG の情報を取得できるようになります。
 ![](/images/20241220-azfwrule-notify/08.png)
+
+実際に Azure Firewall のルールを変更してしばらく経つとメールの通知が飛んできます。
+![](/images/20241220-azfwrule-notify/09.png)
 
 [^3]:https://zenn.dev/microsoft/articles/00cf34cb7e53cd
 
