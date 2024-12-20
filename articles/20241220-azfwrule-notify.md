@@ -7,6 +7,7 @@ published: true
 publication_name: "microsoft"
 published_at: 2024-12-20 07:00
 ---
+この記事は、[Microsoft Azure Tech Advent Calendar 2024](https://qiita.com/advent-calendar/2024/microsoft-azure-tech) 20 日目の記事です。
 
 # はじめに
 Tech Community[^1] にも投稿されている通り、Azure Firewall に関していくつか管理上のユーザーエクスペリエンスを向上するようなアップデートがありました。
