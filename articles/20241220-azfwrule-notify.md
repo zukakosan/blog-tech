@@ -1,6 +1,6 @@
 ---
 title: "Change Analysis を使って Azure Firewall のルールの変更を検知して通知する"
-emoji: "🧱"
+emoji: "🔥"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Azure","network","microsoft","security"]
 published: true
