@@ -1,11 +1,11 @@
 ---
-title: "Azure Firewall のルールの変更を検知して通知する"
+title: "Change Analysis を使って Azure Firewall のルールの変更を検知して通知する"
 emoji: "🧱"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Azure","network","microsoft","security"]
 published: true
 publication_name: "microsoft"
-published_at: 2024-12-22 07:00
+published_at: 2024-12-20 07:00
 ---
 
 # はじめに
@@ -180,9 +180,6 @@ arg("").networkresourcechanges
 ![](/images/20241220-azfwrule-notify/08.png)
 
 [^3]:https://zenn.dev/microsoft/articles/00cf34cb7e53cd
-
-<!-- ## Azure Firewall のルールを変更する
-既存の規則を変更（プロトコル/ポートを TCP/443 から Any/* に緩める）します。評価の頻度間隔である 5 分程度待つと、アラートが発報され、今回はメールが配信されます。 -->
 
 # おわりに
 今回使用したクエリは非常にシンプルですが、例えば特定の変更だけ（削除や Any の開放など）を検出するようにするのもいいかもしれません。とはいえ、重要なリソースに関する変更はある程度リアルタイムに検知できた方が運用健全性上よいはずですので、本記事の方法を一例として認識しておくのはよいと思います。Azure Resource Graph で色々な運用改善に使用できる情報が拡充されていくとともに、ユースケースをきちんと考えていくと負荷軽減につながるでしょう。 
