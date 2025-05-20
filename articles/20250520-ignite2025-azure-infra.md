@@ -3,7 +3,7 @@ title: "Microsoft Ignite 2025 の Azure Infra アップデートまとめ"
 emoji: "🚀"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure", "microsoft", "ignite", "infrastructure"]
-published: true
+published: false
 publication_name: "microsoft"
 ---
 
