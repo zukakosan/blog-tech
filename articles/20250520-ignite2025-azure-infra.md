@@ -85,7 +85,11 @@ publication_name: "microsoft"
 
 * **Arc 対応 Kubernetes の拡張**：オンプレミス環境での Kubernetes クラスターの管理機能が大幅に強化されました。
 
+  > **実際の情報**: Azure Arc を使用すると、オンプレミスやマルチクラウド環境のKubernetesクラスターをAzureに接続できます。詳細は[Azure Arc 対応 Kubernetes](https://learn.microsoft.com/ja-jp/azure/azure-arc/kubernetes/overview)を参照してください。
+
 * **Arc 対応データサービスの拡張**：より多くのデータベースサービスがオンプレミス環境で利用可能になりました。
+
+  > **実際の情報**: 現在、Azure Arc対応データサービスでは、Azure SQL Managed InstanceやPostgreSQLをオンプレミス環境にデプロイできます。詳細は[Azure Arc対応データサービス](https://learn.microsoft.com/ja-jp/azure/azure-arc/data/overview)を参照してください。
 
 ## Azure Stack の新機能
 
@@ -101,13 +105,21 @@ publication_name: "microsoft"
 
 * **予測分析の強化**：機械学習を活用したリソース使用予測と異常検出の精度が向上しました。
 
+  > **実際の情報**: Azure Monitorには現在、スマート検出や異常検出機能があります。詳細は[Azure Monitorでのアラート](https://learn.microsoft.com/ja-jp/azure/azure-monitor/alerts/alerts-overview)を参照してください。
+
 * **統合ダッシュボード**：複数のリソースタイプにまたがる統合監視ビューが提供され、運用効率が向上しました。
+
+  > **実際の情報**: Azure Dashboards や Azure Workbooks を使用して、カスタムダッシュボードを作成できます。詳細は[Azure Dashboard](https://learn.microsoft.com/ja-jp/azure/azure-portal/azure-portal-dashboards)を参照してください。
 
 ## Azure Advisor の拡張
 
 * **インフラ最適化の推奨事項**：コスト、パフォーマンス、セキュリティの観点から、より詳細なリソース最適化の推奨事項が提供されるようになりました。
 
+  > **実際の情報**: 現在のAzure Advisorでは、コスト、セキュリティ、信頼性、パフォーマンス、運用効率の5つのカテゴリの推奨事項が提供されています。詳細は[Azure Advisor](https://learn.microsoft.com/ja-jp/azure/advisor/advisor-overview)を参照してください。
+
 * **自動修復オプション**：特定の推奨事項に対して、ワンクリックで修正を適用できるようになりました。
+
+  > **実際の情報**: 現在のAzure Advisorにも、一部の推奨事項に対するクイック修正機能があります。詳細は[Azure Advisorの推奨事項](https://learn.microsoft.com/ja-jp/azure/advisor/advisor-reference-reliability-recommendations)を参照してください。
 
 # サステナビリティ関連のアップデート
 
@@ -115,7 +127,11 @@ publication_name: "microsoft"
 
 * **カーボンフットプリント分析**：Azure リソースの使用によるカーボンフットプリントを可視化する新機能が追加されました。
 
+  > **実際の情報**: Microsoft Cloud for Sustainabilityでは、組織の環境への影響を測定、理解するためのツールを提供しています。詳細は[Microsoft Sustainabilityソリューション](https://www.microsoft.com/ja-jp/sustainability/solutions)を参照してください。
+
 * **サステナブルインフラストラクチャオプション**：環境への影響を最小限に抑えるリソース選択のガイダンスが提供されるようになりました。
+
+  > **実際の情報**: Microsoftは、2030年までに炭素ネガティブになり、2050年までに設立以来排出したすべての炭素を除去することを目標に、クラウドインフラのサステナビリティを向上させる取り組みを行っています。詳細は[Microsoftのサステナビリティへの取り組み](https://www.microsoft.com/ja-jp/sustainability/approach)を参照してください。
 
 # Infrastructure as Code 関連のアップデート
 
@@ -125,13 +141,21 @@ publication_name: "microsoft"
 
 * **Bicep モジュールレジストリ**：再利用可能なインフラストラクチャコンポーネントを共有・管理する中央レポジトリが導入されました。
 
+  > **実際の情報**: 現在のBicepでは、Bicepモジュールを使用して再利用可能なコンポーネントを作成できます。詳細は[Bicep モジュール](https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/bicep/modules)を参照してください。
+
 * **高度なテンプレート検証**：デプロイ前にリソース構成の問題を特定する検証機能が強化されました。
+
+  > **実際の情報**: Bicepには現在、VS CodeやAzure CLIを通じた構文検証機能があります。詳細は[Bicep プラットフォーム](https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/bicep/overview)を参照してください。
 
 ## Terraform 統合の強化
 
 * **Azure Terraform モジュールの拡充**：Microsoft 公式の Terraform モジュールが拡張され、より多くのリソースタイプがカバーされるようになりました。
 
+  > **実際の情報**: Microsoftは現在、Terraformのための[Azure プロバイダー](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)を提供しています。
+
 * **Terraform Cloud との統合**：Azure と Terraform Cloud の間でシームレスなワークフローが実現されました。
+
+  > **実際の情報**: 現在、Azure DevOpsとTerraform Cloudの連携が可能です。詳細は[Terraformドキュメント](https://developer.hashicorp.com/terraform/cloud-docs)を参照してください。
 
 # おわりに
 
