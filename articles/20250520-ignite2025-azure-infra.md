@@ -5,7 +5,6 @@ type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure", "microsoft", "ignite", "infrastructure"]
 published: true
 publication_name: "microsoft"
-published_at: 2025-06-10 09:00
 ---
 
 # はじめに
