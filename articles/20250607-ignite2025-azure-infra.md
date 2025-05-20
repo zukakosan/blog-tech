@@ -1,5 +1,5 @@
 ---
-title: "Microsoft Ignite 2025 の Azure Infra アップデートまとめ"
+title: "Microsoft Ignite 2025 の Azure のアップデートまとめ"
 emoji: "🚀"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure", "microsoft", "ignite", "infrastructure"]
@@ -118,4 +118,4 @@ Microsoft Ignite 2025 では、Azure インフラストラクチャの幅広い�
 
 新機能の多くは今後数か月のうちにプレビューが開始される予定です。各機能の詳細な発表時期や利用可能なリージョンについては、Azure 公式ブログや製品ドキュメントで最新情報をご確認ください。
 
-[^1]: https://news.microsoft.com/build-2025-book-of-news/ja/
+[^1]: https://news.microsoft.com/build-2025-book-of-news/ja/?msockid=271c6d445ca56e36238578745d3b6f2d
