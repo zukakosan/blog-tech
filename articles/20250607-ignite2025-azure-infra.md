@@ -15,7 +15,7 @@ publication_name: "microsoft"
 
 # ネットワーキング関連のアップデート
 
-> **注**: 以下は架空の機能であり、実際のAzure機能とは異なります。現在のAzure Networkingサービスについては[公式ドキュメント](https://learn.microsoft.com/ja-jp/azure/networking/)をご参照ください。
+> **注**: 以下は架空の機能であり、実際のAzure機能とは異なります。現在のAzure Networkingサービスの更新情報については[Azure 更新情報](https://azure.microsoft.com/ja-jp/updates/?category=networking)をご参照ください。
 
 ## Azure Virtual Network の強化
 
@@ -35,25 +35,25 @@ publication_name: "microsoft"
 
 * **Azure Firewall Premium v2**：従来の Premium SKU に比べて、高度な脅威検出機能とパフォーマンスの向上が実現されています。
 
-  > **実際の情報**: 現在、Azure Firewallには Standard と Premium の2つのSKUが存在しています。詳細は[Azure Firewall のドキュメント](https://learn.microsoft.com/ja-jp/azure/firewall/overview)を参照してください。
+  > **実際の情報**: 現在、Azure Firewallには Standard と Premium の2つのSKUが存在しています。詳細は[Azure Firewall の更新情報](https://azure.microsoft.com/ja-jp/updates/?product=firewall)を参照してください。
 
 * **マルチリージョンファイアウォール管理**：単一のファイアウォールポリシーを複数リージョンに適用できるようになり、グローバル規模での一貫したセキュリティ管理が容易になりました。
 
-  > **実際の情報**: 現在、Azure Firewall Policyを使用してファイアウォールの構成を管理できます。詳細は[Azure Firewall Policyのドキュメント](https://learn.microsoft.com/ja-jp/azure/firewall-manager/policy-overview)を参照してください。
+  > **実際の情報**: 現在、Azure Firewall Policyを使用してファイアウォールの構成を管理できます。詳細は[Azure Firewall Manager の更新情報](https://azure.microsoft.com/ja-jp/updates/?product=firewall-manager)を参照してください。
 
 # コンピュート関連のアップデート
 
-> **注**: 以下は架空の機能であり、実際のAzure機能とは異なります。現在のAzure Compute サービスについては[公式ドキュメント](https://learn.microsoft.com/ja-jp/azure/virtual-machines/)をご参照ください。
+> **注**: 以下は架空の機能であり、実際のAzure機能とは異なります。現在のAzure Compute サービスの更新情報については[Azure 更新情報](https://azure.microsoft.com/ja-jp/updates/?category=compute)をご参照ください。
 
 ## Azure Virtual Machines の新機能
 
 * **新世代の仮想マシンファミリー**：AI ワークロードに最適化された新しい VM シリーズが導入され、高いコストパフォーマンスを実現します。
 
-  > **実際の情報**: 現在のAzureのAI対応仮想マシンとしてはNシリーズがあります。詳細は[GPU最適化仮想マシン](https://learn.microsoft.com/ja-jp/azure/virtual-machines/sizes-gpu)を参照してください。
+  > **実際の情報**: 現在のAzureのAI対応仮想マシンとしてはNシリーズがあります。詳細は[GPU対応仮想マシンの更新情報](https://azure.microsoft.com/ja-jp/updates/?query=GPU)を参照してください。
 
 * **スポットVM の機能強化**：予測可能性の向上と新しい割引オプションが導入され、コスト効率の高い運用が可能になりました。
 
-  > **実際の情報**: Azure Spot Virtual Machinesは既存の機能で、割引料金でVMを利用できますが、Azureの需要に応じて自動的に削除される可能性があります。詳細は[Spot VMのドキュメント](https://learn.microsoft.com/ja-jp/azure/virtual-machines/spot-vms)を参照してください。
+  > **実際の情報**: Azure Spot Virtual Machinesは既存の機能で、割引料金でVMを利用できますが、Azureの需要に応じて自動的に削除される可能性があります。詳細は[Spot Virtual Machinesの更新情報](https://azure.microsoft.com/ja-jp/updates/?query=spot%20virtual%20machines)を参照してください。
 
 ## Azure Dedicated Host の拡張
 
@@ -63,7 +63,7 @@ publication_name: "microsoft"
 
 # ストレージ関連のアップデート
 
-> **注**: 以下は架空の機能であり、実際のAzure機能とは異なります。現在のAzure Storage サービスについては[公式ドキュメント](https://learn.microsoft.com/ja-jp/azure/storage/)をご参照ください。
+> **注**: 以下は架空の機能であり、実際のAzure機能とは異なります。現在のAzure Storage サービスの更新情報については[Azure 更新情報](https://azure.microsoft.com/ja-jp/updates/?category=storage)をご参照ください。
 
 ## Azure Blob Storage の強化
 
@@ -79,17 +79,17 @@ publication_name: "microsoft"
 
 # ハイブリッドクラウド関連のアップデート
 
-> **注**: 以下は架空の機能であり、実際のAzure機能とは異なります。現在のAzure Hybrid サービスについては[公式ドキュメント](https://learn.microsoft.com/ja-jp/azure/azure-arc/)をご参照ください。
+> **注**: 以下は架空の機能であり、実際のAzure機能とは異なります。現在のAzure Hybrid サービスの更新情報については[Azure 更新情報](https://azure.microsoft.com/ja-jp/updates/?query=hybrid)をご参照ください。
 
 ## Azure Arc の強化
 
 * **Arc 対応 Kubernetes の拡張**：オンプレミス環境での Kubernetes クラスターの管理機能が大幅に強化されました。
 
-  > **実際の情報**: Azure Arc を使用すると、オンプレミスやマルチクラウド環境のKubernetesクラスターをAzureに接続できます。詳細は[Azure Arc 対応 Kubernetes](https://learn.microsoft.com/ja-jp/azure/azure-arc/kubernetes/overview)を参照してください。
+  > **実際の情報**: Azure Arc を使用すると、オンプレミスやマルチクラウド環境のKubernetesクラスターをAzureに接続できます。詳細は[Azure Arc の更新情報](https://azure.microsoft.com/ja-jp/updates/?query=Arc)を参照してください。
 
 * **Arc 対応データサービスの拡張**：より多くのデータベースサービスがオンプレミス環境で利用可能になりました。
 
-  > **実際の情報**: 現在、Azure Arc対応データサービスでは、Azure SQL Managed InstanceやPostgreSQLをオンプレミス環境にデプロイできます。詳細は[Azure Arc対応データサービス](https://learn.microsoft.com/ja-jp/azure/azure-arc/data/overview)を参照してください。
+  > **実際の情報**: 現在、Azure Arc対応データサービスでは、Azure SQL Managed InstanceやPostgreSQLをオンプレミス環境にデプロイできます。詳細は[Azure Arc対応データサービスの更新情報](https://azure.microsoft.com/ja-jp/updates/?query=Arc%20data)を参照してください。
 
 ## Azure Stack の新機能
 
@@ -99,63 +99,63 @@ publication_name: "microsoft"
 
 # 運用管理関連のアップデート
 
-> **注**: 以下は架空の機能であり、実際のAzure機能とは異なります。現在のAzure Monitor および Azure Advisor については[公式ドキュメント](https://learn.microsoft.com/ja-jp/azure/azure-monitor/)をご参照ください。
+> **注**: 以下は架空の機能であり、実際のAzure機能とは異なります。現在のAzure Monitor および Azure Advisor の更新情報については[Azure 更新情報](https://azure.microsoft.com/ja-jp/updates/?category=management-tools)をご参照ください。
 
 ## Azure Monitor の新機能
 
 * **予測分析の強化**：機械学習を活用したリソース使用予測と異常検出の精度が向上しました。
 
-  > **実際の情報**: Azure Monitorには現在、スマート検出や異常検出機能があります。詳細は[Azure Monitorでのアラート](https://learn.microsoft.com/ja-jp/azure/azure-monitor/alerts/alerts-overview)を参照してください。
+  > **実際の情報**: Azure Monitorには現在、スマート検出や異常検出機能があります。詳細は[Azure Monitor の更新情報](https://azure.microsoft.com/ja-jp/updates/?product=monitor)を参照してください。
 
 * **統合ダッシュボード**：複数のリソースタイプにまたがる統合監視ビューが提供され、運用効率が向上しました。
 
-  > **実際の情報**: Azure Dashboards や Azure Workbooks を使用して、カスタムダッシュボードを作成できます。詳細は[Azure Dashboard](https://learn.microsoft.com/ja-jp/azure/azure-portal/azure-portal-dashboards)を参照してください。
+  > **実際の情報**: Azure Dashboards や Azure Workbooks を使用して、カスタムダッシュボードを作成できます。詳細は[Azure ポータルダッシュボードの更新情報](https://azure.microsoft.com/ja-jp/updates/?query=dashboard)を参照してください。
 
 ## Azure Advisor の拡張
 
 * **インフラ最適化の推奨事項**：コスト、パフォーマンス、セキュリティの観点から、より詳細なリソース最適化の推奨事項が提供されるようになりました。
 
-  > **実際の情報**: 現在のAzure Advisorでは、コスト、セキュリティ、信頼性、パフォーマンス、運用効率の5つのカテゴリの推奨事項が提供されています。詳細は[Azure Advisor](https://learn.microsoft.com/ja-jp/azure/advisor/advisor-overview)を参照してください。
+  > **実際の情報**: 現在のAzure Advisorでは、コスト、セキュリティ、信頼性、パフォーマンス、運用効率の5つのカテゴリの推奨事項が提供されています。詳細は[Azure Advisor の更新情報](https://azure.microsoft.com/ja-jp/updates/?product=advisor)を参照してください。
 
 * **自動修復オプション**：特定の推奨事項に対して、ワンクリックで修正を適用できるようになりました。
 
-  > **実際の情報**: 現在のAzure Advisorにも、一部の推奨事項に対するクイック修正機能があります。詳細は[Azure Advisorの推奨事項](https://learn.microsoft.com/ja-jp/azure/advisor/advisor-reference-reliability-recommendations)を参照してください。
+  > **実際の情報**: 現在のAzure Advisorにも、一部の推奨事項に対するクイック修正機能があります。詳細は[Azure Advisorのクイック修正の更新情報](https://azure.microsoft.com/ja-jp/updates/?query=advisor%20quick%20fix)を参照してください。
 
 # サステナビリティ関連のアップデート
 
-> **注**: 以下は架空の機能であり、実際のAzure機能とは異なります。現在のAzure のサステナビリティ取り組みについては[Microsoft の公式ページ](https://www.microsoft.com/ja-jp/sustainability)をご参照ください。
+> **注**: 以下は架空の機能であり、実際のAzure機能とは異なります。現在のAzure のサステナビリティ取り組みについては[Microsoft の公式アップデート](https://azure.microsoft.com/ja-jp/updates/?query=sustainability)をご参照ください。
 
 * **カーボンフットプリント分析**：Azure リソースの使用によるカーボンフットプリントを可視化する新機能が追加されました。
 
-  > **実際の情報**: Microsoft Cloud for Sustainabilityでは、組織の環境への影響を測定、理解するためのツールを提供しています。詳細は[Microsoft Sustainabilityソリューション](https://www.microsoft.com/ja-jp/sustainability/solutions)を参照してください。
+  > **実際の情報**: Microsoft Cloud for Sustainabilityでは、組織の環境への影響を測定、理解するためのツールを提供しています。詳細は[Microsoft Cloud for Sustainabilityの更新情報](https://azure.microsoft.com/ja-jp/updates/?query=microsoft%20cloud%20for%20sustainability)を参照してください。
 
 * **サステナブルインフラストラクチャオプション**：環境への影響を最小限に抑えるリソース選択のガイダンスが提供されるようになりました。
 
-  > **実際の情報**: Microsoftは、2030年までに炭素ネガティブになり、2050年までに設立以来排出したすべての炭素を除去することを目標に、クラウドインフラのサステナビリティを向上させる取り組みを行っています。詳細は[Microsoftのサステナビリティへの取り組み](https://www.microsoft.com/ja-jp/sustainability/approach)を参照してください。
+  > **実際の情報**: Microsoftは、2030年までに炭素ネガティブになり、2050年までに設立以来排出したすべての炭素を除去することを目標に、クラウドインフラのサステナビリティを向上させる取り組みを行っています。詳細は[Microsoftのサステナビリティに関する更新情報](https://azure.microsoft.com/ja-jp/updates/?query=sustainability)を参照してください。
 
 # Infrastructure as Code 関連のアップデート
 
-> **注**: 以下は架空の機能であり、実際のAzure機能とは異なります。現在のAzure Bicep および Terraform 統合については[公式ドキュメント](https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/bicep/overview)をご参照ください。
+> **注**: 以下は架空の機能であり、実際のAzure機能とは異なります。現在のAzure Bicep および Terraform 統合の更新情報については[Azure 更新情報](https://azure.microsoft.com/ja-jp/updates/?query=bicep%20terraform)をご参照ください。
 
 ## Azure Bicep の拡張
 
 * **Bicep モジュールレジストリ**：再利用可能なインフラストラクチャコンポーネントを共有・管理する中央レポジトリが導入されました。
 
-  > **実際の情報**: 現在のBicepでは、Bicepモジュールを使用して再利用可能なコンポーネントを作成できます。詳細は[Bicep モジュール](https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/bicep/modules)を参照してください。
+  > **実際の情報**: 現在のBicepでは、Bicepモジュールを使用して再利用可能なコンポーネントを作成できます。詳細は[Bicep の更新情報](https://azure.microsoft.com/ja-jp/updates/?query=bicep)を参照してください。
 
 * **高度なテンプレート検証**：デプロイ前にリソース構成の問題を特定する検証機能が強化されました。
 
-  > **実際の情報**: Bicepには現在、VS CodeやAzure CLIを通じた構文検証機能があります。詳細は[Bicep プラットフォーム](https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/bicep/overview)を参照してください。
+  > **実際の情報**: Bicepには現在、VS CodeやAzure CLIを通じた構文検証機能があります。詳細は[Bicep 開発ツールの更新情報](https://azure.microsoft.com/ja-jp/updates/?query=bicep%20tools)を参照してください。
 
 ## Terraform 統合の強化
 
 * **Azure Terraform モジュールの拡充**：Microsoft 公式の Terraform モジュールが拡張され、より多くのリソースタイプがカバーされるようになりました。
 
-  > **実際の情報**: Microsoftは現在、Terraformのための[Azure プロバイダー](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)を提供しています。
+  > **実際の情報**: Microsoftは現在、Terraformのための[Azure プロバイダー](https://azure.microsoft.com/ja-jp/updates/?query=terraform)を提供しています。
 
 * **Terraform Cloud との統合**：Azure と Terraform Cloud の間でシームレスなワークフローが実現されました。
 
-  > **実際の情報**: 現在、Azure DevOpsとTerraform Cloudの連携が可能です。詳細は[Terraformドキュメント](https://developer.hashicorp.com/terraform/cloud-docs)を参照してください。
+  > **実際の情報**: 現在、Azure DevOpsとTerraform Cloudの連携が可能です。詳細は[Azureの開発ツール統合に関する更新情報](https://azure.microsoft.com/ja-jp/updates/?query=terraform%20integration)を参照してください。
 
 # おわりに
 
