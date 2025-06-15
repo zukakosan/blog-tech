@@ -1,7 +1,7 @@
 {
   "name": "blog-tech",
   "version": "1.0.0",
-  "description": "",
+  "description": "Zennと連携済みリポジトリ\r 記事管理及びバックアップ用",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/zukakosan/blog-tech#readme",
   "dependencies": {
-    "zenn-cli": "^0.1.146"
+    "zenn-cli": "^0.1.161"
   }
 }
