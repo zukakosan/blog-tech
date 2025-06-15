@@ -8,7 +8,7 @@ published: false
 ---
 
 # Azure の管理操作 と Azure REST API
-Azure の管理操作のリクエストは、Azure portal、 Azure Powershell/CLI、 REST API、SDK 経由問わず、Azure Reource Manager を経由してサービスに送られます[^1]。
+Azure の管理操作のリクエストは、Azure portal、 Azure Powershell/CLI、 REST API、SDK 経由問わず、Azure Resource Manager を経由してサービスに送られます[^1]。
 
 Azure REST API は新サービス、新 API がすぐに登場するため、Azure CLI でカバーしていないサービスや設定を行えます（Request Body 次第）。
 
@@ -24,8 +24,8 @@ $ az rest --method {HTTPメソッド} --url {API-URL} --body '{JSON-PAYLOAD}'
 以下 MS Learn より抜粋
 > # az rest を使用するためのヒント
 > - az rest コマンドは、ログインした資格情報を使用して自動的に認証します。
-> - Authorization ヘッダーが設定されていない場合は、ヘッダー Authorization: Bearer <token>が追加されます。ここで、<token> は を介して Microsoft Entra IDから取得されます。
-> - --url パラメーターが --url コマンドの出力からエンドポイントで始まる場合、トークンのターゲット リソースは az cloud show --query endpoints パラメーターから派生します。 --url パラメーターが必要です。
+> - Authorization ヘッダーが設定されていない場合は、ヘッダー Authorization: Bearer <token>が追加されます。ここで、<token> は Microsoft Entra ID から取得されます。
+> - --url パラメーターが `az cloud show --query endpoints` コマンドの出力からのエンドポイントで始まる場合、トークンのターゲット リソースは --url パラメーターから派生します。
 > - カスタム リソースの --resource パラメーターを使用します。
 > - Content-Type ヘッダーが設定されておらず、--body が有効な JSON 文字列である場合、Content-Type ヘッダーは既定で "application/json" になります。
 
@@ -88,7 +88,7 @@ $ az rest --method GET --url /subscriptions/xxxx/resourceGroups/20250611-lbtest/
 ```
 
 # リソースの変更: PUT
-GET メソッドで取得できた情報をもとに、リソースの変更をしてみましょう。今回は PUT メソッドを使用します。PUT のペイロードには、先ほど GET で得られた JSON をそのまま渡したいと思うのではないでしょうか？
+GET メソッドで取得できた情報をもとに、リソースの変更をしてみましょう。今回は PUT メソッドを使用します。PUT のペイロードには、先ほど GET で得られた JSON をそのまま渡すことを考えがちです。
 ただし、Azure REST API では、GET レスポンスと PUT リクエストで受け付けられるプロパティが異なることがよくあります。GET はリソースの完全な情報（参照情報を含む）を返しますが、PUT では実際に更新可能なプロパティのみを受け付けます。
 例えば、リソースグループ名は URL パスで既に指定されているため、Request Body で再度指定する必要はなく、API はそれを余分なプロパティと見なしています。
 よって、そのまま PUT で投げ返すと、PUT API が受け付けていないプロパティも投げ込もうとしてエラーになることがあります。
@@ -265,6 +265,6 @@ $ az rest --method PUT --url /subscriptions/xxxx/resourceGroups/20250611-lbtest/
 ```
 
 # おわりに
-Azure REST API を az rest コマンドで叩いてみました。GET メソッドでのリソース情報取得から、JSON の編集、PUT メソッドでのリソース更新の流れは一部のリソースのトラブルシューティングとしても使われていたりします。直 API をたたけるため、柔軟性が高く、覚えておくと役に立つ場面が来るかもしれません。
+Azure REST API を az rest コマンドで叩いてみました。GET メソッドでのリソース情報取得から、JSON の編集、PUT メソッドでのリソース更新の流れは一部のリソースのトラブルシューティングとしても使われていたりします。直接 API を叩けるため、柔軟性が高く、覚えておくと役に立つ場面が来るかもしれません。
 
 [^1]:https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/management/overview#consistent-management-layer
