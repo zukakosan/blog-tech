@@ -4,7 +4,7 @@ emoji: "🚽"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","microsoft","api"]
 publication_name: "microsoft"
-published: false
+published: true
 ---
 
 # Azure の管理操作 と Azure REST API
@@ -88,8 +88,8 @@ $ az rest --method GET --url /subscriptions/xxxx/resourceGroups/20250611-lbtest/
 ```
 
 # リソースの変更: PUT
-GET メソッドで取得できた情報をもとに、リソースの変更をしてみましょう。今回は PUT メソッドを使用します。PUT のペイロードには、先ほど GET で得られた JSON をそのまま渡したいと思うのではないでしょうか？
-ただし、Azure REST API では、GET レスポンスと PUT リクエストで受け付けられるプロパティが異なることがよくあります。GET はリソースの完全な情報（参照情報を含む）を返しますが、PUT では実際に更新可能なプロパティのみを受け付けます。
+GET メソッドで取得できた情報をもとに、リソースの変更をしてみましょう。今回は PUT メソッドを使用します。
+Azure REST API では、GET レスポンスと PUT リクエストで受け付けられるプロパティが異なることがよくあります。GET はリソースの完全な情報（参照情報を含む）を返しますが、PUT では実際に更新可能なプロパティのみを受け付けます。
 例えば、リソースグループ名は URL パスで既に指定されているため、Request Body で再度指定する必要はなく、API はそれを余分なプロパティと見なしています。
 よって、そのまま PUT で投げ返すと、PUT API が受け付けていないプロパティも投げ込もうとしてエラーになることがあります。
 
