@@ -12,7 +12,7 @@ Azure の管理操作のリクエストは、Azure portal、 Azure Powershell/CL
 
 Azure REST API は新サービス、新 API がすぐに登場するため、Azure CLI でカバーしていないサービスや設定を行えます（Request Body 次第）。
 
-また、Azure REST API は Azure CLI の `az rest` コマンドから叩けるため、認証まわりや HTTP リクエストに不慣れであっても気軽に試せます。特に、Azure Cloud Shell では、基本的にログイン済みのため、かなり気軽です。
+また、Azure REST API[^2] は Azure CLI の `az rest` コマンドから叩けるため、認証まわりや HTTP リクエストに不慣れであっても気軽に試せます。特に、Azure Cloud Shell では、基本的にログイン済みのため、かなり気軽です。
 
 ## az rest コマンド
 az rest コマンドの構文は基本的に以下のようになります。
@@ -268,3 +268,4 @@ $ az rest --method PUT --url /subscriptions/xxxx/resourceGroups/20250611-lbtest/
 Azure REST API を az rest コマンドで叩いてみました。GET メソッドでのリソース情報取得から、JSON の編集、PUT メソッドでのリソース更新の流れは一部のリソースのトラブルシューティングとしても使われていたりします。直 API をたたけるため、柔軟性が高く、覚えておくと役に立つ場面が来るかもしれません。
 
 [^1]:https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/management/overview#consistent-management-layer
+[^2]:https://learn.microsoft.com/ja-jp/rest/api/azure/
