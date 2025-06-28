@@ -1,5 +1,5 @@
 ---
-title: "Azure Logic Apps の Agent Workflow を使って AIOps を実現する"
+title: "Azure Logic Apps の Agent Workflow を使って AIOps を加速する"
 emoji: "🥷🏻"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Agent","ai","azure"]
@@ -94,7 +94,6 @@ HTTP のリクエストを裁くために、Parse JSON も入れておきます�
     }
   }
 }
-
 ```
 
 `Run with payload` から、投げてみます。実行履歴を確認すると、きちんと Tool が使われていることがわかります。また、Tool への `INPUTS` の `Location` が「東京」として抽出されています。
