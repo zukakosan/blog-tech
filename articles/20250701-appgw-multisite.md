@@ -1,9 +1,9 @@
 ---
-title: "Application Gateway のマルチサイト リスナーを構成する"
+title: "一つの Azure Application Gateway で複数の Web アプリを管理しよう"
 emoji: "⛩️"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","app","microsoft"]
-published: false
+published: true
 publication_name: "microsoft"
 ---
 
