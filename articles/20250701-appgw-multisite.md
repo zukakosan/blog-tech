@@ -56,6 +56,157 @@ App Serivce へのリクエスト (Probe) では、Host ヘッダー が対象�
 ![](/images/20250701-appgw-multisite/14.png)
 
 # hosts ファイルの設定
+マルチサイト ホスティングの場合、複数のドメイン名をApplication Gateway のフロント IP に解決する必要があります。今回は、手軽に手元の PC 上で、hosts ファイルに記述します。管理者モードで以下に存在する hosts ファイルを開き、末尾に IP アドレスと FQDN の対応を追記します。
+
+```
+"C:\Windows\System32\drivers\etc\hosts"
+```
+
+これにより、各 App Service に対するリクエストは Application Gateway を向くようになります。
+
+```txt
+# Copyright (c) 1993-2009 Microsoft Corp.
+#
+# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
+#
+# This file contains the mappings of IP addresses to host names. Each
+# entry should be kept on an individual line. The IP address should
+# be placed in the first column followed by the corresponding host name.
+# The IP address and the host name should be separated by at least one
+# space.
+
+48.xxx.xxx.15 sampleapp-1-eyb6gkabbhh6bwg6.canadacentral-01.azurewebsites.net
+48.xxx.xxx.15 sampleapp-2-hbewgra6bxf2arhy.canadacentral-01.azurewebsites.net
+
+``` 
+
+設定を保存したら、反映されていることを確認します。`nslookup` では、hosts ファイルを参照しないため、`Resolve-DnsName` コマンドを使用します。
+
+```powershell
+PS> Resolve-DnsName sampleapp-2-hbewgra6bxf2arhy.canadacentral-01.azurewebsites.net
+
+Name                                           Type   TTL   Section    IPAddress
+----                                           ----   ---   -------    ---------
+sampleapp-2-hbewgra6bxf2arhy.canadacentral-01. A      16368 Answer     48.xxx.xxx.15
+azurewebsites.net    
+```
+
+# App Service の http 許可
+今回は検証上 http で疎通確認を行います。App Service では、https を強制させることもできるので、その設定が `off` になっていることを確認します。もちろん、本来は `On` のほうがいいです。
+
+![](/images/20250701-appgw-multisite/14.png)
+
+# 接続テスト
+モダンブラウザから接続すると、https にリダイレクトされてしまう可能性があるため、シンプルに `curl` で疎通確認を行います。
+
+sampleapp-1 向けに対しては、node.js を使用した場合のページが返ってきています (例: `src="https://appservice.azureedge.net/images/linux-landing-page/v4/built-nodejs.svg"`)。
+```powershell
+PS> curl http://sampleapp-1-eyb6gkabbhh6bwg6.canadacentral-01.azurewebsites.net/
+
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : <!DOCTYPE html>
+                    <html lang="en">
+
+                    <head>
+                        <meta charset="utf-8" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                        <meta http-equiv="X-UA-Compatible" content="IE=ed...
+RawContent        : HTTP/1.1 200 OK
+                    Connection: keep-alive
+                    request-context: appId=cid-v1:
+                    Accept-Ranges: bytes
+                    Content-Length: 4560
+                    Cache-Control: public, max-age=0
+                    Content-Type: text/html; charset=utf-8
+                    Date: Tue...
+Forms             : {}
+Headers           : {[Connection, keep-alive], [request-context, appId=cid-v1:], [Accept-Ranges, bytes],
+                    [Content-Length, 4560]...}
+Images            : {@{innerHTML=; innerText=; outerHTML=<img width="270" height="108" alt=""
+                    src="https://appservice.azureedge.net/images/app-service/v4/azurelogo.svg">; outerText=;
+                    tagName=IMG; width=270; height=108; alt=;
+                    src=https://appservice.azureedge.net/images/app-service/v4/azurelogo.svg}, @{innerHTML=;
+                    innerText=; outerHTML=<img src="https://appservice.azureedge.net/images/app-service/v4/web.svg">;
+                    outerText=; tagName=IMG; src=https://appservice.azureedge.net/images/app-service/v4/web.svg},
+                    @{innerHTML=; innerText=; outerHTML=<img width="50" height="50"
+                    src="https://appservice.azureedge.net/images/linux-landing-page/v4/built-nodejs.svg">; outerText=;
+                    tagName=IMG; width=50; height=50;
+                    src=https://appservice.azureedge.net/images/linux-landing-page/v4/built-nodejs.svg}, @{innerHTML=;
+                    innerText=; outerHTML=<img src="https://appservice.azureedge.net/images/app-service/v4/web.svg">;
+                    outerText=; tagName=IMG; src=https://appservice.azureedge.net/images/app-service/v4/web.svg}}
+InputFields       : {}
+Links             : {@{innerHTML=<button class="btn btn-primary mt-4" id="deplCenter" type="submit">Deployment
+                                                        center</button>; innerText=Deployment center; outerHTML=<a
+                    id="depCenterLink" href="https://go.microsoft.com/fwlink/?linkid=2057852"><button class="btn
+                    btn-primary mt-4" id="deplCenter" type="submit">Deployment
+                                                        center</button></a>; outerText=Deployment center; tagName=A;
+                    id=depCenterLink; href=https://go.microsoft.com/fwlink/?linkid=2057852}, @{innerHTML=<button
+                    class="btn btn-primary mt-4" id="quickStart" type="submit">Quickstart</button>;
+                    innerText=Quickstart; outerHTML=<a href="https://go.microsoft.com/fwlink/?linkid=2084231"><button
+                    class="btn btn-primary mt-4" id="quickStart" type="submit">Quickstart</button></a>;
+                    outerText=Quickstart; tagName=A; href=https://go.microsoft.com/fwlink/?linkid=2084231}}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 4560
+
+```
+
+sampleapp-2 宛てでは、`Python` 用のトップページが返ってきています（`src="https://appservice.azureedge.net/images/linux-landing-page/v4/built-python.svg"`）。
+```powershell
+PS> curl http://sampleapp-2-hbewgra6bxf2arhy.canadacentral-01.azurewebsites.net
+
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : <!DOCTYPE html>
+                    <html lang="en">
+
+                    <head>
+                        <meta charset="utf-8" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                        <meta http-equiv="X-UA-Compatible" content="IE=ed...
+RawContent        : HTTP/1.1 200 OK
+                    Connection: keep-alive
+                    Content-Disposition: inline; filename=hostingstart.html
+                    Content-Length: 4560
+                    Cache-Control: no-cache
+                    Content-Type: text/html; charset=utf-8
+                    Date: Tue, 01 J...
+Forms             : {}
+Headers           : {[Connection, keep-alive], [Content-Disposition, inline; filename=hostingstart.html],
+                    [Content-Length, 4560], [Cache-Control, no-cache]...}
+Images            : {@{innerHTML=; innerText=; outerHTML=<img width="270" height="108" alt=""
+                    src="https://appservice.azureedge.net/images/app-service/v4/azurelogo.svg">; outerText=;
+                    tagName=IMG; width=270; height=108; alt=;
+                    src=https://appservice.azureedge.net/images/app-service/v4/azurelogo.svg}, @{innerHTML=;
+                    innerText=; outerHTML=<img src="https://appservice.azureedge.net/images/app-service/v4/web.svg">;
+                    outerText=; tagName=IMG; src=https://appservice.azureedge.net/images/app-service/v4/web.svg},
+                    @{innerHTML=; innerText=; outerHTML=<img width="50" height="50"
+                    src="https://appservice.azureedge.net/images/linux-landing-page/v4/built-python.svg">; outerText=;
+                    tagName=IMG; width=50; height=50;
+                    src=https://appservice.azureedge.net/images/linux-landing-page/v4/built-python.svg}, @{innerHTML=;
+                    innerText=; outerHTML=<img src="https://appservice.azureedge.net/images/app-service/v4/web.svg">;
+                    outerText=; tagName=IMG; src=https://appservice.azureedge.net/images/app-service/v4/web.svg}}
+InputFields       : {}
+Links             : {@{innerHTML=<button class="btn btn-primary mt-4" id="deplCenter" type="submit">Deployment
+                                                        center</button>; innerText=Deployment center; outerHTML=<a
+                    id="depCenterLink" href="https://go.microsoft.com/fwlink/?linkid=2057852"><button class="btn
+                    btn-primary mt-4" id="deplCenter" type="submit">Deployment
+                                                        center</button></a>; outerText=Deployment center; tagName=A;
+                    id=depCenterLink; href=https://go.microsoft.com/fwlink/?linkid=2057852}, @{innerHTML=<button
+                    class="btn btn-primary mt-4" id="quickStart" type="submit">Quickstart</button>;
+                    innerText=Quickstart; outerHTML=<a href="https://go.microsoft.com/fwlink/?linkid=2084231"><button
+                    class="btn btn-primary mt-4" id="quickStart" type="submit">Quickstart</button></a>;
+                    outerText=Quickstart; tagName=A; href=https://go.microsoft.com/fwlink/?linkid=2084231}}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 4560
+```
+
 # 接続のプライベート化
+現在の構成では、App Service はパブリック許可の状態になっているため、DNS によって Application Gateway 経由になるとしてもパブリックに面している状態とも言えます。Application Gateway から App Service の通信自体もパブリックのため、App Service 側を完全に閉塞はできません。よって、プライベート化をしたい場合には、Private Endpoint を使用します。ところどころ端折るので、細かい点はこちらの記事をご確認ください。（Application Gateway 用のサブネットにサービスエンドポイントを設定することもできるかもしれませんが、サービスエンドポイントポリシーが非サポートなど制約があるようです。[^2]）
+
+[^2]:https://learn.microsoft.com/ja-jp/azure/application-gateway/configuration-infrastructure#virtual-network-and-dedicated-subnet
+
 # ログの確認
 # おわりに
