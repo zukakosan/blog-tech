@@ -102,8 +102,9 @@ azurewebsites.net
 sampleapp-1 向けに対しては、node.js を使用した場合のページが返ってきています (例: `src="https://appservice.azureedge.net/images/linux-landing-page/v4/built-nodejs.svg"`)。
 ```powershell
 PS> curl http://sampleapp-1-eyb6gkabbhh6bwg6.canadacentral-01.azurewebsites.net/
-
-
+```
+:::details Response
+```txt
 StatusCode        : 200
 StatusDescription : OK
 Content           : <!DOCTYPE html>
@@ -151,12 +152,14 @@ ParsedHtml        : mshtml.HTMLDocumentClass
 RawContentLength  : 4560
 
 ```
+:::
 
 sampleapp-2 宛てでは、`Python` 用のトップページが返ってきています（`src="https://appservice.azureedge.net/images/linux-landing-page/v4/built-python.svg"`）。
 ```powershell
 PS> curl http://sampleapp-2-hbewgra6bxf2arhy.canadacentral-01.azurewebsites.net
-
-
+```
+:::details Response
+```txt
 StatusCode        : 200
 StatusDescription : OK
 Content           : <!DOCTYPE html>
@@ -202,16 +205,96 @@ Links             : {@{innerHTML=<button class="btn btn-primary mt-4" id="deplCe
 ParsedHtml        : mshtml.HTMLDocumentClass
 RawContentLength  : 4560
 ```
+:::
 
-# 接続のプライベート化
+# App Service への通信のプライベート化
 現在の構成では、App Service はパブリック許可の状態になっているため、DNS によって Application Gateway 経由になるとしてもパブリックに面している状態とも言えます。
 
 Application Gateway から App Service の通信自体もパブリックのため、App Service 側を完全に閉塞はできません。よって、プライベート化をしたい場合には、Private Endpoint を使用します。ところどころ端折るので、細かい点は以前の記事[^2] をご確認ください。
 
 （Application Gateway 用のサブネットにサービスエンドポイントを設定することもできるかもしれませんが、サービスエンドポイントポリシーが非サポートなど制約があるようです[^3]。）
 
+`sampleapp-1` に対して Private Endpoint を作成します。
+![](/images/20250701-appgw-multisite/16.png)
+
+Private DNS Zone の統合によって、Application Gateway をはじめ VNET 内からの App Service の FQND の名前解決は、プライベートに解決されます。外部との接点を閉じるために App Service のパブリックアクセスも拒否します。
+![](/images/20250701-appgw-multisite/17.png)
+
+この状態で、Application Gateway 側の Backend Health を確認しても、Healthy 状態を維持しています。
+![](/images/20250701-appgw-multisite/18.png)
+
+
+手元から curl を実行して疎通確認をします（とはいえ、手元の PC と Application Gateway 間の通信に変化はないです）。
+
+```powershell
+PS> curl http://sampleapp-1-eyb6gkabbhh6bwg6.canadacentral-01.azurewebsites.net/
+```
+
+:::details Response
+```txt
+StatusCode        : 200
+StatusDescription : OK
+Content           : <!DOCTYPE html>
+                    <html lang="en">
+
+                    <head>
+                        <meta charset="utf-8" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                        <meta http-equiv="X-UA-Compatible" content="IE=ed...
+RawContent        : HTTP/1.1 200 OK
+                    Connection: keep-alive
+                    request-context: appId=cid-v1:
+                    Accept-Ranges: bytes
+                    Content-Length: 4560
+                    Cache-Control: public, max-age=0
+                    Content-Type: text/html; charset=utf-8
+                    Date: Tue...
+Forms             : {}
+Headers           : {[Connection, keep-alive], [request-context, appId=cid-v1:], [Accept-Ranges, bytes],
+                    [Content-Length, 4560]...}
+Images            : {@{innerHTML=; innerText=; outerHTML=<img width="270" height="108" alt=""
+                    src="https://appservice.azureedge.net/images/app-service/v4/azurelogo.svg">; outerText=;
+                    tagName=IMG; width=270; height=108; alt=;
+                    src=https://appservice.azureedge.net/images/app-service/v4/azurelogo.svg}, @{innerHTML=;
+                    innerText=; outerHTML=<img src="https://appservice.azureedge.net/images/app-service/v4/web.svg">;
+                    outerText=; tagName=IMG; src=https://appservice.azureedge.net/images/app-service/v4/web.svg},
+                    @{innerHTML=; innerText=; outerHTML=<img width="50" height="50"
+                    src="https://appservice.azureedge.net/images/linux-landing-page/v4/built-nodejs.svg">; outerText=;
+                    tagName=IMG; width=50; height=50;
+                    src=https://appservice.azureedge.net/images/linux-landing-page/v4/built-nodejs.svg}, @{innerHTML=;
+                    innerText=; outerHTML=<img src="https://appservice.azureedge.net/images/app-service/v4/web.svg">;
+                    outerText=; tagName=IMG; src=https://appservice.azureedge.net/images/app-service/v4/web.svg}}
+InputFields       : {}
+Links             : {@{innerHTML=<button class="btn btn-primary mt-4" id="deplCenter" type="submit">Deployment
+                                                        center</button>; innerText=Deployment center; outerHTML=<a
+                    id="depCenterLink" href="https://go.microsoft.com/fwlink/?linkid=2057852"><button class="btn
+                    btn-primary mt-4" id="deplCenter" type="submit">Deployment
+                                                        center</button></a>; outerText=Deployment center; tagName=A;
+                    id=depCenterLink; href=https://go.microsoft.com/fwlink/?linkid=2057852}, @{innerHTML=<button
+                    class="btn btn-primary mt-4" id="quickStart" type="submit">Quickstart</button>;
+                    innerText=Quickstart; outerHTML=<a href="https://go.microsoft.com/fwlink/?linkid=2084231"><button
+                    class="btn btn-primary mt-4" id="quickStart" type="submit">Quickstart</button></a>;
+                    outerText=Quickstart; tagName=A; href=https://go.microsoft.com/fwlink/?linkid=2084231}}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 4560
+```
+:::
+
 [^2]:https://zenn.dev/microsoft/articles/20240113-appgw-webapp-pe
 [^3]:https://learn.microsoft.com/ja-jp/azure/application-gateway/configuration-infrastructure#virtual-network-and-dedicated-subnet
 
 # ログの確認
+もう少し変化がわかりやすいように、ログを確認します。sampleapp-1 (Private) と sampleapp-2 (Public) でログの内容を比較します。まずは、それぞれに対して以下のような Diagnostic setting を追加します。
+![](/images/20250701-appgw-multisite/19.png)
+
+それぞれについて `AppServiceHTTPLogs` テーブルのログを比較します。
+## sampleapp-1 (Private)
+定期的に Probe の通信が 200 で返っている中で、手元からの curl は UserAgent 付きのログとして記録されています。また、Private Endpoint 経由であることから、CIp (ClientIP) は IPv6 の形式になっています。
+![](/images/20250701-appgw-multisite/20.png)
+
+## sampleapp-2 (Public)
+こちらも基本的には、Probe のlogが記録されていますが、手元からの curl に対しては、UserAgent が記録されています。そして、CIp (Client  IP) は AppGWのPublic IPになっています。 このように、ログの観点からも違いが確認できました。
+![](/images/20250701-appgw-multisite/21.png)
+
 # おわりに
+本記事では、マルチサイト リスナーの構成とプライベート化を検証しました。Application Gateway は設定メニューを行ったり来たりする都合上、思わぬ設定ミスが発生しやすいです。適宜 Backend Health の画面に立ち戻り、接続が確立されていることを確認したうえで設定を進めると切り分けがしやすいと改めて感じました。
