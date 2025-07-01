@@ -8,7 +8,7 @@ publication_name: "microsoft"
 ---
 
 # はじめに
-Azure Application Gateway には マルチ サイトホスティング[^1] の機能があります。これにより、Application Gateway の同一ポート上で複数ドメインの Web アプリケーションを配信できます。通常、リスナーは特定のポートに対して 1 角見構成できますが、マルチサイト リスナーを使用することで、最大で 100 個のアプリケーションをホストできます。本記事では、実際の構成の流れを見ていきます。
+Azure Application Gateway には マルチ サイトホスティング[^1] の機能があります。これにより、Application Gateway の同一ポート上で複数ドメインの Web アプリケーションを配信できます。通常、リスナーは特定のポートに対して 1 つのリスナーを構成できますが、マルチサイト リスナーを使用することで、最大で 100 個のアプリケーションをホストできます。本記事では、実際の構成の流れを見ていきます。
 ![](/images/20250701-appgw-multisite/01.png)
 
 [^1]: https://learn.microsoft.com/ja-jp/azure/application-gateway/multiple-site-overview
@@ -23,7 +23,7 @@ Application Gateway の作成には、VNET が必要になります。また、�
 Application Gateway をデプロイしていきます。のちに構成するため、バックエンドプール等は空にして、最低限の構成のみ行います。
 ![](/images/20250701-appgw-multisite/03.png)
 
-リスナーは HTTP とし、ルーティング規則も既定のもので作成します(`Listenr Type` が `Basic` になっていますが、のちの手順で `Multisite` に変更します)。
+リスナーは HTTP とし、ルーティング規則も既定のもので作成します(`Listener Type` が `Basic` になっていますが、のちの手順で `Multisite` に変更します)。
 ![](/images/20250701-appgw-multisite/04.png)
 ![](/images/20250701-appgw-multisite/05.png)
 
@@ -34,10 +34,10 @@ App Service を 2 つ作成していきます。違いが分かるように `sam
 
 ## Application Gateway の設定
 ### バックエンドプールの作成
-バックエンドプールをマルチサイト用に二つ構成します。Application Gateway の作成時には、一つしか作成していないため、二つ目のアプリ用にもう一つ作成します。ぞれぞれに対して、sampleapp-1 と sampleapp-2 を指定します。
+バックエンドプールをマルチサイト用に二つ構成します。Application Gateway の作成時には、一つしか作成していないため、二つ目のアプリ用にもう一つ作成します。それぞれに対して、sampleapp-1 と sampleapp-2 を指定します。
 ![](/images/20250701-appgw-multisite/08.png)
 
-### Multisite Listner の構成
+### Multisite Listener の構成
 最初に作成済みのリスナーはシングルサイト用 (Basic) のため、マルチサイトに設定しなおします。`Multisite` を選択すると、Host name を指定する必要がありますが、ここを正しく設定することで、同一のフロント IP に対するリクエストが Host Header ベースで振り分けられるようになります。つまり、アクセスさせたい FQDN を適切に入れる必要があります。
 ![](/images/20250701-appgw-multisite/09.png)
 
@@ -45,7 +45,7 @@ App Service を 2 つ作成していきます。違いが分かるように `sam
 この時点で、バックエンドに到達できるか確認します。おそらく、どちらのバックエンドに対しても `Unhealthy` と表示されているはずです。これは、Backend settings において、カスタム プローブを使用していないことに起因します。
 ![](/images/20250701-appgw-multisite/10.png)
 
-App Serivce へのリクエスト (Probe) では、Host ヘッダー が対象のアプリケーション用の `xxx.azurewebsites.net` になっていないと 404 を返します。
+App Service へのリクエスト (Probe) では、Host ヘッダー が対象のアプリケーション用の `xxx.azurewebsites.net` になっていないと 404 を返します。
 
 よって、カスタム プローブで、明示的に Host 名を指定します。
 ![](/images/20250701-appgw-multisite/11.png)
@@ -56,7 +56,7 @@ App Serivce へのリクエスト (Probe) では、Host ヘッダー が対象�
 ![](/images/20250701-appgw-multisite/14.png)
 
 # hosts ファイルの設定
-マルチサイト ホスティングの場合、複数のドメイン名をApplication Gateway のフロント IP に解決する必要があります。今回は、手軽に手元の PC 上で、hosts ファイルに記述します。管理者モードで以下に存在する hosts ファイルを開き、末尾に IP アドレスと FQDN の対応を追記します。
+マルチサイト ホスティングの場合、複数のドメイン名を Application Gateway のフロント IP に解決する必要があります。今回は、手軽に手元の PC 上で、hosts ファイルに記述します。管理者モードで以下に存在する hosts ファイルを開き、末尾に IP アドレスと FQDN の対応を追記します。
 
 ```
 "C:\Windows\System32\drivers\etc\hosts"
@@ -217,7 +217,7 @@ Application Gateway から App Service の通信自体もパブリックのた�
 `sampleapp-1` に対して Private Endpoint を作成します。
 ![](/images/20250701-appgw-multisite/16.png)
 
-Private DNS Zone の統合によって、Application Gateway をはじめ VNET 内からの App Service の FQND の名前解決は、プライベートに解決されます。外部との接点を閉じるために App Service のパブリックアクセスも拒否します。
+Private DNS Zone の統合によって、Application Gateway をはじめ VNET 内からの App Service の FQDN の名前解決は、プライベートに解決されます。外部との接点を閉じるために App Service のパブリックアクセスも拒否します。
 ![](/images/20250701-appgw-multisite/17.png)
 
 この状態で、Application Gateway 側の Backend Health を確認しても、Healthy 状態を維持しています。
@@ -293,7 +293,7 @@ RawContentLength  : 4560
 ![](/images/20250701-appgw-multisite/20.png)
 
 ## sampleapp-2 (Public)
-こちらも基本的には、Probe のlogが記録されていますが、手元からの curl に対しては、UserAgent が記録されています。そして、CIp (Client  IP) は AppGWのPublic IPになっています。 このように、ログの観点からも違いが確認できました。
+こちらも基本的には、Probe のログが記録されていますが、手元からの curl に対しては、UserAgent が記録されています。そして、CIp (Client  IP) は Application Gateway の Public IP になっています。 このように、ログの観点からも違いが確認できました。
 ![](/images/20250701-appgw-multisite/21.png)
 
 # おわりに
