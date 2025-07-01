@@ -47,7 +47,7 @@ App Service を 2 つ作成していきます。違いが分かるように `sam
 
 App Serivce へのリクエスト (Probe) では、Host ヘッダー が対象のアプリケーション用の `xxx.azurewebsites.net` になっていないと 404 を返します。
 
-よって、カスタム プローブによって、明示的に Host 名を指定します。
+よって、カスタム プローブで、明示的に Host 名を指定します。
 ![](/images/20250701-appgw-multisite/11.png)
 ![](/images/20250701-appgw-multisite/12.png)
 ![](/images/20250701-appgw-multisite/13.png)
@@ -94,7 +94,7 @@ azurewebsites.net
 # App Service の http 許可
 今回は検証上 http で疎通確認を行います。App Service では、https を強制させることもできるので、その設定が `off` になっていることを確認します。もちろん、本来は `On` のほうがいいです。
 
-![](/images/20250701-appgw-multisite/14.png)
+![](/images/20250701-appgw-multisite/15.png)
 
 # 接続テスト
 モダンブラウザから接続すると、https にリダイレクトされてしまう可能性があるため、シンプルに `curl` で疎通確認を行います。
@@ -204,9 +204,14 @@ RawContentLength  : 4560
 ```
 
 # 接続のプライベート化
-現在の構成では、App Service はパブリック許可の状態になっているため、DNS によって Application Gateway 経由になるとしてもパブリックに面している状態とも言えます。Application Gateway から App Service の通信自体もパブリックのため、App Service 側を完全に閉塞はできません。よって、プライベート化をしたい場合には、Private Endpoint を使用します。ところどころ端折るので、細かい点はこちらの記事をご確認ください。（Application Gateway 用のサブネットにサービスエンドポイントを設定することもできるかもしれませんが、サービスエンドポイントポリシーが非サポートなど制約があるようです。[^2]）
+現在の構成では、App Service はパブリック許可の状態になっているため、DNS によって Application Gateway 経由になるとしてもパブリックに面している状態とも言えます。
 
-[^2]:https://learn.microsoft.com/ja-jp/azure/application-gateway/configuration-infrastructure#virtual-network-and-dedicated-subnet
+Application Gateway から App Service の通信自体もパブリックのため、App Service 側を完全に閉塞はできません。よって、プライベート化をしたい場合には、Private Endpoint を使用します。ところどころ端折るので、細かい点は以前の記事[^2] をご確認ください。
+
+（Application Gateway 用のサブネットにサービスエンドポイントを設定することもできるかもしれませんが、サービスエンドポイントポリシーが非サポートなど制約があるようです[^3]。）
+
+[^2]:https://zenn.dev/microsoft/articles/20240113-appgw-webapp-pe
+[^3]:https://learn.microsoft.com/ja-jp/azure/application-gateway/configuration-infrastructure#virtual-network-and-dedicated-subnet
 
 # ログの確認
 # おわりに
