@@ -1,9 +1,10 @@
 ---
 title: "DigiCert で SSL 証明書を発行して Azure Key Vault で管理する"
-emoji: "🎃"
+emoji: "📑"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: []
-published: false
+topics: ["azure","tls","microsoft"]
+published: true
+publication_name: "microsoft"
 ---
 
 # Azure における証明書
