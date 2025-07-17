@@ -38,9 +38,17 @@ RBAC として、`Storage BLOB Contributor` を割り当てます。
 
 ## Azure Storage Account に Source フォルダと Target フォルダを作成
 翻訳対象のドキュメント格納用のフォルダ、翻訳後のドキュメント格納用のフォルダを作成します。また、対象のドキュメントは格納しておきます。
+
 ![](/images/20250717-docstrans/03.png)
 ![](/images/20250717-docstrans/04.png)
 ![](/images/20250717-docstrans/05.png)
+
+本記事では、サンプルとして以下を使います。
+- Azure Digital Transformation whitepaper (.docx)
+https://techcommunity.microsoft.com/t5/s/gxcuf89792/attachments/gxcuf89792/Azure/1166/1/Azure%20Digital%20Transformation%20Whitepaper.docx
+
+- MS Learn の Azure AI Translator ページの PDF
+https://learn.microsoft.com/en-us/azure/ai-services/translator/
 
 ## Azure Storage Account のネットワーク設定
 パブリックアクセスを許可したくない場合は、`Enabled from selected virtual networks and IP addresses`を選択したうえで、`Allow Azure services on the trusted services list to access this storage account.`を有効にします。この設定により、Translator が trusted service として、Storage にアクセスできるようになります。
