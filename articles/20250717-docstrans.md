@@ -60,7 +60,7 @@ Standard のプランでワークフローを作成します。
 
 トリガーとしては手動トリガーとも呼ばれる `When a HTTP request is received` を使います。Agentic Workflow は使わないのでいったん削除します。
 
-トリガーに続くアクションとしては、`Microsoft Translator v3` の `Start document translation` を利用します。AI Translator のリソース名とキーを入力し、コネクションを作成します。
+トリガーに続くアクションとしては、`Microsoft Translator v3` の `Start document translation` を利用します。AI Translator のリソース名とキーを入力し、コネクションを作成します。こちらのコネクタは 2025/07/17 時点でプレビューになっています。
 
 パラメータとしては以下のような内容を設定します。言語についてはドキュメントに合わせます。設定したらワークフローを保存します。
 - `Storage type of the input documents`: `Folder`
