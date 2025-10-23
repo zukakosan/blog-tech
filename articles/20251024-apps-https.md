@@ -1,9 +1,10 @@
 ---
-title: "Azure AppService を KeyVault上 の証明書で HTTPS 化するための地図"
-emoji: "💬"
+title: "Azure App Service を Key Vault 上 の証明書で HTTPS 化するための知識地図"
+emoji: "🗺️"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: []
-published: false
+topics: ["azure","App","HTTPS"]
+published: true
+publication_name: "microsoft"
 ---
 # はじめに
 Azure App Service はコードを配置するだけで Web アプリケーションを展開できる人気の PaaS です。この App Service は既定の状態では、`xxx.azurewebsites.net` という App Service の既定のドメインでホストされます。
@@ -42,15 +43,29 @@ az role assignment create --role "Key Vault Certificate User" --assignee "abfa0a
 
 その後、対象の Key Vault リソースを選択して証明書をインポートします。
 
+:::message
+Azure Key Vault において Private Endpoint を構成し、パブリック アクセスを拒否している場合は閉域内に配置した作業端末等から Azure portal 操作を行います。
+:::
+
 以下ドキュメントの、「Key Vault から証明書をインポートする」を実行しています。
 
 https://learn.microsoft.com/ja-jp/azure/app-service/configure-ssl-certificate?tabs=apex%2Crbac%2Cazure-cli#import-a-certificate-from-key-vault
 
-## DNS ゾーンへの IP の追加
-カスタム ドメインへの要求に対して App Service が応答できるように、DNS ゾーンに A レコードを追加します。カスタムドメインを払い出したタイミングで、App Service 側から特定のパブリック IP も払い出されるため、外部権威 DNS サーバでレコードを追加しましょう。
+## カスタム ドメイン解決用 A レコードの追加
+App Service がカスタム ドメインへの要求に応答できるように、DNS ゾーンに A レコードを追加します。カスタムドメインを払い出したタイミングで、App Service 側から特定のパブリック IP も払い出されるため、外部権威 DNS サーバでレコードを追加しましょう。
 
 App Service ドメインを使っている場合には、同時に作成される Azure Public DNS Zone に追加すれば OK です。
 
+Windows の場合は、`Resolve-DnsName`^[https://learn.microsoft.com/en-us/powershell/module/dnsclient/resolve-dnsname?view=windowsserver2025-ps] コマンド等により適切に名前解決ができていることを確認しましょう。
+
 :::message
-手前に Application Gateway などのリバースプロキシを挟む場合には、そちらのパブリック IP に解決されるべきケースもあります。今回は App Service 単体での攻勢を考えています。
+手前に Application Gateway などのリバースプロキシを挟む場合には、そちらのパブリック IP に解決されるべきケースもあります。今回は App Service 単体での攻勢が前提です。
 :::
+
+## 疎通確認
+カスタム ドメインに対してブラウザからアクセスを試みます。ブラウザから https でアクセスし、適切な証明書が返ってくることを確認します。
+
+![](/images/20251024-apps-https/01.png)
+
+# おわりに
+App Service で HTTPS を構成するための流れをまとめました。Private DNS Zone でカスタム ドメインを App Service の Private Endpoint の プライベート IP に解決すれば、内部公開アプリでも HTTPS 化できます。App Service では、ホスト名が必要となるため、カスタム ドメインとの整合を取ることを意識しながら作業するとよいでしょう。
