@@ -1,5 +1,5 @@
 ---
-title: "Azure App Service を Key Vault 上 の証明書で HTTPS 化するための知識地図"
+title: "Azure App Service を Azure Key Vault 上 の証明書で HTTPS 化するための知識地図"
 emoji: "🗺️"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","App","HTTPS"]
