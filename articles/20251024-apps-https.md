@@ -14,7 +14,7 @@ MSLearn に必要な情報は基本的に記載されているのですが、複
 
 # 設定の流れ
 ## カスタム ドメインの取得
-前提としてカスタム ドメインは必須となります。Azure 上では、App Service ドメインというサービスから取得することも可能です。自分が保有しているドメインがあることが前提です。
+前提としてカスタム ドメインは必須となります。Azure 上では、App Service ドメイン^[https://learn.microsoft.com/ja-jp/azure/app-service/manage-custom-dns-buy-domain] というサービスから取得することも可能です。自分が保有しているドメインがあることが前提です。
 
 ## 証明書の取得と Azure Key Vault へのインポート
 ドメインを取得したら、対応する証明書を取得しましょう。証明書の管理は Azure での一貫性を考えて Azure Key Vault を使用します。DigiCert での証明書の取得の仕方および、Azure Key Vault へのインポートに関しては以下の記事にまとめています。
@@ -40,6 +40,17 @@ https://learn.microsoft.com/ja-jp/azure/app-service/app-service-web-tutorial-cus
 az role assignment create --role "Key Vault Certificate User" --assignee "abfa0a7c-a6b6-4736-8310-5855508787cd" --scope "/subscriptions/{subscriptionid}/resourcegroups/{resource-group-name}/providers/Microsoft.KeyVault/vaults/{key-vault-name}"
 ```
 
+その後、対象の Key Vault リソースを選択して証明書をインポートします。
+
 以下ドキュメントの、「Key Vault から証明書をインポートする」を実行しています。
+
 https://learn.microsoft.com/ja-jp/azure/app-service/configure-ssl-certificate?tabs=apex%2Crbac%2Cazure-cli#import-a-certificate-from-key-vault
 
+## DNS ゾーンへの IP の追加
+カスタム ドメインへの要求に対して App Service が応答できるように、DNS ゾーンに A レコードを追加します。カスタムドメインを払い出したタイミングで、App Service 側から特定のパブリック IP も払い出されるため、外部権威 DNS サーバでレコードを追加しましょう。
+
+App Service ドメインを使っている場合には、同時に作成される Azure Public DNS Zone に追加すれば OK です。
+
+:::message
+手前に Application Gateway などのリバースプロキシを挟む場合には、そちらのパブリック IP に解決されるべきケースもあります。今回は App Service 単体での攻勢を考えています。
+:::
