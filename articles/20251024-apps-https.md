@@ -30,7 +30,7 @@ https://zenn.dev/microsoft/articles/20250711-digicertonazure
 https://learn.microsoft.com/ja-jp/azure/app-service/app-service-web-tutorial-custom-domain?tabs=root%2Cazurecli#configure-a-custom-domain
 
 ## カスタム ドメインと証明書のバインド
-カスタムドメインに対して証明書をバインド^[] していきます。本構成では、証明書のストアとして Azure Key Vault を使用するため、証明書の連携に少し追加設定が必要です。何も設定していない状態でバインドしようとしても権限不足でエラーが発生するはずです。 
+カスタムドメインに対して証明書をバインド^[https://learn.microsoft.com/ja-jp/azure/app-service/configure-ssl-bindings#add-the-binding] していきます。本構成では、証明書のストアとして Azure Key Vault を使用するため、証明書の連携に少し追加設定が必要です。何も設定していない状態でバインドしようとしても権限不足でエラーが発生するはずです。 
 
 ここでは、`Microsoft App Service` というサービス ID（プリンシパル ID としては `abfa0a7c-a6b6-4736-8310-5855508787cd`） に対して、Azure Key Vault に対する `Key Vault Certificate User` 権限を付与します。
 
@@ -43,5 +43,3 @@ az role assignment create --role "Key Vault Certificate User" --assignee "abfa0a
 以下ドキュメントの、「Key Vault から証明書をインポートする」を実行しています。
 https://learn.microsoft.com/ja-jp/azure/app-service/configure-ssl-certificate?tabs=apex%2Crbac%2Cazure-cli#import-a-certificate-from-key-vault
 
-
-[]:https://learn.microsoft.com/ja-jp/azure/app-service/configure-ssl-bindings#add-the-binding
