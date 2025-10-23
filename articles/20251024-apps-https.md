@@ -60,7 +60,7 @@ App Service ドメインを使っている場合には、同時に作成され�
 Windows の場合は、`Resolve-DnsName`^[https://learn.microsoft.com/en-us/powershell/module/dnsclient/resolve-dnsname?view=windowsserver2025-ps] コマンド等により適切に名前解決ができていることを確認しましょう。
 
 :::message
-手前に Application Gateway などのリバースプロキシを挟む場合には、そちらのパブリック IP に解決されるべきケースもあります。今回は App Service 単体での攻勢が前提です。
+手前に Application Gateway などのリバースプロキシを挟む場合には、そちらのパブリック IP に解決されるべきケースもあります。今回は App Service 単体での構成が前提です。
 :::
 
 ## 疎通確認
