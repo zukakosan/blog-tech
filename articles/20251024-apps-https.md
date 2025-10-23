@@ -5,6 +5,7 @@ type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","App","HTTPS"]
 published: true
 publication_name: "microsoft"
+published_at: 2025-10-24 07:00
 ---
 # はじめに
 Azure App Service はコードを配置するだけで Web アプリケーションを展開できる人気の PaaS です。この App Service は既定の状態では、`xxx.azurewebsites.net` という App Service の既定のドメインでホストされます。
