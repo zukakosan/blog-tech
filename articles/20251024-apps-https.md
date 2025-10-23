@@ -2,7 +2,7 @@
 title: "Azure App Service を Azure Key Vault 上 の証明書で HTTPS 化するための知識地図"
 emoji: "🗺️"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ["azure","App","HTTPS"]
+topics: ["azure","azureappservice","HTTPS"]
 published: true
 publication_name: "microsoft"
 published_at: 2025-10-24 07:00
