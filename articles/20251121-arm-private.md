@@ -6,7 +6,8 @@ topics: ["azure","network","vm"]
 published: false
 ---
 
-# Azure Resource Manager の閉域化検証
+# はじめに
+閉域化された環境内の VM から Azure リソースを管理したいことがあります。Azure Resource Manager のアクセスを閉域化できます。通常の NSG によるアウトバウンド制御と合わせて検証し、動作の解像度を上げてみたいと思います。
 
 ## 検証目的
 閉域化された VM から `az login --identity` (Managed Identity) を使用して Azure にログインする際の、Private Endpoint の必要性と動作を確認する
@@ -240,7 +241,7 @@ pe-arm-pvt-nic                                            Microsoft.Network/netw
 privatelink.azure.com                                     Microsoft.Network/privateDnsZones
 privatelink.azure.com/q7khdwwl2fsna                       Microsoft.Network/privateDnsZones/virtualNetworkLinks
 ```
-## おわりに
+# おわりに
 - **Phase 2-2**: Service Tag による制限的なアウトバウンド許可で十分動作する
 - **Phase 3**: ARM を Private Endpoint 化しても動作するが、追加のコストと複雑性が発生
 <!-- - **Phase 4**: 完全閉域化は可能だが、Entra ID Premium ライセンスと高度な構成が必要 -->
