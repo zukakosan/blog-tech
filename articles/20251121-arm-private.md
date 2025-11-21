@@ -61,8 +61,7 @@ AzureAdmin@vm-mid-azlogin:~$ az login --identity
 1. NSG ですべてのアウトバウンドを拒否
 2. VM にログイン (Azure Bastion 経由)
 3. `az login --identity` を実行
-4. **期待結果**: エラーで失敗
-結果：応答なし
+4. **結果**: 応答なし
 ```
 AzureAdmin@vm-mid-azlogin:~$ az login --identity
 ^C
@@ -78,8 +77,7 @@ AzureAdmin@vm-mid-azlogin:~$ az login --identity
    - ポート: 443
    - プロトコル: TCP
 2. `az login --identity` を実行
-3. **期待結果**: ARM にアクセスできないため失敗
-結果：応答なし
+3. **結果**:応答なし
 ```
 AzureAdmin@vm-mid-azlogin:~$ az login --identity
 ^C
@@ -91,13 +89,6 @@ AzureAdmin@vm-mid-azlogin:~$ az login --identity
    - プロトコル: TCP
 2. `az login --identity` を実行
 3. **結果**: ✅ 成功
-4. 追加確認:
-   ```powershell
-   az account show
-   az group list
-   az vm list
-   ```
-
 ```
 AzureAdmin@vm-mid-azlogin:~$ az login --identity
 [
