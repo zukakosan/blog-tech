@@ -155,14 +155,6 @@ AzureAdmin@vm-mid-azlogin:~$ az group list
 ]
 ```
 
-<!-- #### 2-3. ネットワークトラフィックの確認
-1. NSG Flow Logs または Azure Network Watcher で通信先を確認
-2. 実際にアクセスしている IP アドレス/FQDN を記録:
-   - `login.microsoftonline.com` (Entra ID)
-   - `management.azure.com` (ARM)
-
---- -->
-
 ### Phase 3: ARM Private Endpoint 化
 **目的**: ARM を Private Endpoint 化した場合の動作確認
 
@@ -248,46 +240,6 @@ pe-arm-pvt-nic                                            Microsoft.Network/netw
 privatelink.azure.com                                     Microsoft.Network/privateDnsZones
 privatelink.azure.com/q7khdwwl2fsna                       Microsoft.Network/privateDnsZones/virtualNetworkLinks
 ```
-<!-- 
-### Phase 4: 完全閉域化(オプション)
-**目的**: Entra ID も Private Link 化できるか確認
-
-#### 4-1. Entra ID Private Link の構成
-1. Microsoft Entra Private Link を構成 (Premium P1/P2 必要)
-2. Private Endpoint を作成
-3. Private DNS Zone を構成:
-   - `privatelink.aadg.windows.net.nsatc.net`
-   - その他必要な Zone
-
-#### 4-2. 動作確認
-1. すべての Service Tag を削除
-2. VNet 内通信のみ許可
-3. `az login --identity` を実行
-4. **期待結果**: ✅ 成功 (完全閉域) -->
-
-<!-- ---
-
-## 検証ポイント/注意事項
-
-### トラブルシューティング
-- DNS 解決が正しく動作しているか確認 (`nslookup`, `Resolve-DnsName`)
-- NSG Flow Logs で通信がブロックされていないか確認
-- Managed Identity のロールアサインメントが適切か確認
-- Private DNS Zone が VNet に正しくリンクされているか確認
-
-### 確認すべきログ
-- NSG Flow Logs
-- Azure Monitor (VM Insights)
-- Private Endpoint のメトリクス
-- DNS クエリログ
-
-### コスト見積もり
-- Private Endpoint: ~$7-10/月/エンドポイント
-- NSG Flow Logs: データ量に応じた課金
-- Private DNS Zone: ~$0.50/月/ゾーン
-
---- -->
-
 ## おわりに
 - **Phase 2-2**: Service Tag による制限的なアウトバウンド許可で十分動作する
 - **Phase 3**: ARM を Private Endpoint 化しても動作するが、追加のコストと複雑性が発生
