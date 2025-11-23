@@ -1,28 +1,24 @@
 ---
-title: "Azure Resource Manager を閉域化して VM から閉域でログインする"
+title: "Azure Resource Manager を閉域化して VM から閉域で az login する"
 emoji: "🙋🏻‍♀️"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","network","vm"]
-published: false
+published: true
+published_at: 2025-12-03 08:00
 ---
 
 # はじめに
-閉域化された環境内の VM から Azure リソースを管理したいことがあります。Azure Resource Manager のアクセスを閉域化できます。通常の NSG によるアウトバウンド制御と合わせて検証し、動作の解像度を上げてみたいと思います。
+閉域化された環境内の VM から Azure リソースを管理したいことがあります。Azure Resource Manager には実は、Private Endpoint が提供されており、リソースの管理アクセスを閉域化できます。通常の NSG によるアウトバウンド接続のフィルタリングによる制御も合わせて検証し、動作確認します。
 
-## 検証目的
-閉域化された VM から `az login --identity` (Managed Identity) を使用して Azure にログインする際の、Private Endpoint の必要性と動作を確認する
+# 検証
+閉域化された VM から `az login --identity` (Managed Identity) を使用して Azure にログインする際の、Private Endpoint の必要性と動作を確認します。
 
-## 前提条件
+## 用意するもの
 - 検証用 VM (Managed Identity 有効化済み)
-- 閉域化された VNet/Subnet
-- NSG ですべてのアウトバウンドをデフォルト拒否
+- VM の Managed Identity に対する権限（ここでは、VM の所属するリソースグループへの Contributor を付与）
+- NSG
 
----
-
-## 検証ステップ
-az login の結果を参照するには、何等かの Managed Identity が何らかの権限を持っている必要があるため、あらかじめリソースグループに対する Contributor 権限を付与
-
-### Phase 0: 既定の状態確認 (NSG すべて許可)
+## Phase 0: 既定の状態確認 (NSG すべて許可)
 1. NSG の既定状態でアタッチ
 2. VM にログイン (Azure Bastion 経由)
 3. `az login --identity` を実行
@@ -56,7 +52,7 @@ AzureAdmin@vm-mid-azlogin:~$ az login --identity
 ]
 ```
 
-### Phase 1: ベースライン確認(すべて拒否状態)
+## Phase 1: ベースライン確認(すべて拒否状態)
 **目的**: 何も許可していない状態で失敗することを確認
 
 1. NSG ですべてのアウトバウンドを拒否
@@ -69,10 +65,10 @@ AzureAdmin@vm-mid-azlogin:~$ az login --identity
 ```
 ---
 
-### Phase 2: Service Tag でのアウトバウンド許可
+## Phase 2: Service Tag でのアウトバウンド許可
 **目的**: Private Endpoint なしで、Service Tag だけで動作するか確認
 
-#### 2-1. AzureActiveDirectory のみ許可
+### 2-1. AzureActiveDirectory のみ許可
 1. NSG で以下を許可:
    - Service Tag: `AzureActiveDirectory` (送信先)
    - ポート: 443
@@ -83,7 +79,7 @@ AzureAdmin@vm-mid-azlogin:~$ az login --identity
 AzureAdmin@vm-mid-azlogin:~$ az login --identity
 ^C
 ```
-#### 2-2. AzureActiveDirectory + AzureResourceManager 許可
+### 2-2. AzureActiveDirectory + AzureResourceManager 許可
 1. NSG で追加許可:
    - Service Tag: `AzureResourceManager` (送信先)
    - ポート: 443
@@ -156,11 +152,13 @@ AzureAdmin@vm-mid-azlogin:~$ az group list
 ]
 ```
 
-### Phase 3: ARM Private Endpoint 化
-**目的**: ARM を Private Endpoint 化した場合の動作確認
+## Phase 3: ARM Private Endpoint 化
+**目的**: Private Endpoint 経由での動作確認
 
-#### 3-1. Private Endpoint の作成
-こちらのドキュメントに従い以下の手順を実施
+### 3-1. Private Endpoint の作成
+こちらのドキュメントに従い、ARM の Private Endpoint と DNS を構成します。
+
+https://learn.microsoft.com/ja-jp/azure/azure-resource-manager/management/create-private-link-access-portal
 
 1. ARM 用の Private Endpoint を作成:
    - リソースタイプ: `Microsoft.ResourceGraph/resources` または ARM エンドポイント
@@ -172,7 +170,7 @@ AzureAdmin@vm-mid-azlogin:~$ az group list
    - A レコード: Private Endpoint の IP にマッピング
    - VNet Link: VM の VNet にリンク
 
-#### 3-2. DNS 解決の確認
+### 3-2. DNS 解決の確認
 VM から以下を実行:
 ```powershell
 nslookup management.azure.com
@@ -189,11 +187,11 @@ Name:management.privatelink.azure.com
 Address: 172.18.0.5
 ```
 
-#### 3-3. NSG ルールの調整
+### 3-3. NSG ルールの調整
 1. `AzureResourceManager` Service Tag を削除 (または優先度を下げる)
 2. VNet 内通信(Private Endpoint 宛)を許可
 
-#### 3-4. 動作確認
+### 3-4. 動作確認
 1. `az login --identity` を実行
 2. **結果**: ✅ 成功 (Private Endpoint 経由)
 
@@ -242,8 +240,4 @@ privatelink.azure.com                                     Microsoft.Network/priv
 privatelink.azure.com/q7khdwwl2fsna                       Microsoft.Network/privateDnsZones/virtualNetworkLinks
 ```
 # おわりに
-- **Phase 2-2**: Service Tag による制限的なアウトバウンド許可で十分動作する
-- **Phase 3**: ARM を Private Endpoint 化しても動作するが、追加のコストと複雑性が発生
-<!-- - **Phase 4**: 完全閉域化は可能だが、Entra ID Premium ライセンスと高度な構成が必要 -->
-
-**推奨**: 多くの場合、Phase 2-2 (Service Tag によるアウトバウンド制御) が最もコストパフォーマンスが高い
+個人的に盲点だったため、ARM への Private Endpont を試しました。Service Tag による制限的なアウトバウンド許可でも、ARM の Private Endpoint 化でも動作することを確認しました。ARM を閉域化する場合、Entra ID も閉域化したくなってくるはずで、そこは現状直接の閉域化ができないため、完全閉域はまだ先の話ですね。多くの場合、NSG や FW による制限的なアウトバウンド制御で成立するかと思います。
