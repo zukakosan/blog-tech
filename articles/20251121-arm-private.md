@@ -5,6 +5,7 @@ type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","network","vm"]
 published: true
 published_at: 2025-12-03 08:00
+publication_name: "microsoft"
 ---
 
 # はじめに
