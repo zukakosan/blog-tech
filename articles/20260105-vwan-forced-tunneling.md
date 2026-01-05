@@ -50,8 +50,6 @@ graph LR
     Hub ---|VNET接続| S1
     Hub --- FWH
     
-    linkStyle 0 stroke:#ff0000,stroke-width:2px
-    
     style Hub fill:#0078d4,color:#fff
     style FWH fill:#ff9800,color:#fff
     style FW fill:#ff6b6b,color:#fff
@@ -117,7 +115,7 @@ graph LR
     Hub --- FWH
     Hub2 ---|VNET接続| S2
     SW ---|VPN/ExpressRoute| Hub2
-    
+
     linkStyle 0 stroke:#ff0000,stroke-width:2px
     linkStyle 2 stroke:#ff0000,stroke-width:2px
     linkStyle 7 stroke:#ff0000,stroke-width:2px
