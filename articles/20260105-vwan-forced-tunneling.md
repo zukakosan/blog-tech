@@ -4,7 +4,7 @@ emoji: "🐶"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["azure","network","wan"]
 publication_name: "microsoft"
-published: false
+published: true
 ---
 
 # Azure Virtual WAN におけるインターネット通信制御
@@ -132,6 +132,13 @@ graph LR
     style FW fill:#ff6b6b,color:#fff
     style VHub fill:
 ```
+
+## Spoke の UDR でオンプレミスの FW を指定すればよいのでは？
+いいえ。Azure の UDR で Next hop に指定する IP アドレスは、「仮想マシンに接続されたネットワーク インターフェイスのプライベート IP アドレス」または「Azure 内部ロード バランサーのプライベート IP アドレス」である必要があります。それ以外の場合、NIC の Effective Route 上では、None と表示されます。
+
+> ネクスト ホップのプライベート IP アドレスは、Azure ExpressRoute ゲートウェイまたは Azure Virtual WAN 経由でルーティングせず、直接接続する必要があります。 直接接続せずにネクスト ホップを IP アドレスに設定すると、UDR 構成が無効になります。
+
+https://learn.microsoft.com/ja-jp/azure/virtual-network/virtual-networks-udr-overview#user-defined-routes
 
 [^1]:https://learn.microsoft.com/ja-jp/azure/virtual-wan/how-to-routing-policies
 [^2]:https://learn.microsoft.com/ja-jp/azure/virtual-wan/about-virtual-hub-routing-preference#:~:text=Virtual%20WAN%20%E3%83%8F%E3%83%96%E3%81%8C%E5%88%A5%E3%81%AE%20Virtual%20WAN%20%E3%83%8F%E3%83%96%E3%81%AB%E3%83%AB%E3%83%BC%E3%83%88%E3%82%92%E3%82%A2%E3%83%89%E3%83%90%E3%82%BF%E3%82%A4%E3%82%BA%E3%81%99%E3%82%8B%E3%81%A8%E3%80%81%E3%81%93%E3%81%AE%E3%83%AB%E3%83%BC%E3%83%88%E3%81%AB%E3%81%AF%20ASN%2065520%2D65520%20%E3%81%8C%20AS%20%E3%83%91%E3%82%B9%E3%81%AE%E5%89%8D%E3%81%AB%E4%BB%98%E5%8A%A0%E3%81%95%E3%82%8C%E3%81%BE%E3%81%99%E3%80%82
