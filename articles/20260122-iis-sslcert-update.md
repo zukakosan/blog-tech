@@ -1,18 +1,18 @@
 ---
-title: "Azure VM 上の IIS で証明書を自動更新する（Key Vault VM 拡張機能）"
+title: "Azure VM 上の IIS で SSL 証明書を自動更新する（Key Vault VM 拡張機能）"
 emoji: "🔐"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Azure", "IIS", "KeyVault", "SSL", "WindowsServer"]
 published: false
+publication_name: "microsoft"
 ---
 
 ## TL;DR
+- SSL/TLS 証明書の有効期間が 2029年に **47日** へ短縮されるため、証明書の自動更新が必須に
+- **Azure Key Vault VM 拡張機能（v3.0以降）** と **IIS の自動再バインド機能** を組み合わせることで、Azure VM 上の IIS で証明書更新を完全自動化できる
+- 本記事では App Service 証明書を例に、Key Vault への格納から IIS への自動バインドまでの手順を解説
 
 ## はじめに
-- 課題：Azure VM上のIISでSSL証明書を運用する際、証明書の更新作業が手動になりがち
-- 解決策：App Service 証明書 + Key Vault + VM拡張機能で自動更新を実現
-- 本記事のゴール：証明書の取得から IIS へのバインド、自動更新までを一気通貫で構成する
-
 2025年4月、CA/Browser Forum（CA/B フォーラム）は **Ballot SC-081v3** を承認し、SSL/TLS証明書の最大有効期間を段階的に短縮することを決定しました。最終的には **47日** まで短縮されます。
 
 | 施行日 | 最大有効期間 | DCV再利用期間 |
@@ -57,9 +57,23 @@ CA/Browser Forum[^1]がこの決定を下した背景には、3つのセキュ�
 本記事では、Azure VM でホストされている IIS について、**VM 拡張機能**を用いてどのように SSL 証明書の更新を自動化できるかを紹介します。
 
 ## 前提条件
-本記事では、証明書の更新自動化のために、**Azure Key Vault VM 拡張機能**[^3] を使用します。前提条件として以下の構成が必要です。Windows Server 2019 以降（本記事では Windows Server 2025 を使用）が必要です。また、VM にはマネージド ID が必要です。
+本記事では、証明書の更新自動化のために、**Azure Key Vault VM 拡張機能**[^3] を使用します。前提条件として以下の構成が必要です。
 
 ### 環境構成
+
+| リソース | 要件 |
+|----------|------|
+| **Windows Server** | 2019 以降（本記事では Windows Server 2025 を使用） |
+| **IIS** | インストール済み |
+| **VM のマネージド ID** | システム割り当てまたはユーザー割り当て |
+| **Azure Key Vault** | 証明書を格納済み |
+| **Key Vault アクセス権限** | VM のマネージド ID に「シークレットの取得」権限を付与 |
+| **ネットワーク** | VM から Key Vault へのアクセス（パブリックまたは Private Endpoint 経由） |
+
+:::message
+**マネージド ID の権限設定**
+VM のマネージド ID には、Key Vault のアクセスポリシーで **シークレットの取得（Get）** 権限が必要です。証明書ではなくシークレットの権限である点に注意してください。
+:::
 
 ## 1. App Service 証明書の Key Vault への格納
 今回は、検証用に App Service 証明書を使用します。DigiCert や GlobalSign などの、外部の証明書を利用する場合は、このパートはスキップしてください。また、外部の証明書を Azure Key Vault で自動更新する手順についてはこちらの記事をご参照ください。
@@ -70,7 +84,7 @@ App Service 証明書は、Azure が提供する SSL/TLS 証明書の購入・�
 :::message
 App Service 証明書は、Azure Key Vault 上のシークレット ストアに格納されます。
 :::
-Azure portal から必要な情報を入れ、良しなに作成します。
+Azure Portal から必要な情報を入力し、作成します。
 
 ### App Service 証明書の作成
 作成した App Service 証明書の [証明書の構成] から、手順に従って Azure Key Vault に証明書を格納します。
@@ -105,11 +119,12 @@ IIS から直接 Key Vault を見に行って、勝手にバインドしてく�
 ### IIS の「バインディング」とは何か
 IIS の Binding（バインディング） は、**この Web サイトは、どの IP / ポート / ホスト名 / プロトコルで通信を受け付けるか** を定義する設定です。HTTPS の場合は、これに どの SSL/TLS 証明書を使うか が追加されます。
 :::
-## 3. 本題: Azure Key Vault VM 拡張機能による証明書更新の自動化
+
+## 3. Azure Key Vault VM 拡張機能による証明書更新の自動化
 ### Azure VM 拡張機能とは
 Azure VM 拡張機能 (VM Extension) は、Azure VM に対してデプロイ後の構成や自動化タスクを提供する小さなアプリケーションです。各 VM でそのような拡張機能が利用できるかは、以下の Azure CLI コマンドで確認できます(何らかのフィルタをかけないと、応答にかなり時間がかかります)。
 ```bash
-$ az vm extension image list -l japaneast -p Microsoft.Compute --o table
+$ az vm extension image list -l japaneast -p Microsoft.Compute -o table
 Name                   Publisher          Version
 ---------------------  -----------------  ---------
 BGInfo                 Microsoft.Compute  1.0
@@ -185,21 +200,26 @@ japaneast   4.0.3299.265
     }
 }
 ```
-`accounts` に入れるべき情報は、IIS Manager 上で確認できます。`ApplicationPpolIdentity` の場合は、`IIS APPPOOL\DefaultAppPool` の形で設定する必要がありますが、`\` がエスケープ文字のため、`IIS APPPOOL\\DefaultAppPool` としています。
+`accounts` に入れるべき情報は、IIS Manager 上で確認できます。`ApplicationPoolIdentity` の場合は、`IIS APPPOOL\DefaultAppPool` の形で設定する必要があります。JSON ではバックスラッシュがエスケープ文字のため、`IIS APPPOOL\\DefaultAppPool` と記述します。
 
-`pollingIntervalIns` はポーリングの間隔を指定するプロパティですが、検証のタイミングでは10分など短く設定しておくとよいかもしれません。
+`pollingIntervalInS` はポーリングの間隔を指定するプロパティですが、検証のタイミングでは 10 分など短く設定しておくとよいかもしれません。
 
 以下のように、バージョン 3.0 を明示的に指定してデプロイします。
 ```bash
-$ az vm extension set --name "KeyVaultForWindows" --publisher Microsoft.Azure.KeyVault --resource-group "20260121-appservcert-on-vm" --vm-name "vmwins2025-iis-jpe" --settings "@settings.json" --version "3.0"
+$ az vm extension set --name "KeyVaultForWindows" --publisher Microsoft.Azure.KeyVault --resource-group "<your-resource-group>" --vm-name "<your-vm-name>" --settings "@settings.json" --version "3.0"
 ```
+
+:::message alert
+**バージョン 4.0 での変更点**
+バージョン 4.0 では `pollingIntervalInS` や `linkOnRenewal` プロパティが廃止されています。バージョン 3.x 系を使用する場合は、明示的にバージョンを指定してください。本記事では、ドキュメントに倣って 3.0 を使用しています。
+:::
 
 ## 4. IIS 側の設定：証明書の自動再バインド
 Azure Key Vault VM 拡張機能は、IIS に対する証明書の自動再バインドまでは行いません。以下[^4]に記載の通り、同一 SAN の新しい証明書がインストールされた際に、Azure Key Vault VM 拡張機能の発生させるライフサイクル通知に対して IIS 側の自動再バインド機能[^5] がトリガーされることで自動更新を行います。
 > IIS の場合、IIS で証明書更新の自動再バインドを有効にすることで自動再バインドを構成できます。 Azure Key Vault VM 拡張機能は、SAN が一致する証明書がインストールされると、証明書ライフサイクル通知を生成します。 IIS は、このイベントを使用して証明書を自動再バインドします。 詳細については、「 IIS での再バインドの証明書」を参照してください。
 
 ### IIS 8.5以降の「Centralized Certificate Store」または「自動再バインド」機能
-証明書の再バインドを有効にすると、IIS はシステムのタスク スケジューラにタスクを登録し、タスクは証明書更新イベント (イベント ID 1001) にトリガーするようにキーが設定されます。子のトリガーに従って証明書の自動更新がなされます。
+証明書の再バインドを有効にすると、IIS はシステムのタスク スケジューラにタスクを登録し、タスクは証明書更新イベント (イベント ID 1001) にトリガーするようにキーが設定されます。このトリガーに従って証明書の自動更新がなされます。
 
 ### 設定手順
 IIS Manager において、サーバの証明書一覧から、`Enable Automatic Rebind of Renewed Certificate` をクリックします。表示が `Disable Automatic Rebind of Renewed Certificate` になれば、有効になっています。この設定がないと、証明書ストアに新しい証明書が入ってもバインドが更新されません。
@@ -260,7 +280,7 @@ tags:
   Thumbprint: 6127E6E32019279687F7762E0AD08D8CA05C72A3
 ```
 
-### ポーリング間隔（デフォルト1時間）後の動作確認
+### ポーリング間隔後の動作確認
 間隔を 1h で設定したため（検証なのでもっと短くすればよかったですが）、VM をしばらく放置して動きを確認します。
 
 #### IIS Manager 上でのバインディング確認
@@ -327,21 +347,21 @@ SSL Certificate bindings:
 #### ブラウザで証明書情報を確認
 ウェブサイトにアクセスして、証明書を見てみても、きちんと更新されています。
 ![](/images/20260122-iis-sslcert-update/web-01.png)
+Azure Key Vault 側の最新バージョンのアクティブ日時とも一致します。
 ![](/images/20260122-iis-sslcert-update/akv-web-01.png)
 
 ## 6. 運用上の考慮事項
-- 古い証明書の削除（拡張機能では自動削除されない）
-- Key VaultへのPrivate Endpoint構成（より安全な通信）
-- ポーリング間隔のチューニング
+証明書の更新と再バインドはできましたが、いくつかの追加の考慮事項があります。
+
+### 古い証明書の削除
+拡張機能では、過去の証明書の自動削除はされません。期限切れの証明書を削除するバッチジョブを設定するなどの運用は必要です。
+![](/images/20260122-iis-sslcert-update/cert-01.png)
+
+### Azure Key Vault へのセキュアなアクセス
+SSL 証明書は非常に重要なデータです。Key Vault へのアクセスを Private Endpoint 経由とすることで、認証認可だけでなくネットワーク レイヤで多層防御できます。
 
 ## まとめ
-- App Service証明書 + Key Vault + VM拡張機能 + IIS自動再バインドで完全自動化が可能
-- 証明書更新の運用負荷を大幅に削減できる
-
-## 参考リンク
-- [Windows用のAzure Key Vault VM拡張機能](https://learn.microsoft.com/ja-jp/azure/virtual-machines/extensions/key-vault-windows)
-- [App Service証明書の管理](https://learn.microsoft.com/ja-jp/azure/app-service/configure-ssl-certificate)
-- [IIS 8.5での証明書の再バインド](https://learn.microsoft.com/ja-jp/iis/get-started/whats-new-in-iis-85/certificate-rebind-in-iis85)
+Key Vault での証明書管理、Azure Key Vault VM 拡張機能の利用、IIS 自動再バインド機能の有効化、によって自動化が可能であることを確認しました。証明書については、App Service 証明書以外にも DigiCert、GlobalSign のものであれば同様の運用が可能です。 
 
 [^1]:https://cabforum.org/2025/04/14/ballot-sc-081-v3-introduce-schedule-of-reducing-certificate-validity-and-data-reuse-periods/
 [^2]:https://support.apple.com/en-us/102028
