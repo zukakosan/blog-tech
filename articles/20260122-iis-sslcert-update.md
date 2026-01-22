@@ -3,7 +3,7 @@ title: "Azure VM 上の IIS で SSL 証明書を自動更新する（Key Vault V
 emoji: "🔐"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Azure", "IIS", "KeyVault", "SSL", "WindowsServer"]
-published: false
+published: true
 publication_name: "microsoft"
 ---
 
