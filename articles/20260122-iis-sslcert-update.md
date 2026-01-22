@@ -106,15 +106,98 @@ IIS から直接 Key Vault を見に行って、勝手にバインドしてく�
 IIS の Binding（バインディング） は、**この Web サイトは、どの IP / ポート / ホスト名 / プロトコルで通信を受け付けるか** を定義する設定です。HTTPS の場合は、これに どの SSL/TLS 証明書を使うか が追加されます。
 :::
 ## 3. 本題: Azure Key Vault VM 拡張機能による証明書更新の自動化
-- Key Vault VM拡張機能とは
-- バージョンによる機能差（v3.0以降でIISバインド機能が追加）
-- 拡張機能のインストール
-  - settings.jsonの構成例
-  - `observedCertificates`の指定
-  - `linkOnRenewal`と`accounts`の設定（IIS AppPoolIdentityの指定方法）
-- インストールコマンド例
+### Azure VM 拡張機能とは
+Azure VM 拡張機能 (VM Extension) は、Azure VM に対してデプロイ後の構成や自動化タスクを提供する小さなアプリケーションです。各 VM でそのような拡張機能が利用できるかは、以下の Azure CLI コマンドで確認できます(何らかのフィルタをかけないと、応答にかなり時間がかかります)。
+```bash
+$ az vm extension image list -l japaneast -p Microsoft.Compute --o table
+Name                   Publisher          Version
+---------------------  -----------------  ---------
+BGInfo                 Microsoft.Compute  1.0
+BGInfo                 Microsoft.Compute  1.0.1
+BGInfo                 Microsoft.Compute  1.1
+BGInfo                 Microsoft.Compute  1.2.2
+BGInfo                 Microsoft.Compute  2.1
+BGInfo                 Microsoft.Compute  2.2.2
+BGInfo                 Microsoft.Compute  2.2.3
+BGInfo                 Microsoft.Compute  2.2.5
+CustomScriptExtension  Microsoft.Compute  1.0
+CustomScriptExtension  Microsoft.Compute  1.0.3
+CustomScriptExtension  Microsoft.Compute  1.1
+CustomScriptExtension  Microsoft.Compute  1.10.10
+CustomScriptExtension  Microsoft.Compute  1.10.12
+...
+```
+今回はその中でも、Azure Key Vault VM 拡張機能を使用します。
 
-## 4. IIS側の設定：証明書の自動再バインド
+### Azure Key Vault VM 拡張機能
+#### サポートしている機能
+この拡張機能は、以下の機能をサポートしています。
+> Windows バージョン 3.0 の Key Vault VM 拡張機能では、次の機能がサポートされています。
+>
+> - ダウンロードした証明書に ACL アクセス許可を追加する
+> - 証明書ストアの証明書ごとの構成を可能にする
+> - 秘密キーをエクスポートする
+> - IIS 証明書の再バインドのサポート
+
+#### 拡張機能のインストール
+今回は、ドキュメント[^3] に記載の方法のうち、Azure CLI を使用して拡張機能をデプロイします。デプロイには、`settings.json` として、拡張機能の設定を JSON 形式で渡す必要があります。ドキュメントにも JSON スニペットが記載されていますが、このスキーマは、メジャーバージョン 3.0 のスキーマです。マイナーバージョンも含めると、かなり多くの利用可能なバージョンが存在します。明示的にバージョンを指定しない場合、最新バージョンの 4.0 がインストールされてしまう点に注意してください。
+```bash
+$ az vm extension image list-versions --publisher Microsoft.Azure.KeyVault --name KeyVaultForWindows --location japaneast -o table
+Location    Name
+----------  ------------
+japaneast   0.1.0.717
+japaneast   0.2.0.898
+japaneast   0.3.907.5
+japaneast   1.0.1076.8
+japaneast   1.0.1082.9
+japaneast   1.0.1114.10
+japaneast   1.0.1172.11
+japaneast   1.0.1201.12
+japaneast   1.0.1253.13
+japaneast   1.0.1258.14
+japaneast   1.0.1363.13
+japaneast   1.0.1409.21
+japaneast   1.0.921.6
+japaneast   3.0.2138.56
+japaneast   3.1.2195.61
+japaneast   3.2.2398.77
+japaneast   3.3.2607.99
+japaneast   3.6.3145.208
+japaneast   4.0.3299.265
+```
+
+今回の検証で必要な最低限のスキーマは以下のような形になります。
+```json:settings.json
+{
+    "secretsManagementSettings": {
+        "pollingIntervalInS": "3600",
+        "linkOnRenewal": true,
+        "observedCertificates": [
+            {
+                "url": "https://<your-kv-name>.vault.azure.net/secrets/<your-kv-secret-name>",
+                "certificateStoreName": "MY",
+                "certificateStoreLocation": "LocalMachine",
+                "accounts": [
+                    "IIS APPPOOL\\DefaultAppPool"
+                ]
+            }
+        ]
+    }
+}
+```
+`accounts` に入れるべき情報は、IIS Manager 上で確認できます。`ApplicationPpolIdentity` の場合は、`IIS APPPOOL\DefaultAppPool` の形で設定する必要がありますが、`\` がエスケープ文字のため、`IIS APPPOOL\\DefaultAppPool` としています。
+
+`pollingIntervalIns` はポーリングの間隔を指定するプロパティですが、検証のタイミングでは10分など短く設定しておくとよいかもしれません。
+
+以下のように、バージョン 3.0 を明示的に指定してデプロイします。
+```bash
+$ az vm extension set --name "KeyVaultForWindows" --publisher Microsoft.Azure.KeyVault --resource-group "20260121-appservcert-on-vm" --vm-name "vmwins2025-iis-jpe" --settings "@settings.json" --version "3.0"
+```
+
+## 4. IIS 側の設定：証明書の自動再バインド
+Azure Key Vault VM 拡張機能は、IIS に対する証明書の自動再バインドまでは行いません。以下[^4]に記載の通り、Azure Key Vault VM 拡張機能の発生させるライフサイクル通知に対して IIS 側の自動再バインド機能[^5] をトリガーします。
+> IIS の場合、IIS で証明書更新の自動再バインドを有効にすることで自動再バインドを構成できます。 Azure Key Vault VM 拡張機能は、SAN が一致する証明書がインストールされると、証明書ライフサイクル通知を生成します。 IIS は、このイベントを使用して証明書を自動再バインドします。 詳細については、「 IIS での再バインドの証明書」を参照してください。
+
 - IIS 8.5以降の「Centralized Certificate Store」または「自動再バインド」機能
 - IIS Managerでの設定手順（Enable Automatic Rebind）
 - この設定がないと、証明書ストアに新しい証明書が入ってもバインドが更新されない
@@ -145,3 +228,5 @@ IIS の Binding（バインディング） は、**この Web サイトは、ど
 [^1]:https://cabforum.org/2025/04/14/ballot-sc-081-v3-introduce-schedule-of-reducing-certificate-validity-and-data-reuse-periods/
 [^2]:https://support.apple.com/en-us/102028
 [^3]:https://learn.microsoft.com/ja-jp/azure/virtual-machines/extensions/key-vault-windows#features
+[^4]:https://learn.microsoft.com/ja-jp/azure/virtual-machines/extensions/key-vault-windows#does-the-extension-support-certificate-auto-rebinding
+[^5]:https://learn.microsoft.com/ja-jp/iis/get-started/whats-new-in-iis-85/certificate-rebind-in-iis85
