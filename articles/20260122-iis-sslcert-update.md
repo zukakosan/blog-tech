@@ -74,12 +74,20 @@ App Service 証明書は、Azure Key Vault 上のシークレット ストアに
 Azure portal から必要な情報を入れ、良しなに作成します。
 
 ### App Service 証明書の作成
-作成した App Service 証明書の [証明書の構成] から、手順に従って Azure Key Vault に証明書を格納します。App Service 証明書用の Azure Key Vault では、**RBAC モデルが非サポート**のため、**コンテナー アクセス ポリシー**モデルとします。証明書の格納アクションの Caller は Microsoft Azure App Service となりますが、必要なポリシーは事前に追加されています。
+作成した App Service 証明書の [証明書の構成] から、手順に従って Azure Key Vault に証明書を格納します。
+![](/images/20260122-iis-sslcert-update/appscert-01.png)
+
+App Service 証明書用の Azure Key Vault では、**RBAC モデルが非サポート**の
+ため、**コンテナー アクセス ポリシー**モデルとします。証明書の格納アクションの Caller は Microsoft Azure App Service となりますが、必要なポリシーは事前に追加されています。
+![](/images/20260122-iis-sslcert-update/appscert-02.png)
 
 ドメインの検証も行い、準備完了状態であることを確認します。
+![](/images/20260122-iis-sslcert-update/appscert-03.png)
+
 :::message
 注意：App Service証明書はKey Vaultアクセスポリシーのみサポート（RBACは不可）
 :::
+
 
 ## 2. IISへの証明書の手動バインド（理解編）
 - なぜKey Vaultから直接バインドできないのか
