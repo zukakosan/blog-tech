@@ -56,19 +56,30 @@ CA/Browser Forum[^1]がこの決定を下した背景には、3つのセキュ�
 現在の398日から47日への短縮は、**証明書更新頻度が約8倍**になることを意味します。手動で証明書を管理している環境では、この更新頻度に対応することは現実的ではありません。
 本記事では、Azure VM でホストされている IIS について、**VM 拡張機能**を用いてどのように SSL 証明書の更新を自動化できるかを紹介します。
 
-## 前提条件・環境構成
-本記事では、証明書の更新自動化のために、**Azure Key Vault VM 拡張機能**[^3]  
-- Windows Server 2019 以降（本記事では Windows Server 2025 を使用）
-- IIS がインストール済み
-- カスタムドメインとDNS設定（VMのパブリックIPへの名前解決）
-- NSGでのHTTPS（443）インバウンド許可
-- VMのマネージドID有効化
+## 前提条件
+本記事では、証明書の更新自動化のために、**Azure Key Vault VM 拡張機能**[^3] を使用します。前提条件として以下の構成が必要です。Windows Server 2019 以降（本記事では Windows Server 2025 を使用）が必要です。
 
-## 1. App Service証明書の作成とKey Vaultへの格納
-- App Service証明書とは
-- Key Vaultの作成（アクセスポリシーモデルが必須）
-- 証明書の格納とドメイン検証
-- 注意：App Service証明書はKey Vaultアクセスポリシーのみサポート（RBACは不可）
+### 環境構成
+
+
+## 1. App Service 証明書の Key Vault への格納
+今回は、検証用に App Service 証明書を使用します。DigiCert や GlobalSign などの、外部の証明書を利用する場合は、このパートはスキップしてください。また、外部の証明書を Azure Key Vault で自動更新する手順についてはこちらの記事をご参照ください。
+https://zenn.dev/microsoft/articles/20250711-digicertonazure
+
+### App Service 証明書とは
+App Service 証明書は、Azure が提供する SSL/TLS 証明書の購入・管理サービスです。GoDaddy が発行元となる公的に信頼された証明書を、Azure Portal から直接購入・管理できます。名前の通り、App Service と合わせて使うことが主な用途ですが、証明書(.pfx) をエクスポートして Web サーバへインストールすることも可能です。App Service にバインドする場合、Azure Key Vault 内に証明書を格納し、そこを読みに行く構成になります。
+:::message
+App Service 証明書は、Azure Key Vault 上のシークレット ストアに格納されます。
+:::
+Azure portal から必要な情報を入れ、良しなに作成します。
+
+### App Service 証明書の作成
+作成した App Service 証明書の [証明書の構成] から、手順に従って Azure Key Vault に証明書を格納します。App Service 証明書用の Azure Key Vault では、**RBAC モデルが非サポート**のため、**コンテナー アクセス ポリシー**モデルとします。証明書の格納アクションの Caller は Microsoft Azure App Service となりますが、必要なポリシーは事前に追加されています。
+
+ドメインの検証も行い、準備完了状態であることを確認します。
+:::message
+注意：App Service証明書はKey Vaultアクセスポリシーのみサポート（RBACは不可）
+:::
 
 ## 2. IISへの証明書の手動バインド（理解編）
 - なぜKey Vaultから直接バインドできないのか
