@@ -103,7 +103,7 @@ App Service 証明書用の Azure Key Vault では、**RBAC モデルが非サ�
 ## 2. IIS への証明書の手動バインド
 ### なぜ Key Vault から直接バインドできないのか
 IIS から直接 Key Vault を見に行って、勝手にバインドしてくれればありがたいのですが、そのようなことはできません。これは以下の理由によります。当然といえば当然ですね。
-  - IIS は Windows 証明書ストア（LocalMachine\My 等）のみ参照可能
+  - IIS は Windows 証明書ストア（`LocalMachine\My` 等）のみ参照可能
   - Key Vault は外部の秘密鍵ストアであり、IIS から直接参照する仕組みがない
 
 ### 手動でのバインドの流れ（参考）
