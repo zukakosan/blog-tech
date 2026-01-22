@@ -10,8 +10,8 @@ published: false
 
 ## はじめに
 - 課題：Azure VM上のIISでSSL証明書を運用する際、証明書の更新作業が手動になりがち
-- 解決策：App Service証明書 + Key Vault + VM拡張機能で自動更新を実現
-- 本記事のゴール：証明書の取得からIISへのバインド、自動更新までを一気通貫で構成する
+- 解決策：App Service 証明書 + Key Vault + VM拡張機能で自動更新を実現
+- 本記事のゴール：証明書の取得から IIS へのバインド、自動更新までを一気通貫で構成する
 
 2025年4月、CA/Browser Forum（CA/B フォーラム）は **Ballot SC-081v3** を承認し、SSL/TLS証明書の最大有効期間を段階的に短縮することを決定しました。最終的には **47日** まで短縮されます。
 
@@ -32,7 +32,7 @@ published: false
 
 ### 短縮の目的
 
-CA/Browser Forum がこの決定を下した背景には、3つのセキュリティ上の要請があります：
+CA/Browser Forum[^1]がこの決定を下した背景には、3つのセキュリティ上の要請があります：
 
 1. **攻撃の露出期間の最小化**
    - 証明書や秘密鍵が漏洩した場合でも、有効期間が短ければ悪用される期間を限定できる
@@ -48,22 +48,16 @@ CA/Browser Forum がこの決定を下した背景には、3つのセキュリ�
 ### 背景と経緯
 
 - **Google** が "Moving Forward, Together" ロードマップで90日への短縮を提案
-- **Apple** が47日への段階的短縮を提案し、Ballot SC-081v3 として提出
+- **Apple** が47日への段階的短縮を提案し、Ballot SC-081v3 として提出[^2]
 - **Apple、Google、Mozilla、Microsoft** の主要ブラウザベンダーすべてが賛成票を投じ、業界として統一された方向性を示した
 
 ### 影響
 
 現在の398日から47日への短縮は、**証明書更新頻度が約8倍**になることを意味します。手動で証明書を管理している環境では、この更新頻度に対応することは現実的ではありません。
-本記事で紹介する **Key Vault VM 拡張機能** のような自動化ソリューションの導入が、事実上必須となります。
-
-:::message
-**参考リンク**
-- [CA/Browser Forum Ballot SC-081v3](https://cabforum.org/2025/04/14/ballot-sc-081-v3-introduce-schedule-of-reducing-certificate-validity-and-data-reuse-periods/)
-- [Apple - Certificate Transparency policy](https://support.apple.com/en-us/102028)
-:::
-
+本記事では、Azure VM でホストされている IIS について、**VM 拡張機能**を用いてどのように SSL 証明書の更新を自動化できるかを紹介します。
 
 ## 前提条件・環境構成
+本記事では、証明書の更新自動化のために、**Azure Key Vault VM 拡張機能**[^3]  
 - Windows Server 2019 以降（本記事では Windows Server 2025 を使用）
 - IIS がインストール済み
 - カスタムドメインとDNS設定（VMのパブリックIPへの名前解決）
@@ -121,3 +115,7 @@ CA/Browser Forum がこの決定を下した背景には、3つのセキュリ�
 - [Windows用のAzure Key Vault VM拡張機能](https://learn.microsoft.com/ja-jp/azure/virtual-machines/extensions/key-vault-windows)
 - [App Service証明書の管理](https://learn.microsoft.com/ja-jp/azure/app-service/configure-ssl-certificate)
 - [IIS 8.5での証明書の再バインド](https://learn.microsoft.com/ja-jp/iis/get-started/whats-new-in-iis-85/certificate-rebind-in-iis85)
+
+[^1]:https://cabforum.org/2025/04/14/ballot-sc-081-v3-introduce-schedule-of-reducing-certificate-validity-and-data-reuse-periods/
+[^2]:https://support.apple.com/en-us/102028
+[^3]:https://learn.microsoft.com/ja-jp/azure/virtual-machines/extensions/key-vault-windows#features
