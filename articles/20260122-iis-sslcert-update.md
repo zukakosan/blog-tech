@@ -57,10 +57,9 @@ CA/Browser Forum[^1]がこの決定を下した背景には、3つのセキュ�
 本記事では、Azure VM でホストされている IIS について、**VM 拡張機能**を用いてどのように SSL 証明書の更新を自動化できるかを紹介します。
 
 ## 前提条件
-本記事では、証明書の更新自動化のために、**Azure Key Vault VM 拡張機能**[^3] を使用します。前提条件として以下の構成が必要です。Windows Server 2019 以降（本記事では Windows Server 2025 を使用）が必要です。
+本記事では、証明書の更新自動化のために、**Azure Key Vault VM 拡張機能**[^3] を使用します。前提条件として以下の構成が必要です。Windows Server 2019 以降（本記事では Windows Server 2025 を使用）が必要です。また、VM にはマネージド ID が必要です。
 
 ### 環境構成
-
 
 ## 1. App Service 証明書の Key Vault への格納
 今回は、検証用に App Service 証明書を使用します。DigiCert や GlobalSign などの、外部の証明書を利用する場合は、このパートはスキップしてください。また、外部の証明書を Azure Key Vault で自動更新する手順についてはこちらの記事をご参照ください。
@@ -77,8 +76,7 @@ Azure portal から必要な情報を入れ、良しなに作成します。
 作成した App Service 証明書の [証明書の構成] から、手順に従って Azure Key Vault に証明書を格納します。
 ![](/images/20260122-iis-sslcert-update/appscert-01.png)
 
-App Service 証明書用の Azure Key Vault では、**RBAC モデルが非サポート**の
-ため、**コンテナー アクセス ポリシー**モデルとします。証明書の格納アクションの Caller は Microsoft Azure App Service となりますが、必要なポリシーは事前に追加されています。
+App Service 証明書用の Azure Key Vault では、**RBAC モデルが非サポートのため、コンテナー アクセス ポリシー モデルを使用します**。証明書の格納アクションの Caller は Microsoft Azure App Service となりますが、必要なポリシーは事前に追加されています。
 ![](/images/20260122-iis-sslcert-update/appscert-02.png)
 
 ドメインの検証も行い、準備完了状態であることを確認します。
@@ -88,17 +86,26 @@ App Service 証明書用の Azure Key Vault では、**RBAC モデルが非サ�
 注意：App Service証明書はKey Vaultアクセスポリシーのみサポート（RBACは不可）
 :::
 
+## 2. IIS への証明書の手動バインド
+### なぜ Key Vault から直接バインドできないのか
+IIS から直接 Key Vault を見に行って、勝手にバインドしてくれればありがたいのですが、そのようなことはできません。これは以下の理由によります。当然といえば当然ですね。
+  - IIS は Windows 証明書ストア（LocalMachine\My 等）のみ参照可能
+  - Key Vault は外部の秘密鍵ストアであり、IIS から直接参照する仕組みがない
 
-## 2. IISへの証明書の手動バインド（理解編）
-- なぜKey Vaultから直接バインドできないのか
-  - IISはWindows証明書ストア（LocalMachine\My）のみ参照可能
-  - Key Vaultは外部の秘密鍵ストアであり、IISから直接参照する仕組みがない
-- 手動での流れ（参考）
-  1. VMのマネージドIDでKey Vaultからシークレット（PFX）を取得
-  2. Windows証明書ストアにインポート
-  3. IIS ManagerでHTTPSバインドを構成
+### 手動でのバインドの流れ（参考）
+ここは、.pfx を Azure portal からエクスポートし、Windows Server 上でインポートするのが早いです。その後、IIS の Site Bindings で Type:HTTPS でバインドします。
+![](/images/20260122-iis-sslcert-update/iis-01.png)
+![](/images/20260122-iis-sslcert-update/iis-02.png)
+![](/images/20260122-iis-sslcert-update/iis-03.png)
 
-## 3. Key Vault VM拡張機能による自動化
+外部からアクセスすると有効な証明書が確認できます。
+![](/images/20260122-iis-sslcert-update/iis-04.png)
+
+:::message
+### IIS の「バインディング」とは何か
+IIS の Binding（バインディング） は、**この Web サイトは、どの IP / ポート / ホスト名 / プロトコルで通信を受け付けるか** を定義する設定です。HTTPS の場合は、これに どの SSL/TLS 証明書を使うか が追加されます。
+:::
+## 3. 本題: Azure Key Vault VM 拡張機能による証明書更新の自動化
 - Key Vault VM拡張機能とは
 - バージョンによる機能差（v3.0以降でIISバインド機能が追加）
 - 拡張機能のインストール
