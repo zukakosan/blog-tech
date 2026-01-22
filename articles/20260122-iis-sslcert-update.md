@@ -195,21 +195,139 @@ $ az vm extension set --name "KeyVaultForWindows" --publisher Microsoft.Azure.Ke
 ```
 
 ## 4. IIS 側の設定：証明書の自動再バインド
-Azure Key Vault VM 拡張機能は、IIS に対する証明書の自動再バインドまでは行いません。以下[^4]に記載の通り、Azure Key Vault VM 拡張機能の発生させるライフサイクル通知に対して IIS 側の自動再バインド機能[^5] をトリガーします。
+Azure Key Vault VM 拡張機能は、IIS に対する証明書の自動再バインドまでは行いません。以下[^4]に記載の通り、同一 SAN の新しい証明書がインストールされた際に、Azure Key Vault VM 拡張機能の発生させるライフサイクル通知に対して IIS 側の自動再バインド機能[^5] がトリガーされることで自動更新を行います。
 > IIS の場合、IIS で証明書更新の自動再バインドを有効にすることで自動再バインドを構成できます。 Azure Key Vault VM 拡張機能は、SAN が一致する証明書がインストールされると、証明書ライフサイクル通知を生成します。 IIS は、このイベントを使用して証明書を自動再バインドします。 詳細については、「 IIS での再バインドの証明書」を参照してください。
 
-- IIS 8.5以降の「Centralized Certificate Store」または「自動再バインド」機能
-- IIS Managerでの設定手順（Enable Automatic Rebind）
-- この設定がないと、証明書ストアに新しい証明書が入ってもバインドが更新されない
+### IIS 8.5以降の「Centralized Certificate Store」または「自動再バインド」機能
+証明書の再バインドを有効にすると、IIS はシステムのタスク スケジューラにタスクを登録し、タスクは証明書更新イベント (イベント ID 1001) にトリガーするようにキーが設定されます。子のトリガーに従って証明書の自動更新がなされます。
+
+### 設定手順
+IIS Manager において、サーバの証明書一覧から、`Enable Automatic Rebind of Renewed Certificate` をクリックします。表示が `Disable Automatic Rebind of Renewed Certificate` になれば、有効になっています。この設定がないと、証明書ストアに新しい証明書が入ってもバインドが更新されません。
+![](/images/20260122-iis-sslcert-update/iis-05.png)
+
 
 ## 5. 自動更新の検証
-- App Service証明書のRekey（強制更新）で新バージョンを作成
-- ポーリング間隔（デフォルト1時間）後の動作確認
-- 確認コマンド
-  - `netsh http show sslcert`でバインド中の証明書ハッシュを確認
-  - Key Vault VM拡張機能のログ確認
-  - Windowsイベントログでの証明書更新イベント確認
-- ブラウザで証明書情報を確認
+新しい証明書が Azure Key Vault に追加されることをトリガーに、HTTPS にバインドされた証明書が更新されることを確認します。
+
+### 更新前の証明書の情報
+更新前の情報としていくつかまとめておきます。
+
+#### IIS Manager 上のバインディング
+Serial Number: 00cb3695fdd5fe17f2
+![](/images/20260122-iis-sslcert-update/iism-pre-01.png)
+
+Thumbprint(SHA-1): 328b316329c9ed0f2db147399085eca7fb98607f
+![](/images/20260122-iis-sslcert-update/iism-pre-02.png)
+
+```powershell
+PS C:\Windows\system32> netsh http show sslcert
+
+SSL Certificate bindings:
+-------------------------
+
+
+
+    IP:port                      : 0.0.0.0:443
+    Certificate Hash             : 328b316329c9ed0f2db147399085eca7fb98607f
+    Application ID               : {4dc3e181-e14b-4a21-b022-59fc669b0914}
+    Certificate Store Name       : My
+...
+```
+
+#### Azure Key Vault
+Secret のバージョン: `0988a8db7e0f497d9f1d071fe205260c`
+
+### 新しい証明書の発行
+検証のため、App Service 証明書の Rekey (強制更新) で新バージョンを作成します。
+![](/images/20260122-iis-sslcert-update/akv-01.png)
+
+
+### 更新後の証明書情報
+#### Azure Key Vault
+追加された Secret のバージョン: `88bd41a1fdf645bab4fd1f14e0162ca0`
+
+その他、照合に必要な情報はタグとして付与されています。
+![](/images/20260122-iis-sslcert-update/akv-after-01.png)
+
+Azure CLI からも確認できます。
+```bash
+$ az keyvault secret show --vault-name akv-iiscert-jpe --name wildcard-kedamatech386b3521-3256-4f32-b716-4ec7e5703ef5 --query "{tags:tags, id:id}" -o yaml
+id: https://xxxxxx.vault.azure.net/secrets/wildcard-kedamatech386b3521-3256-4f32-b716-4ec7e5703ef5/88bd41a1fdf645bab4fd1f14e0162ca0
+tags:
+  CertificateId: /subscriptions/xxxxxxxx/resourceGroups/20260121-appservcert-on-vm/providers/Microsoft.CertificateRegistration/certificateOrders/wildcard-kedamatech/certificates/wildcard-kedamatech
+  CertificateState: Ready
+  SerialNumber: 0B5922EF8E57B9FD
+  Thumbprint: 6127E6E32019279687F7762E0AD08D8CA05C72A3
+```
+
+### ポーリング間隔（デフォルト1時間）後の動作確認
+間隔を 1h で設定したため（検証なのでもっと短くすればよかったですが）、VM をしばらく放置して動きを確認します。
+
+#### IIS Manager 上でのバインディング確認
+Serial Number: `0b5922ef8e57b9fd`
+![](/images/20260122-iis-sslcert-update/iism-after-01.png)
+
+Thumbprint(SHA-1): `6127e6e32019279687f7762e0ad08d8ca05c72a3`
+![](/images/20260122-iis-sslcert-update/iism-after-02.png)
+
+Serial Number、Thumbprint どちらも Azure 側で確認した値に一致しています。この時点で証明書更新をトリガーとする SSL 証明書の再バインドが正しく回っていることが分かります。
+
+#### ログの確認
+Azure Key Vault VM 拡張機能の生成するログを確認します。以下のように、証明書が更新されていることが確認できます。
+```powershell
+PS C:\Windows\system32> Get-ChildItem "C:\WindowsAzure\Logs\Plugins\Microsoft.Azure.KeyVault.KeyVaultForWindows\3.6.3145.208\akvvm*.log" -ErrorAction SilentlyContinue | Get-Content -Tail 100
+2026-01-21 13:37:24: <info> [WindowsCertificateStore]   attempting to open store 'LocalMachine\MY'
+2026-01-21 13:37:24: <debug> [WindowsCertificateStore]  opening the 'LocalMachine' store..
+2026-01-21 13:37:24: <debug> [WindowsCertificateStore]  store opened successfully.
+2026-01-21 13:37:24: <info> [CertificateManager]        Installing latest version of 'https://xxxxx.vault.azure.net/secrets/wildcard-kedamatech386b3521-3256-4f32-b716-4ec7e5703ef5'.
+2026-01-21 13:37:24: <debug> [WindowsCertificateStore]  Validated accounts for ACL: IIS APPPOOL\DefaultAppPool
+2026-01-21 13:37:24: <debug> [WindowsCertificateStore]  installing certificate..
+2026-01-21 13:37:24: <debug> [WindowsCertificateStore]  finding predecessors for model certificate by SAN..
+2026-01-21 13:37:24: <info> [WindowsCertificateStore]   Importing the Intermediate CA: Go Daddy Secure Certificate Authority - G2
+2026-01-21 13:37:24: <info> [WindowsCertificateStore]   Installed 'wildcard-kedamatech386b3521-3256-4f32-b716-4ec7e5703ef5'; most recent version is '88bd41a1fdf645bab4fd1f14e0162ca0'; issuer of the cert is 'Go Daddy Secure Certificate Authority - G2'; subject is '*.kedamatech.comkedamatech.com'; the thumbprint is '6127E6E32019279687F7762E0AD08D8CA05C72A3'
+2026-01-21 13:37:24: <debug> [WindowsCertificateStore]  finding predecessors for model certificate by SAN..
+2026-01-21 13:37:24: <info> [WindowsCertificateStore]   This new certificate CertificateName: 'wildcard-kedamatech386b3521-3256-4f32-b716-4ec7e5703ef5'; with thumbprint: '6127E6E32019279687F7762E0AD08D8CA05C72A3'; replaced certificate with thumbprint: '328B316329C9ED0F2DB147399085ECA7FB98607F'
+2026-01-21 13:37:24: <debug> [WindowsCertificateStore]  certificate installed
+2026-01-21 13:37:24: <info> [WindowsCertificateStore]   Adding ACL to CNG key.
+2026-01-21 13:37:24: <debug> [WindowsCertificateStore]  Successfully applied ACL to CNG key.
+2026-01-21 13:37:24: <debug> [CertificateManager]       Added ACL to certificate: https://akv-iiscert-jpe.vault.azure.net/secrets/wildcard-kedamatech386b3521-3256-4f32-b716-4ec7e5703ef5
+2026-01-21 13:37:24: <info> [CertificateManager]        Completed refreshing observed certificates.
+2026-01-21 13:37:24: <info> [WindowsCertificateManager] Checking state of termination event with a timeout of 3600000
+```
+
+Windows Event Log 側も確認します。確かに、1001 のイベントが発生しています。
+```powershell
+PS C:\Windows\system32> Get-WinEvent -LogName "Microsoft-Windows-CertificateServicesClient-Lifecycle-System/Operational" -MaxEvents 20 |
+>>   Select-Object TimeCreated, Id, Message |
+>>   Format-Table -Wrap
+
+TimeCreated             Id Message
+-----------             -- -------
+1/21/2026 1:37:24 PM  1001 A certificate has been replaced. Please refer to the "Details" section for more information.
+1/21/2026 1:37:24 PM  1006 A new certificate has been installed. Please refer to the "Details" section for more 
+```
+
+バインド中の証明書ハッシュを確認します。
+```powershell
+PS C:\Windows\system32> netsh http show sslcert
+
+SSL Certificate bindings:
+-------------------------
+
+
+
+    IP:port                      : 0.0.0.0:443
+    Certificate Hash             : 6127e6e32019279687f7762e0ad08d8ca05c72a3
+    Application ID               : {4dc3e181-e14b-4a21-b022-59fc669b0914}
+    Certificate Store Name       : My
+
+```
+上記のようないくつかのログからも、問題なく更新できていることが分かります。
+
+#### ブラウザで証明書情報を確認
+ウェブサイトにアクセスして、証明書を見てみても、きちんと更新されています。
+![](/images/20260122-iis-sslcert-update/web-01.png)
+![](/images/20260122-iis-sslcert-update/akv-web-01.png)
 
 ## 6. 運用上の考慮事項
 - 古い証明書の削除（拡張機能では自動削除されない）
