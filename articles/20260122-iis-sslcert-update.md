@@ -145,6 +145,33 @@ CustomScriptExtension  Microsoft.Compute  1.10.12
 今回はその中でも、Azure Key Vault VM 拡張機能を使用します。
 
 ### Azure Key Vault VM 拡張機能
+この拡張機能を使って、以下のようなフローを構成します。
+```mermaid
+flowchart LR
+    subgraph Azure["Azure Cloud"]
+        KV[("Azure Key Vault\n証明書保管")]
+    end
+    
+    subgraph VM["Azure VM"]
+        EXT["Key Vault\nVM Extension"]
+        STORE["Windows\nCertificate Store"]
+        IIS["IIS"]
+    end
+    
+    CLIENT["Client"]
+    
+    EXT -->|1. ポーリング\n（定期監視）| KV
+    KV -->|2. 証明書取得| EXT
+    EXT -->|3. インストール| STORE
+    STORE -.->|4. Lifecycle\nNotification| IIS
+    IIS -->|5. 自動バインド| IIS
+    CLIENT -->|HTTPS| IIS
+    
+    style EXT fill:#FFD700
+    style STORE fill:#90EE90
+    style IIS fill:#87CEEB
+```
+
 #### サポートしている機能
 この拡張機能は、以下の機能をサポートしています。
 > Windows バージョン 3.0 の Key Vault VM 拡張機能では、次の機能がサポートされています。
