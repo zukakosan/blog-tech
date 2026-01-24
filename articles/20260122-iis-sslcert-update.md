@@ -147,7 +147,7 @@ CustomScriptExtension  Microsoft.Compute  1.10.12
 ### Azure Key Vault VM 拡張機能
 この拡張機能を使って、以下のようなフローを構成します。
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph Azure["Azure Cloud"]
         KV[("Azure Key Vault\n証明書保管")]
     end

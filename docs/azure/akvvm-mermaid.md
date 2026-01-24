@@ -3,7 +3,7 @@
 ## 全体アーキテクチャ
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph Azure["Azure Cloud"]
         KV[("Azure Key Vault\n証明書保管")]
     end
