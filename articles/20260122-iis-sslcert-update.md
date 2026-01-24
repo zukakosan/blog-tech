@@ -155,7 +155,7 @@ CustomScriptExtension  Microsoft.Compute  1.10.12
 > - IIS 証明書の再バインドのサポート
 
 #### 拡張機能のインストール
-今回は、ドキュメント[^3] に記載の方法のうち、Azure CLI を使用して拡張機能をデプロイします。デプロイには、`settings.json` として、拡張機能の設定を JSON 形式で渡す必要があります。ドキュメントにも JSON スニペットが記載されていますが、このスキーマは、メジャーバージョン 3.0 のスキーマです。マイナーバージョンも含めると、かなり多くの利用可能なバージョンが存在します。明示的にバージョンを指定しない場合、最新バージョンの 4.0 がインストールされてしまう点に注意してください。
+今回は、ドキュメント[^3] に記載の方法のうち、Azure CLI を使用して拡張機能をデプロイします。デプロイには、`settings.json` として、拡張機能の設定を JSON 形式で渡す必要があります。ドキュメントにも JSON スニペットが記載されていますが、このスキーマは、メジャーバージョン 3.0 のスキーマです。マイナーバージョンも含めると、かなり多くの利用可能なバージョンが存在します。
 ```bash
 $ az vm extension image list-versions --publisher Microsoft.Azure.KeyVault --name KeyVaultForWindows --location japaneast -o table
 Location    Name
@@ -211,7 +211,7 @@ $ az vm extension set --name "KeyVaultForWindows" --publisher Microsoft.Azure.Ke
 
 :::message alert
 **バージョン 4.0 での変更点**
-バージョン 4.0 では `pollingIntervalInS` や `linkOnRenewal` プロパティが廃止されています。バージョン 3.x 系を使用する場合は、明示的にバージョンを指定してください。本記事では、ドキュメントに倣って 3.0 を使用しています。
+バージョン指定せずに拡張機能をデプロイすると、現在の最新バージョンがデプロイされます。現時点で最新であるバージョン 4.0 では `pollingIntervalInS` や `linkOnRenewal` プロパティが廃止されています。バージョン 3.x 系を使用する場合は、明示的にバージョンを指定してください。本記事では、ドキュメントに倣って 3.0 を使用しています。
 :::
 
 ## 4. IIS 側の設定：証明書の自動再バインド
@@ -219,7 +219,7 @@ Azure Key Vault VM 拡張機能は、IIS に対する証明書の自動再バイ
 > IIS の場合、IIS で証明書更新の自動再バインドを有効にすることで自動再バインドを構成できます。 Azure Key Vault VM 拡張機能は、SAN が一致する証明書がインストールされると、証明書ライフサイクル通知を生成します。 IIS は、このイベントを使用して証明書を自動再バインドします。 詳細については、「 IIS での再バインドの証明書」を参照してください。
 
 ### IIS 8.5以降の「Centralized Certificate Store」または「自動再バインド」機能
-証明書の再バインドを有効にすると、IIS はシステムのタスク スケジューラにタスクを登録し、タスクは証明書更新イベント (イベント ID 1001) にトリガーするようにキーが設定されます。このトリガーに従って証明書の自動更新がなされます。
+証明書の再バインドを有効にすると、IIS はシステムのタスク スケジューラにタスクを登録し、タスクは証明書更新イベント (イベントID:`1001`) にトリガーするようにキーが設定されます。このトリガーに従って証明書の自動更新がなされます。
 
 ### 設定手順
 IIS Manager において、サーバの証明書一覧から、`Enable Automatic Rebind of Renewed Certificate` をクリックします。表示が `Disable Automatic Rebind of Renewed Certificate` になれば、有効になっています。この設定がないと、証明書ストアに新しい証明書が入ってもバインドが更新されません。
@@ -233,10 +233,10 @@ IIS Manager において、サーバの証明書一覧から、`Enable Automatic
 更新前の情報としていくつかまとめておきます。
 
 #### IIS Manager 上のバインディング
-Serial Number: 00cb3695fdd5fe17f2
+Serial Number: `00cb3695fdd5fe17f2`
 ![](/images/20260122-iis-sslcert-update/iism-pre-01.png)
 
-Thumbprint(SHA-1): 328b316329c9ed0f2db147399085eca7fb98607f
+Thumbprint(SHA-1): `328b316329c9ed0f2db147399085eca7fb98607f`
 ![](/images/20260122-iis-sslcert-update/iism-pre-02.png)
 
 ```powershell
