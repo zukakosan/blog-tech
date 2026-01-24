@@ -5,27 +5,23 @@
 ```mermaid
 flowchart TB
     subgraph Azure["Azure Cloud"]
-        KV[("Azure Key Vault\n証明書保管")]
+        KV[("Azure Key Vault<br/>証明書保管")]
     end
     
     subgraph VM["Azure VM"]
-        EXT["Key Vault\nVM Extension"]
-        STORE["Windows\nCertificate Store"]
+        EXT["Key Vault<br/>VM Extension"]
+        STORE["Windows<br/>Certificate Store"]
         IIS["IIS"]
     end
     
     CLIENT["Client"]
     
-    EXT -->|1. ポーリング\n（定期監視）| KV
-    KV -->|2. 証明書取得| EXT
-    EXT -->|3. インストール| STORE
-    STORE -.->|4. Lifecycle\nNotification| IIS
-    IIS -->|5. 自動バインド| IIS
-    CLIENT -->|HTTPS| IIS
-    
-    style EXT fill:#FFD700
-    style STORE fill:#90EE90
-    style IIS fill:#87CEEB
+    EXT -->|"1. ポーリング<br/>（定期監視）"| KV
+    KV -->|"2. 証明書取得"| EXT
+    EXT -->|"3. インストール"| STORE
+    STORE -.->|"4. Lifecycle<br/>Notification"| IIS
+    IIS -->|"5. 自動バインド"| IIS
+    CLIENT -->|"HTTPS"| IIS
 ```
 
 ## ポーリング・更新サイクル
@@ -36,9 +32,9 @@ sequenceDiagram
     participant MSI as Managed Identity
     participant KV as Azure Key Vault
     participant STORE as Windows Certificate Store
-    participant IIS as IIS / Application
+    participant IIS as IIS
 
-    loop ポーリング間隔ごと (pollingIntervalInS)
+    loop ポーリング間隔ごと
         EXT->>MSI: トークン要求
         MSI-->>EXT: アクセストークン
         EXT->>KV: 監視対象証明書の確認
@@ -46,9 +42,9 @@ sequenceDiagram
         
         alt 証明書に変更あり
             EXT->>KV: 証明書ダウンロード要求
-            KV-->>EXT: 証明書データ (PKCS#12/PEM)
-            EXT->>STORE: リーフ証明書インストール (MY ストア)
-            EXT->>STORE: 中間証明書インストール (Intermediate CA ストア)
+            KV-->>EXT: 証明書データ
+            EXT->>STORE: リーフ証明書インストール
+            EXT->>STORE: 中間証明書インストール
             EXT->>STORE: 秘密鍵 ACL 設定
             
             alt linkOnRenewal = true
@@ -63,51 +59,51 @@ sequenceDiagram
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Starting: 拡張機能開始
-    Starting --> Transitioning: requireInitialSync = true
+    [*] --> Starting
+    Starting --> Transitioning
     
-    Transitioning --> Downloading: 証明書ダウンロード試行
-    Downloading --> Installing: ダウンロード成功
-    Installing --> CheckAll: インストール完了
+    Transitioning --> Downloading
+    Downloading --> Installing
+    Installing --> CheckAll
     
-    CheckAll --> Transitioning: 未完了の証明書あり\n(リトライ < 25回)
-    CheckAll --> Success: 全証明書インストール完了
+    CheckAll --> Transitioning: 未完了あり
+    CheckAll --> Success: 全完了
     
-    Downloading --> RetryWait: ダウンロード失敗
-    RetryWait --> Transitioning: バックオフ後リトライ\n(リトライ < 25回)
-    RetryWait --> Error: リトライ回数超過\n(25回)
+    Downloading --> RetryWait: 失敗
+    RetryWait --> Transitioning: リトライ
+    RetryWait --> Error: 回数超過
     
-    Success --> [*]: 他の拡張機能が開始可能
-    Error --> [*]: 拡張機能エラー状態
+    Success --> [*]
+    Error --> [*]
 ```
 
 ## 証明書インストール詳細フロー
 
 ```mermaid
 flowchart TD
-    A[証明書ダウンロード完了] --> B{証明書の種類を判定}
+    A["証明書ダウンロード完了"] --> B{"証明書の種類を判定"}
     
-    B -->|リーフ証明書| C[指定ストアにインストール]
-    B -->|中間 CA 証明書| D[Intermediate CA ストアにインストール]
-    B -->|ルート証明書| E[インストールしない\nサービス所有者が事前設定]
+    B -->|"リーフ証明書"| C["指定ストアにインストール"]
+    B -->|"中間 CA 証明書"| D["Intermediate CA ストアにインストール"]
+    B -->|"ルート証明書"| E["インストールしない"]
     
-    C --> F{accounts 指定あり?}
-    F -->|Yes| G[指定アカウントに\n読み取り権限付与]
-    F -->|No| H[Administrators/SYSTEM のみ\nフルコントロール]
+    C --> F{"accounts 指定あり?"}
+    F -->|"Yes"| G["指定アカウントに読み取り権限付与"]
+    F -->|"No"| H["Administrators/SYSTEM のみ"]
     
-    G --> I{keyExportable?}
+    G --> I{"keyExportable?"}
     H --> I
     
-    I -->|true| J[秘密鍵エクスポート可能]
-    I -->|false| K[秘密鍵エクスポート不可]
+    I -->|"true"| J["秘密鍵エクスポート可能"]
+    I -->|"false"| K["秘密鍵エクスポート不可"]
     
-    J --> L{linkOnRenewal?}
+    J --> L{"linkOnRenewal?"}
     K --> L
     
-    L -->|true| M[既存バインディング維持\nCertificate Lifecycle Notification 発行]
-    L -->|false| N[手動バインディング必要]
+    L -->|"true"| M["Lifecycle Notification 発行"]
+    L -->|"false"| N["手動バインディング必要"]
     
-    M --> O[インストール完了]
+    M --> O["インストール完了"]
     N --> O
 ```
 
@@ -119,7 +115,7 @@ sequenceDiagram
     participant EXT as Key Vault VM Extension
     participant STORE as Windows Certificate Store
     participant HTTP as HTTP.sys
-    participant IIS as IIS (W3SVC)
+    participant IIS as IIS
     participant SITE as IIS Site Binding
 
     Note over KV: 証明書が更新される
@@ -130,15 +126,14 @@ sequenceDiagram
     
     alt linkOnRenewal = true
         EXT->>HTTP: Certificate Lifecycle Notification 発行
-        Note over HTTP: SAN (Subject Alternative Name) を照合
+        Note over HTTP: SAN を照合
         HTTP->>IIS: 証明書更新通知
         IIS->>SITE: SSL バインディング更新
         SITE->>STORE: 新証明書にバインド
         Note over SITE: サービス再起動不要
     else linkOnRenewal = false
         Note over IIS: 手動でのバインディング更新が必要
-        IIS->>SITE: 管理者が手動で SSL バインディング変更
-        Note over IIS: または IIS リセット/再起動
+        IIS->>SITE: 管理者が手動で変更
     end
 ```
 
@@ -147,8 +142,7 @@ sequenceDiagram
 ```mermaid
 flowchart TB
     subgraph KeyVault["Azure Key Vault"]
-        CERT_OLD["旧証明書\n(期限切れ間近)"]
-        CERT_NEW["新証明書\n(更新済み)"]
+        CERT_NEW["新証明書"]
     end
     
     subgraph VMExtension["Key Vault VM Extension"]
@@ -160,72 +154,64 @@ flowchart TB
     end
     
     subgraph WindowsOS["Windows OS"]
-        STORE_MY["証明書ストア\n(MY/Personal)"]
+        STORE_MY["証明書ストア"]
         STORE_INT["中間証明機関ストア"]
-        SCHANNEL["S-channel\n(セキュアチャネル)"]
+        SCHANNEL["S-channel"]
     end
     
     subgraph IISServer["IIS Server"]
-        HTTPAPI["HTTP.sys\nSSL 証明書キャッシュ"]
+        HTTPAPI["HTTP.sys"]
         W3SVC["W3SVC サービス"]
-        BINDING["Site SSL Binding\n443:hostname"]
+        BINDING["Site SSL Binding"]
     end
     
     CERT_NEW --> POLL
     POLL --> DETECT
-    DETECT -->|変更あり| DOWNLOAD
+    DETECT -->|"変更あり"| DOWNLOAD
     DOWNLOAD --> INSTALL
     INSTALL --> STORE_MY
     INSTALL --> STORE_INT
     
-    INSTALL -->|linkOnRenewal=true| NOTIFY
+    INSTALL -->|"linkOnRenewal=true"| NOTIFY
     NOTIFY --> SCHANNEL
-    SCHANNEL -->|SAN 照合| HTTPAPI
+    SCHANNEL -->|"SAN 照合"| HTTPAPI
     HTTPAPI --> W3SVC
     W3SVC --> BINDING
-    BINDING -->|新証明書参照| STORE_MY
-    
-    style CERT_NEW fill:#90EE90
-    style NOTIFY fill:#FFD700
-    style BINDING fill:#87CEEB
+    BINDING -->|"新証明書参照"| STORE_MY
 ```
 
 ## IIS バインディング更新の条件分岐
 
 ```mermaid
 flowchart TD
-    START[証明書更新検出] --> CHECK_LINK{linkOnRenewal\n設定確認}
+    START["証明書更新検出"] --> CHECK_LINK{"linkOnRenewal<br/>設定確認"}
     
-    CHECK_LINK -->|true| AUTO_PATH[自動バインド処理]
-    CHECK_LINK -->|false| MANUAL_PATH[手動バインド処理]
+    CHECK_LINK -->|"true"| AUTO_PATH["自動バインド処理"]
+    CHECK_LINK -->|"false"| MANUAL_PATH["手動バインド処理"]
     
-    AUTO_PATH --> INSTALL_CERT[新証明書インストール]
-    INSTALL_CERT --> GEN_NOTIFY[Certificate Lifecycle\nNotification 生成]
-    GEN_NOTIFY --> CHECK_SAN{SAN が一致?}
+    AUTO_PATH --> INSTALL_CERT["新証明書インストール"]
+    INSTALL_CERT --> GEN_NOTIFY["Lifecycle Notification 生成"]
+    GEN_NOTIFY --> CHECK_SAN{"SAN が一致?"}
     
-    CHECK_SAN -->|一致| HTTP_UPDATE[HTTP.sys バインディング更新]
-    CHECK_SAN -->|不一致| MANUAL_REBIND[手動再バインド必要]
+    CHECK_SAN -->|"一致"| HTTP_UPDATE["HTTP.sys バインディング更新"]
+    CHECK_SAN -->|"不一致"| MANUAL_REBIND["手動再バインド必要"]
     
-    HTTP_UPDATE --> IIS_AWARE[IIS が新証明書を認識]
-    IIS_AWARE --> NO_RESTART[サービス再起動不要]
-    NO_RESTART --> COMPLETE[✓ 自動更新完了]
+    HTTP_UPDATE --> IIS_AWARE["IIS が新証明書を認識"]
+    IIS_AWARE --> NO_RESTART["サービス再起動不要"]
+    NO_RESTART --> COMPLETE["自動更新完了"]
     
-    MANUAL_PATH --> INSTALL_ONLY[証明書インストールのみ]
-    INSTALL_ONLY --> ADMIN_ACTION[管理者操作が必要]
+    MANUAL_PATH --> INSTALL_ONLY["証明書インストールのみ"]
+    INSTALL_ONLY --> ADMIN_ACTION["管理者操作が必要"]
     
-    ADMIN_ACTION --> OPTION1[オプション1:\nIIS Manager で\nSSL バインディング変更]
-    ADMIN_ACTION --> OPTION2[オプション2:\nnetsh http update sslcert]
-    ADMIN_ACTION --> OPTION3[オプション3:\nPowerShell\nSet-WebBinding]
+    ADMIN_ACTION --> OPTION1["IIS Manager で変更"]
+    ADMIN_ACTION --> OPTION2["netsh http update sslcert"]
+    ADMIN_ACTION --> OPTION3["PowerShell Set-WebBinding"]
     
-    OPTION1 --> COMPLETE2[✓ 手動更新完了]
+    OPTION1 --> COMPLETE2["手動更新完了"]
     OPTION2 --> COMPLETE2
     OPTION3 --> COMPLETE2
     
     MANUAL_REBIND --> ADMIN_ACTION
-    
-    style COMPLETE fill:#90EE90
-    style COMPLETE2 fill:#90EE90
-    style MANUAL_REBIND fill:#FFB6C1
 ```
 
 ## 参考情報

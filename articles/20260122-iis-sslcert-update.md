@@ -149,27 +149,23 @@ CustomScriptExtension  Microsoft.Compute  1.10.12
 ```mermaid
 flowchart TB
     subgraph Azure["Azure Cloud"]
-        KV[("Azure Key Vault\n証明書保管")]
+        KV[("Azure Key Vault<br/>証明書保管")]
     end
     
     subgraph VM["Azure VM"]
-        EXT["Key Vault\nVM Extension"]
-        STORE["Windows\nCertificate Store"]
+        EXT["Key Vault<br/>VM Extension"]
+        STORE["Windows<br/>Certificate Store"]
         IIS["IIS"]
     end
     
     CLIENT["Client"]
     
-    EXT -->|1. ポーリング\n（定期監視）| KV
-    KV -->|2. 証明書取得| EXT
-    EXT -->|3. インストール| STORE
-    STORE -.->|4. Lifecycle\nNotification| IIS
-    IIS -->|5. 自動バインド| IIS
-    CLIENT -->|HTTPS| IIS
-    
-    style EXT fill:#FFD700
-    style STORE fill:#90EE90
-    style IIS fill:#87CEEB
+    EXT -->|"1. ポーリング<br/>（定期監視）"| KV
+    KV -->|"2. 証明書取得"| EXT
+    EXT -->|"3. インストール"| STORE
+    STORE -.->|"4. Lifecycle<br/>Notification"| IIS
+    IIS -->|"5. 自動バインド"| IIS
+    CLIENT -->|"HTTPS"| IIS
 ```
 
 #### サポートしている機能
