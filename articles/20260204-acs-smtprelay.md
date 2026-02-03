@@ -230,7 +230,7 @@ swaks --server smtp.azurecomm.net \
   --header "Content-Type: text/plain; charset=UTF-8" \
   --body "🐶🐶🐶🐶 これは KDM-TECH テストメールです 🐶🐶🐶🐶"
 ```
-![Linux (WSL) での送信結果](/images/20260204-acs-smtprelay/image-15.png)
+![Linux (WSL) での送信結果](/images/20260204-acs-smtprelay/image-16.png)
 
 ## まとめ
 
