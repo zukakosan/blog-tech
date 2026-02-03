@@ -34,8 +34,9 @@ Azure 環境からメールを送信する場合、いくつかの選択肢が�
 Azure 環境でメール送信を構築する際には、以下の課題を考慮する必要があります。
 
 :::message alert
-**Port 25 のブロック**
-Azure VM からの Port 25（SMTP）アウトバウンド通信は、スパム対策のため**既定でブロック**されています。Enterprise Agreement の場合は解除申請が可能ですが、推奨されません。
+**ポート 25 のブロック**
+Azure VM からのポート 25（SMTP）アウトバウンド通信は、スパム対策のため**既定でブロック**されています。Enterprise Agreement の場合は解除申請が可能ですが、推奨されません。
+オンプレミスや他クラウドから送信する場合はポート 25 を利用できることもありますが、本記事ではポート 587 + TLS を前提にします。
 :::
 
 | 課題 | 説明 | ACS での解決 |
@@ -63,16 +64,20 @@ Azure VM からの Port 25（SMTP）アウトバウンド通信は、スパム�
 - カスタムドメイン（オプション、本記事では使用）
 - DNS ゾーンへのアクセス権限
 
+対象読者：既存の SMTP クライアントから ACS への移行を検討している方
+
+ACS Email には利用可能リージョンと送信制限があります。事前に公式ドキュメントで確認してください。
+
 ## 構成の全体像
 
 ```mermaid
 sequenceDiagram
-    participant Client as SMTPクライアント
+    participant Client as SMTP クライアント
     participant ACS as Azure Communication Services
     participant Entra as Microsoft Entra ID
     participant Recipient as 受信者
 
-    Client->>ACS: SMTP認証リクエスト<br/>(ユーザー名 + クライアントシークレット)
+    Client->>ACS: SMTP 認証リクエスト<br/>(ユーザー名 + クライアント シークレット)
     ACS->>Entra: アクセストークン取得
     Entra-->>ACS: トークン発行
     ACS->>Recipient: メール送信
@@ -96,13 +101,13 @@ ACS の SMTP 認証には、Managed Identity ではなく、**アプリケーシ
 アプリケーション登録の詳細な手順は [Microsoft Learn のドキュメント](https://learn.microsoft.com/ja-jp/entra/identity-platform/howto-create-service-principal-portal#register-an-application-with-microsoft-entra-id-and-create-a-service-principal) を参照してください。
 :::
 
-### 1.2 クライアントシークレットの作成
+### 1.2 クライアント シークレットの作成
 
 1. 作成したアプリの **証明書とシークレット** を開く
-2. **新しいクライアントシークレット** をクリック
+2. **新しいクライアント シークレット** をクリック
 3. 説明と有効期限を設定して追加
 
-![クライアントシークレット作成](/images/20260204-acs-smtprelay/image-5.png)
+![クライアント シークレット作成](/images/20260204-acs-smtprelay/image-5.png)
 
 :::message alert
 シークレットの値は作成時にのみ表示されます。必ずコピーして安全な場所に保管してください。
@@ -122,7 +127,7 @@ Azure Communication Services リソースで、作成した Entra アプリケ�
 2. **Create SMTP username** をクリック
 3. カスタムテキストでユーザー名を作成
 
-![SMTPユーザー名作成](/images/20260204-acs-smtprelay/image-3.png)
+![SMTP ユーザー名作成](/images/20260204-acs-smtprelay/image-3.png)
 
 作成直後は「Missing Client Secret」という状態になります。
 
@@ -130,7 +135,7 @@ Azure Communication Services リソースで、作成した Entra アプリケ�
 ![ステータス確認](/images/20260204-acs-smtprelay/image-6.png)
 
 
-Entra 側でクライアントシークレットを作成後、しばらく待つと「Ready to use」状態になります。
+Entra 側でクライアント シークレットを作成後、しばらく待つと「Ready to use」状態になります。
 
 ![Ready to use](/images/20260204-acs-smtprelay/image-7.png)
 
@@ -176,9 +181,9 @@ ACS でカスタムドメインからメールを送信するには、**SPF** �
 |----------|-----|
 | サーバー | `smtp.azurecomm.net` |
 | ポート | 587（推奨）または 25 |
-| TLS/StartTLS | 有効 |
+| TLS/STARTTLS | 有効 |
 | ユーザー名 | SMTP ユーザー名 |
-| パスワード | Entra アプリのクライアントシークレット |
+| パスワード | Entra アプリのクライアント シークレット |
 
 ### PowerShell での送信
 
@@ -204,9 +209,14 @@ Send-MailMessage -From $from -To $to `
   -Encoding UTF8
 ```
 
-![PowerShellでの送信結果](/images/20260204-acs-smtprelay/image-14.png)
+![PowerShell での送信結果](/images/20260204-acs-smtprelay/image-14.png)
+
+:::message alert
+`Send-MailMessage` は非推奨です。検証用途に限定し、本番では `MailKit` などのライブラリ利用を推奨します。
+:::
 
 ### Linux (swaks) での送信
+
 簡単にインストール可能な swaks を使ってメールを送信します。
 
 ```bash:send-mail.sh
@@ -218,7 +228,7 @@ swaks --server smtp.azurecomm.net \
   --auth-password "your-app-client-secret" \
   --from "DoNotReply@email.kdm-tech.com" \
   --to "recipient@example.com" \
-  --header "Subject: WSLからのテストメール" \
+  --header "Subject: WSL からのテストメール" \
   --header "Content-Type: text/plain; charset=UTF-8" \
   --body "🐶🐶🐶🐶 これは KDM-TECH テストメールです 🐶🐶🐶🐶"
 ```
@@ -231,13 +241,16 @@ swaks --server smtp.azurecomm.net \
 **ポイント**
 - ACS の SMTP 認証には Entra ID のアプリケーション登録が必要
 - カスタムドメインを使用する場合は SPF/DKIM の設定が必須
-- 認証情報は SMTP ユーザー名 + クライアントシークレットの組み合わせ
+- 認証情報は SMTP ユーザー名 + クライアント シークレットの組み合わせ
 
 この構成により、既存の SMTP 対応アプリケーションから Azure 経由でメールを送信できるようになります。
 
 ## 参考リンク
 
 - [Azure Communication Services - Email ドキュメント](https://learn.microsoft.com/ja-jp/azure/communication-services/concepts/email/email-overview)
+- [Azure Communication Services Email の利用可能リージョン](https://learn.microsoft.com/ja-jp/azure/communication-services/concepts/email/region-availability)
+- [SMTP 認証を使用してメールを送信する](https://learn.microsoft.com/ja-jp/azure/communication-services/quickstarts/email/send-smtp-email)
 - [カスタムの検証済みメール ドメインを追加する](https://learn.microsoft.com/ja-jp/azure/communication-services/quickstarts/email/add-custom-verified-domains?pivots=platform-azp)
 - [複数の送信者を追加する](https://learn.microsoft.com/ja-jp/azure/communication-services/quickstarts/email/add-multiple-senders?pivots=platform-azp)
 - [Entra アプリケーション登録](https://learn.microsoft.com/ja-jp/entra/identity-platform/howto-create-service-principal-portal)
+- [Send-MailMessage の非推奨に関する注意](https://learn.microsoft.com/ja-jp/powershell/module/microsoft.powershell.utility/send-mailmessage)
