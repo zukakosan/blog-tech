@@ -148,11 +148,11 @@ ACS でカスタムドメインからメールを送信するには、**SPF** �
 1. DNS に **TXT レコード**を追加してドメイン所有権を確認
 2. **SPF レコード**と **DKIM レコード**を追加してセンダー認証を構成
 
-:::details DNS レコード設定の詳細
-親ゾーンにレコードを追加する場合は、末尾にメール用のサブドメインを付けます。
-
+親ゾーンにレコードを追加する場合は、末尾にメール用のサブドメインを付けます。今回の場合、ACS のメール配信用に email.kdm-tech.com というサブドメインを切っています。その場合に kdm-tech.com ゾーンに SPF/DKIM 用のレコードを追加しています。
 ![DNS設定](/images/20260204-acs-smtprelay/image-10.png)
-:::
+
+レコードを追加するゾーンと入力する内容の対応は以下ドキュメントに記載があります。
+https://learn.microsoft.com/ja-jp/azure/communication-services/quickstarts/email/add-custom-verified-domains?pivots=platform-azp#configure-sender-authentication-for-custom-domain
 
 ### 3.2 ドメインの検証完了
 
