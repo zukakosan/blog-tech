@@ -167,7 +167,7 @@ https://learn.microsoft.com/ja-jp/azure/communication-services/quickstarts/email
 ![ドメイン接続](/images/20260204-acs-smtprelay/image-13.png)
 
 :::message
-本検証では、MailFrom アドレスの追加が無効化されており、任意のアドレスの追加ができませんでした。カスタムドメインの検証とより高い送信制限のプロビジョニングが必要な場合があります。詳細は [Microsoft Learn](https://learn.microsoft.com/ja-jp/azure/communication-services/quickstarts/email/add-multiple-senders?pivots=platform-azp#prerequisites) を参照してください。
+本検証では、MailFrom アドレスの追加が無効化されており、任意のアドレスの追加ができませんでした。DoNotReply 以外のアドレスの追加のためには、カスタムドメインの検証と、より高い送信制限のプロビジョニング（SR 対応）が必要な場合があります。詳細は [Microsoft Learn](https://learn.microsoft.com/ja-jp/azure/communication-services/quickstarts/email/add-multiple-senders?pivots=platform-azp#prerequisites) を参照してください。
 ![MailFrom 追加エラー](/images/20260204-acs-smtprelay/image-12.png)
 :::
 
