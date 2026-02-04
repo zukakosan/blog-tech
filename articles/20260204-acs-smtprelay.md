@@ -1,6 +1,6 @@
 ---
 title: "Azure で SMTP リレーを構築する - Azure Communication Services による実装ガイド"
-emoji: "☎️"
+emoji: "📨"
 type: "tech"
 topics: ["Azure", "AzureCommunicationServices", "SMTP", "SMTPリレー", "EntraID"]
 publication_name: "microsoft"
