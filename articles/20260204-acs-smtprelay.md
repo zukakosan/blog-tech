@@ -4,7 +4,7 @@ emoji: "☎️"
 type: "tech"
 topics: ["Azure", "AzureCommunicationServices", "SMTP", "SMTPリレー", "EntraID"]
 publication_name: "microsoft"
-published: false
+published: true
 ---
 
 ## はじめに
