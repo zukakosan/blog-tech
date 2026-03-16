@@ -10,6 +10,9 @@ topics:
 published: true
 published_at: "2023-03-24 13:35"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # モチベ
 - AVD文脈で必ず出てくるFSLogixのGPOをきちんと押さえたい

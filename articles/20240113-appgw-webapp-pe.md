@@ -6,6 +6,9 @@ topics: ["azure","microsoft","network","paas","loadbalancer" ]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # はじめに
 Azure Application Gateway (AppGw) の L7 のロードバランサーであり、バックエンドに Azure App Service の Web Apps を配置することが可能です。Web Apps は PaaS サービスなので、ネットワークを気にせず利用する場合、AppGw -> Web Apps の通信はインターネット側を通る構成となります。

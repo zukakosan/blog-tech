@@ -11,6 +11,9 @@ published: true
 publication_name: "microsoft"
 published_at: "2022-08-12 14:06"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # モチベ
 社内都合で検証用サブスクリプションのテナント毎の移動が発生したため、マルチテナント管理が楽にできるらしいAzure Lighthouseを使ってみたくなった

@@ -6,6 +6,9 @@ topics: ["azure","log","AzureMonitor","monitoring"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 # モチベ
 - データ収集ルール(Data Collection Rule/DCR)でAzure VM/オンプレミスマシンからデータを収集する際、DCR上ではあまり細かいルールを作ることはできず、不要なログを過剰に取得しすぎてしまうことがある
 ![](/images/20230808-LogAnalyticsTransform/01.png)

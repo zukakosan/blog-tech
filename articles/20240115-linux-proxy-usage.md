@@ -6,6 +6,9 @@ topics: ["azure","microsoft","ubuntu","squid"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 # はじめに
 Linux でプロキシ設定を試したことがなかったため、超基礎的な内容ですが備忘録的に残しておきます。
 

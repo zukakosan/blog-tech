@@ -6,6 +6,9 @@ topics: ["azure","terraform","test","microsoft"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # はじめに
 Terraform のコードを手元で作成して plan を確認し、問題なければ apply するというのが通常の流れです。Terraform v1.6.0 からは `terraform test` というコマンド[^1] が追加され、重大な変更が意図せず行われないことを確認できるようになります。本記事では `terraform test` および v1.5.0 から利用可能な check ブロック[^2] をAzure 環境に対して適用してみます。

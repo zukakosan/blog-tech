@@ -6,6 +6,9 @@ topics: ["azure","tls","microsoft"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # Azure における証明書
 Azure でホストするアプリケーションに HTTPS を適用する場合、Azure 上で SSL 証明書を準備する必要があります。いわゆるオレオレ証明書を使えば検証等は一応できますが、正式に外部公開サービスをホストする場合、専用の信頼された CA から発行された SSL 証明書を利用する必要があります。

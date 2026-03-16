@@ -6,6 +6,9 @@ topics: ["azure","microsoft","api"]
 publication_name: "microsoft"
 published: true
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # Azure の管理操作 と Azure REST API
 Azure の管理操作のリクエストは、Azure portal、 Azure Powershell/CLI、 REST API、SDK 経由問わず、Azure Reource Manager を経由してサービスに送られます[^1]。

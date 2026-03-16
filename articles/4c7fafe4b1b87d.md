@@ -7,6 +7,9 @@ published: true
 publication_name: "microsoft"
 
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 # はじめに
 Azure Monitor Private Link Scope (AMPLS) の環境が不意に欲しくなることがありますよね。AMPLS の構成、たまにやると結構面倒なのでテンプレート化しておくと楽ではないでしょうか。ということで作成してみました。
 

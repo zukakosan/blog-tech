@@ -6,6 +6,9 @@ topics: ["azure","postman","microsoft","api"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # はじめに
 Azure portal 上での GUI 操作、Azure PowerShell や Azure CLI による CLI 操作も裏側では Azure の REST API と通信することで特定の操作を実行しています。

@@ -6,6 +6,9 @@ topics: ["azure","microsoft","expressroute","network"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 # はじめに
 通常、ExpressRoute を使用する場合、オンプレミスから Azure VNet 向きの通信は ExpressRoute Gateway を通過します。 FastPath を使用することでこのゲートウェイをバイパスすることができ、多少のネットワーク パフォーマンス向上が見込めます。Azure 側からの通信については、既定でゲートウェイがバイパスされる使用になっています。
 https://learn.microsoft.com/ja-jp/azure/expressroute/about-fastpath

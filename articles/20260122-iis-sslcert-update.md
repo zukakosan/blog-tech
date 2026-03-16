@@ -6,6 +6,9 @@ topics: ["Azure", "IIS", "KeyVault", "SSL", "WindowsServer"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 ## TL;DR
 - SSL/TLS 証明書の有効期間が 2029年に **47日** へ短縮されるため、証明書の自動更新が必須に

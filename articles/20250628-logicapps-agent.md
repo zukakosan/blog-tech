@@ -6,6 +6,9 @@ topics: ["Agent","ai","azure"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 # はじめに
 Microsoft Build 2025 にて Azure Logic Apps の Agent 機能が発表されました。Logic Apps 内のワークフロー内で、Tool を使う Agent を構成できるというもので、Agent を使ったワークフローが非常に簡単に作れます。AIOps 待ったなし、という匂いがプンプンしています。
 

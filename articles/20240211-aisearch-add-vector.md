@@ -6,6 +6,9 @@ topics: ["azure","aoai","rag","ai"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # はじめに
 Azure OpenAI Service (AOAI) を利用して、社内ドキュメント検索等のシナリオにおいて Retrieval-Augumented Generation (RAG) アーキテクチャを採用する場合、Azure AI Search を利用することが多いと思います。最近では、GUI で「データのインポートとベクター化」というメニューも選択できるようになっており[^1]、ベクトル化込みのインデックスを取得すること自体へのハードルは下がっています。

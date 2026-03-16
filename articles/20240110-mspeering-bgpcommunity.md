@@ -7,6 +7,9 @@ published: true
 publication_name: "microsoft"
 
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 # はじめに
 Azure で ExpressRoute の Microsoft Peering を利用する場合、Microsoft 365 や Azure PaaS などのパブリック IP アドレスプレフィックスがオンプレミス側のルーターに広報されてきます。あくまで IP アドレスプレフィックスとしてしか見えないので、そのアドレスが何のサービスに利用されているアドレスなのかまでは分かりません。不要なアドレスプレフィックスを取得していると、望まない通信が Microsoft Peering を通ることになるため帯域のひっ迫やコンプライアンス要件の問題等に該当してしまうかもしれません。
 

@@ -6,6 +6,9 @@ topics: ["azure","microsoft","bastion","RDP"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # はじめに
 Azure Bastion はご存じの通り、VM にアクセスするための踏み台サーバーのようなサービスです。Azure Bastion を経由することで、VNet 内にある VM に対してパブリック IP を付与することなくアクセスできます。

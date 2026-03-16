@@ -7,6 +7,9 @@ published: true
 publication_name: "microsoft"
 published_at: 2024-12-13 07:00
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 この記事は、[Microsoft Azure Tech Advent Calendar 2024](https://qiita.com/advent-calendar/2024/microsoft-azure-tech) 13 日目の記事です。
 
 # はじめに

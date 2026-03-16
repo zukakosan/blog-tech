@@ -6,6 +6,9 @@ topics: ["azure","bicep","IaC","DevOps"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 # 記事の位置づけ
 - Azure DNS Private Resolverをサクッと作るBicepの各コンポーネントにおける補足
 

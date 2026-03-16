@@ -6,6 +6,9 @@ topics: ["azure","microsoft","monitoring","windows"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # はじめに
 社内のアラートを確認していると、Azure VM に Azure Monitor Agent (AMA) をインストールせよ。という通達が来ていました。Azure Policy を適切に設定していれば自動でインストールしてくれたりもするのですが、今回は対象が Windows VM 数台だったため、動作確認も含めて AMA を手動インストールしてみました。

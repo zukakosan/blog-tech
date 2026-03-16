@@ -7,6 +7,9 @@ published: true
 published_at: 2025-12-03 08:00
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # はじめに
 閉域化された環境内の VM から Azure リソースを管理したいことがあります。Azure Resource Manager には実は、Private Endpoint が提供されており、リソースの管理アクセスを閉域化できます。通常の NSG によるアウトバウンド接続のフィルタリングによる制御も合わせて検証し、動作確認します。

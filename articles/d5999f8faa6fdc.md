@@ -6,6 +6,9 @@ topics: ["azure","VM","cloud"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 # モチベ
 - Azure Resource Moverというサービス？仕組みを最近知ったので動作検証がてらまとめてみる
 - このサービス自体は結構前からあるみたいです

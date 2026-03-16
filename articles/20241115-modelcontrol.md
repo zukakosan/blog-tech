@@ -6,6 +6,9 @@ topics: ["Azure","AOAI","microsoft","genai"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # はじめに
 生成 AI の活用がある程度進んできて、最近ではどのように安全に使用するか、安全に開発者に使ってもらうかという点がフォーカスされています。

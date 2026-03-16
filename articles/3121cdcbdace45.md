@@ -6,6 +6,9 @@ topics: ["bicep","network","azure"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # これはなに...?
 - Hub-Spoke環境をサクッと立てるためのBicepを作ったのでその共有

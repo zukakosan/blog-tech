@@ -6,6 +6,9 @@ topics: ["bicep","network","azure"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 # これはなに...?
 - 可用性を意識してWeb(IaaS)-DB(PaaS)環境サクッと立てるためのBicepを作ったのでその共有
 - 構成と書き方のポイントを紹介

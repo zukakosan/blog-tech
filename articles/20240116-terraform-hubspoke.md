@@ -6,6 +6,9 @@ topics: ["azure","terraform","microsoft","bicep"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 # はじめに
 Azure にリソースを立てる上で Hub-Spoke 構成のアーキテクチャを意識することが多いと思います。Azure ネイティブの IaC ツールである Bicep で Hub-Spoke 構成を作るという検証は以前の記事[^1] にまとめています。今回は、似たような構成を Terraform で作ってみようというお話です。書き方はいろいろあると思うので、あくまで一例としてご参考にいただければと思います。検証したタイミングとまとめているタイミングにラグがあり、おぼろげな記憶でポイントを記載しております。
 

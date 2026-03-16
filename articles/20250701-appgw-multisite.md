@@ -6,6 +6,9 @@ topics: ["azure","app","microsoft"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # はじめに
 Azure Application Gateway には マルチ サイトホスティング[^1] の機能があります。これにより、Application Gateway の同一ポート上で複数ドメインの Web アプリケーションを配信できます。通常、リスナーは特定のポートに対して 1 つのリスナーを構成できますが、マルチサイト リスナーを使用することで、最大で 100 個のアプリケーションをホストできます。本記事では、実際の構成の流れを見ていきます。

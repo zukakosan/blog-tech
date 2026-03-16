@@ -7,6 +7,9 @@ published: true
 publication_name: "microsoft"
 
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 # モチベ
 - 実は、VPNGWもパケットフォワーダとして利用できるらしい
 - 知らなかったので、試してみる

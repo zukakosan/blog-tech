@@ -11,6 +11,9 @@ published: true
 published_at: "2023-04-07 20:28"
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # モチベ
 - 2023年3月末にMicrosoft Defender CSPMがGA

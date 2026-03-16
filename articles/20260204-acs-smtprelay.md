@@ -6,6 +6,9 @@ topics: ["Azure", "AzureCommunicationServices", "SMTP", "SMTPリレー", "EntraI
 publication_name: "microsoft"
 published: true
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # はじめに
 

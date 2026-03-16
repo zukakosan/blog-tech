@@ -6,6 +6,9 @@ topics: ["azure","network","wan"]
 publication_name: "microsoft"
 published: true
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # Azure Virtual WAN におけるインターネット通信制御
 Azure Virtual WAN は、拠点や VNET を Virtual WAN Hub (以降、VWAN Hub) に VPN 接続、ExpressRoute 接続、VNET 接続によって接続することで、Any-to-Any の接続を可能にする WAN のようなサービスです。VWAN Hub を Hub とする Hub-Spoke 構成が出来上がるわけですが、この場合の Spoke からのインターネット接続をどうするかは、しばしば議題に上がります。

@@ -6,6 +6,9 @@ topics: ["azure","ai","translation"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # はじめに
 近年の AI 活用の流れから、社内のドキュメント整備が改めて見直されています。グローバル化が進む中で、ドキュメントも多言語対応が求められています。

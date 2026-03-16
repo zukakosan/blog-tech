@@ -6,6 +6,9 @@ topics: ["azure","vm","vdi","microsoft"]
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # はじめに
 今回のテーマ設定の背景として、次のような要件がある環境を考えます。

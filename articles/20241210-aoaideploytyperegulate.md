@@ -7,6 +7,9 @@ published: true
 publication_name: "microsoft"
 published_at: 2024-12-11 07:00
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 この記事は、[Microsoft Azure Tech Advent Calendar 2024](https://qiita.com/advent-calendar/2024/microsoft-azure-tech) 11 日目の記事です。
 # はじめに
 Azure OpenAI Service のモデルにはデプロイの種類[^1]という概念があります。PTU[^2] を除くと、Standard、Global-Standard、Global-Batch の 3 種類に分けられます。 それぞれの違いを表にまとめると次のようになります。

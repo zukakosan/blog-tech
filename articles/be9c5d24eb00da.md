@@ -9,6 +9,9 @@ topics:
 published: true
 published_at: "2022-11-30 10:44"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # モチベ
 - 直近のCost Managementのアップデートでタグの継承機能がPreview

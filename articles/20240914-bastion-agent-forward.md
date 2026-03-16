@@ -6,6 +6,9 @@ topics: ['azure','network','microsoft','vm']
 published: true
 publication_name: "microsoft"
 ---
+:::message
+これは個人の検証であり、サポートの可否を保証するものではありません。
+:::
 
 # はじめに
 前回の記事[^1] と同様に以下の要件があると仮定した際に、SSH のエージェント フォワードを利用することで実現するパターンについて考えます。拠点から直接の SSH 接続が共通ファイアウォールにより閉じられているので、Azure Bastion によって回避しつつ、多段の SSH を行う必要があるというイメージです。
