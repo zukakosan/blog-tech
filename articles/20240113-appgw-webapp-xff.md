@@ -7,8 +7,7 @@ published: true
 publication_name: "microsoft"
 ---
 :::message
-本記事は筆者個人の検証結果に基づくものであり、所属する組織の公式見解を示すものではありません。
-正確な情報や最新の仕様については、公式ドキュメントをご確認ください。
+本記事は筆者個人の検証結果に基づくものであり、所属する組織の公式見解を示すものではありません。正確な情報や最新の仕様については、公式ドキュメントをご確認ください。
 :::
 # はじめに
 Application Gateway のバックエンドに Web Apps を配置した場合、Web Apps 側から見るとソース IP は Application Gateway の IP アドレスに見えます。これは、Application Gateway がプロキシとして通信を仲介しているためです。この状況では、Application Gateway に到達できるソースからは Web Apps にも到達できるということになります。
