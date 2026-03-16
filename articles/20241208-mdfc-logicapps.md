@@ -8,7 +8,8 @@ publication_name: "microsoft"
 published_at: 2024-12-09 09:00
 ---
 :::message
-これは個人の検証であり、サポートの可否を保証するものではありません。
+本記事は筆者個人の検証結果に基づくものであり、所属する組織の公式見解を示すものではありません。
+正確な情報や最新の仕様については、公式ドキュメントをご確認ください。
 :::
 
 こちらは [Microsoft Azure Tech Advent Calendar](https://qiita.com/advent-calendar/2024/microsoft-azure-tech) 9日目 の記事です。
