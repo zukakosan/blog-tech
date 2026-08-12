@@ -3,7 +3,7 @@ title: "Foundry IQ のナレッジベースは MCP ツールとしてどう選�
 emoji: "🧠"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["foundry", "mcp", "azureaisearch", "rag", "llm"]
-published: false
+published: true
 ---
 # 趣旨
 
